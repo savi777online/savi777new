@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Place Bets</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        
+        .header { background: #fff; padding: 15px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #e0e0e0; }
+        .back-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #333; }
+        .market-title { font-size: 18px; font-weight: bold; flex: 1; text-align: center; color: #1a1a2e; }
+        .balance-card { background: #007bff; margin: 16px; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; color: #fff; }
+        .balance-amount { font-size: 22px; font-weight: bold; }
+        
+        .game-selection { padding: 16px; }
+        .selection-title { font-size: 18px; font-weight: bold; margin-bottom: 16px; color: #1a1a2e; }
+        .game-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .game-card { background: #fff; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; border: 1px solid #e0e0e0; }
+        .game-card:hover { border-color: #007bff; }
+        .game-name { font-size: 16px; font-weight: bold; margin-bottom: 6px; }
+        .game-rate { color: #007bff; font-size: 14px; font-weight: bold; }
+        
+        .bidding-panel { display: none; padding: 16px; }
+        .bidding-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .back-to-games { background: none; border: none; font-size: 20px; cursor: pointer; }
+        .selected-game { font-size: 18px; font-weight: bold; flex: 1; }
+        .points-input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; }
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+        .number-btn { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 14px; text-align: center; font-size: 18px; cursor: pointer; }
+        .number-btn.selected { background: #007bff; color: #fff; border-color: #007bff; }
+        .add-btn { width: 100%; padding: 14px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin: 10px 0; }
+        .bids-list { background: #fff; border-radius: 12px; padding: 12px; margin: 16px 0; max-height: 250px; overflow-y: auto; }
+        .bid-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .remove-bid { background: #dc3545; color: #fff; border: none; padding: 4px 12px; border-radius: 8px; cursor: pointer; }
+        .summary { background: #fff; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; margin: 16px 0; }
+        .submit-btn { width: 100%; padding: 16px; background: #28a745; border: none; border-radius: 30px; color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .message { padding: 12px; border-radius: 12px; text-align: center; margin: 12px 0; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="market-title" id="marketName">Loading...</div>
+        <div style="width:30px;"></div>
+    </div>
+    
+    <div class="balance-card">
+        <span>Your Balance</span>
+        <span class="balance-amount">₹<span id="userBalance">0</span></span>
+    </div>
+    
+    <div id="gameSelection" class="game-selection">
+        <div class="selection-title">Select Game Type</div>
+        <div class="game-grid" id="gameGrid"></div>
+    </div>
+    
+    <div id="biddingPanel" class="bidding-panel">
+        <div class="bidding-header">
+            <button class="back-to-games" onclick="showGameSelection()">←</button>
+            <div class="selected-game" id="selectedGame">Single Digit</div>
+            <div id="selectedRate">10x</div>
+        </div>
+        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)">
+        <div id="gamePanel"></div>
+        <div class="summary">
+            <span>Total Bids: <span id="totalCount">0</span></span>
+            <span>Total Amount: ₹<span id="totalAmount">0</span></span>
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="submitBids()">Place Bets</button>
+        <div id="message" class="message hidden"></div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let currentUser = null, userBalance = 0;
+    let currentMarket = '', currentMarketId = '', currentStatus = 'open';
+    let currentGameType = 'Single Digit';
+    let bids = [];
+    let selectedDigits = [];
+    
+    const gameRates = { 'Single Digit': 10, 'Jodi': 100, 'Single Pana': 160, 'Double Pana': 320, 'Triple Pana': 1000, 'Half Sangam A': 1000, 'Half Sangam B': 1000, 'Full Sangam': 10000 };
+    const gameTypes = ['Single Digit', 'Jodi', 'Single Pana', 'Double Pana', 'Triple Pana', 'Half Sangam A', 'Half Sangam B', 'Full Sangam'];
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    currentMarket = decodeURIComponent(urlParams.get('market') || 'Main Bazar');
+    currentMarketId = urlParams.get('marketId') || '';
+    currentStatus = urlParams.get('status') || 'open';
+    document.getElementById('marketName').innerHTML = currentMarket;
+    
+    function renderGameSelection() {
+        const container = document.getElementById('gameGrid');
+        container.innerHTML = gameTypes.map(type => `
+            <div class="game-card" onclick="selectGame('${type}')">
+                <div class="game-name">${type}</div>
+                <div class="game-rate">${gameRates[type]}x</div>
+            </div>
+        `).join('');
+    }
+    
+    function selectGame(game) {
+        currentGameType = game;
+        selectedDigits = [];
+        document.getElementById('selectedGame').innerHTML = game;
+        document.getElementById('selectedRate').innerHTML = `${gameRates[game]}x`;
+        document.getElementById('gameSelection').style.display = 'none';
+        document.getElementById('biddingPanel').style.display = 'block';
+        renderGamePanel();
+    }
+    
+    function showGameSelection() {
+        document.getElementById('biddingPanel').style.display = 'none';
+        document.getElementById('gameSelection').style.display = 'block';
+    }
+    
+    function renderGamePanel() {
+        const container = document.getElementById('gamePanel');
+        if (currentGameType === 'Single Digit') {
+            let digitsHtml = '';
+            for (let i = 0; i <= 9; i++) {
+                digitsHtml += `<div class="number-btn ${selectedDigits.includes(i.toString()) ? 'selected' : ''}" onclick="toggleDigit('${i}')">${i}</div>`;
+            }
+            container.innerHTML = `
+                <div class="number-grid">${digitsHtml}</div>
+                <button class="add-btn" onclick="addSelectedDigits()">Add Selected (${selectedDigits.length})</button>
+                ${renderBidsList()}
+            `;
+        } else if (currentGameType === 'Jodi') {
+            let jodiHtml = '';
+            for (let i = 0; i <= 99; i++) {
+                const jodiStr = i.toString().padStart(2, '0');
+                jodiHtml += `<div class="number-btn ${selectedDigits.includes(jodiStr) ? 'selected' : ''}" onclick="toggleDigit('${jodiStr}')">${jodiStr}</div>`;
+            }
+            container.innerHTML = `
+                <div class="number-grid" style="grid-template-columns: repeat(5, 1fr);">${jodiHtml}</div>
+                <button class="add-btn" onclick="addSelectedDigits()">Add Selected (${selectedDigits.length})</button>
+                ${renderBidsList()}
+            `;
+        } else {
+            container.innerHTML = `
+                <input type="text" id="manualValue" class="points-input" placeholder="Enter number">
+                <button class="add-btn" onclick="addManual()">Add to Bids</button>
+                ${renderBidsList()}
+            `;
+        }
+    }
+    
+    function toggleDigit(digit) {
+        const index = selectedDigits.indexOf(digit);
+        if (index === -1) selectedDigits.push(digit);
+        else selectedDigits.splice(index, 1);
+        renderGamePanel();
+    }
+    
+    function addSelectedDigits() {
+        const points = getPoints();
+        if (!points) return;
+        for (const digit of selectedDigits) {
+            bids.push({ type: currentGameType, value: digit, points: points, market: currentMarket, marketId: currentMarketId });
+        }
+        selectedDigits = [];
+        updateSummary();
+        renderGamePanel();
+    }
+    
+    function addManual() {
+        const points = getPoints();
+        if (!points) return;
+        const value = document.getElementById('manualValue')?.value.trim();
+        if (!value) { alert('Enter a number'); return; }
+        bids.push({ type: currentGameType, value: value, points: points, market: currentMarket, marketId: currentMarketId });
+        document.getElementById('manualValue').value = '';
+        updateSummary();
+        renderGamePanel();
+    }
+    
+    function getPoints() {
+        const points = parseInt(document.getElementById('pointsInput').value);
+        if (!points || points < 5) { alert('Minimum bid is ₹5'); return null; }
+        return points;
+    }
+    
+    function renderBidsList() {
+        if (bids.length === 0) return '<div class="bids-list" style="text-align:center; color:#888;">No bids added</div>';
+        return `<div class="bids-list">${bids.map((b, i) => `
+            <div class="bid-item">
+                <span><strong>${b.type}</strong> | ${b.value} | ₹${b.points}</span>
+                <button class="remove-bid" onclick="removeBid(${i})">Remove</button>
+            </div>
+        `).join('')}</div>`;
+    }
+    
+    function removeBid(i) { bids.splice(i, 1); updateSummary(); renderGamePanel(); }
+    
+    function updateSummary() {
+        const total = bids.reduce((s, b) => s + b.points, 0);
+        document.getElementById('totalCount').innerText = bids.length;
+        document.getElementById('totalAmount').innerText = total;
+    }
+    
+    async function submitBids() {
+        if (bids.length === 0) { showMessage('No bids to place', true); return; }
+        const total = bids.reduce((s, b) => s + b.points, 0);
+        if (userBalance < total) { showMessage(`Insufficient balance! Need ₹${total}`, true); return; }
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Processing...';
+        
+        try {
+            const batch = db.batch();
+            const userRef = db.collection('users').doc(currentUser.uid);
+            batch.update(userRef, { balance: userBalance - total });
+            
+            for (const b of bids) {
+                batch.set(db.collection('bids').doc(), {
+                    userId: currentUser.uid, market: b.market, marketId: b.marketId,
+                    gameType: b.type, value: b.value, points: b.points,
+                    status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            await batch.commit();
+            showMessage(`Bets placed! ₹${total} deducted`, false);
+            userBalance -= total;
+            document.getElementById('userBalance').innerText = userBalance;
+            bids = [];
+            updateSummary();
+            renderGamePanel();
+        } catch (e) { showMessage('Error: ' + e.message, true); }
+        finally { submitBtn.disabled = false; submitBtn.innerText = 'Place Bets'; }
+    }
+    
+    function showMessage(msg, isError) {
+        const div = document.getElementById('message');
+        div.innerText = msg;
+        div.className = `message ${isError ? 'error' : 'success'}`;
+        div.classList.remove('hidden');
+        setTimeout(() => div.classList.add('hidden'), 3000);
+    }
+    
+    async function loadUserData() {
+        const user = auth.currentUser;
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+        const doc = await db.collection('users').doc(user.uid).get();
+        userBalance = doc.data()?.balance || 0;
+        document.getElementById('userBalance').innerText = userBalance;
+    }
+    
+    function goBack() { window.location.href = 'dashboard.html'; }
+    
+    renderGameSelection();
+    
+    auth.onAuthStateChanged(user => {
+        if (!user) window.location.href = 'index.html';
+        else loadUserData();
+    });
+    
+    window.selectGame = selectGame;
+    window.showGameSelection = showGameSelection;
+    window.toggleDigit = toggleDigit;
+    window.addSelectedDigits = addSelectedDigits;
+    window.addManual = addManual;
+    window.removeBid = removeBid;
+    window.submitBids = submitBids;
+</script>
+</body>
+</html>
