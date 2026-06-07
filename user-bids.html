@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - User Bids (Admin)</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .back-btn { background: #007bff; border: none; padding: 10px 20px; border-radius: 8px; color: #fff; cursor: pointer; margin-bottom: 20px; }
+        .header { background: #fff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #e0e0e0; }
+        .header h1 { color: #1a1a2e; margin-bottom: 8px; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .stat-card { background: #fff; padding: 16px; border-radius: 12px; text-align: center; border: 1px solid #e0e0e0; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #007bff; }
+        .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filters input, .filters select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        table { width: 100%; background: #fff; border-radius: 16px; overflow: hidden; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #f8f9fa; }
+        .status-won { color: #28a745; font-weight: bold; }
+        .status-lost { color: #dc3545; font-weight: bold; }
+        .status-pending { color: #ffc107; font-weight: bold; }
+        @media (max-width: 768px) { th, td { font-size: 12px; padding: 8px; } .stats { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button class="back-btn" onclick="window.close()">← Close</button>
+    
+    <div class="header">
+        <h1 id="userName">Loading...</h1>
+        <p id="userPhone">Phone: Loading...</p>
+        <p id="userBalance">Balance: ₹0</p>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-card"><div>Total Bids</div><div class="stat-value" id="totalBids">0</div></div>
+        <div class="stat-card"><div>Total Spent</div><div class="stat-value" id="totalSpent">₹0</div></div>
+        <div class="stat-card"><div>Total Won</div><div class="stat-value" id="totalWon">₹0</div></div>
+        <div class="stat-card"><div>Net Profit</div><div class="stat-value" id="netProfit">₹0</div></div>
+    </div>
+    
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search market or number..." onkeyup="filterBids()">
+        <select id="statusFilter" onchange="filterBids()">
+            <option value="all">All Status</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+            <option value="pending">Pending</option>
+        </select>
+    </div>
+    
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Market</th><th>Game Type</th><th>Number</th><th>Points</th><th>Status</th></tr>
+            </thead>
+            <tbody id="bidsList">...</tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('uid');
+    const userName = urlParams.get('name') || 'User';
+    
+    let allBids = [];
+    
+    document.getElementById('userName').innerHTML = `Bids: ${userName}`;
+    
+    async function loadData() {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+            document.getElementById('userPhone').innerHTML = `Phone: ${userDoc.data().phone || 'N/A'}`;
+            document.getElementById('userBalance').innerHTML = `Balance: ₹${userDoc.data().balance || 0}`;
+        }
+        
+        const bidsSnapshot = await db.collection('bids').where('userId', '==', userId).get();
+        allBids = [];
+        bidsSnapshot.forEach(doc => {
+            const b = doc.data();
+            let date = null;
+            if (b.createdAt) {
+                if (b.createdAt.toDate) date = b.createdAt.toDate();
+                else if (b.createdAt.seconds) date = new Date(b.createdAt.seconds * 1000);
+            }
+            allBids.push({ id: doc.id, ...b, dateObj: date || new Date(0) });
+        });
+        allBids.sort((a, b) => b.dateObj - a.dateObj);
+        updateStats();
+        filterBids();
+    }
+    
+    function updateStats() {
+        let totalSpent = 0, totalWon = 0;
+        const rates = { 'Single Digit':10, 'Jodi':100, 'Single Pana':160, 'Double Pana':320, 'Triple Pana':1000, 'Half Sangam A':1000, 'Half Sangam B':1000, 'Full Sangam':10000 };
+        for (const bid of allBids) {
+            totalSpent += bid.points || 0;
+            if (bid.status === 'won') {
+                totalWon += (bid.points || 0) * (rates[bid.gameType] || 10);
+            }
+        }
+        document.getElementById('totalBids').innerHTML = allBids.length;
+        document.getElementById('totalSpent').innerHTML = `₹${totalSpent}`;
+        document.getElementById('totalWon').innerHTML = `₹${totalWon}`;
+        const net = totalWon - totalSpent;
+        document.getElementById('netProfit').innerHTML = `₹${net}`;
+        document.getElementById('netProfit').style.color = net >= 0 ? '#28a745' : '#dc3545';
+    }
+    
+    function filterBids() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        let filtered = allBids.filter(bid => {
+            if (statusFilter !== 'all' && bid.status !== statusFilter) return false;
+            if (searchTerm && !(bid.market?.toLowerCase().includes(searchTerm) || bid.value?.toLowerCase().includes(searchTerm))) return false;
+            return true;
+        });
+        displayBids(filtered);
+    }
+    
+    function displayBids(bids) {
+        const tbody = document.getElementById('bidsList');
+        if (bids.length === 0) { tbody.innerHTML = '<tr><td colspan="6">No bids found</td></tr>'; return; }
+        let html = '';
+        for (const bid of bids) {
+            const date = bid.dateObj.toLocaleString();
+            const statusClass = bid.status === 'won' ? 'status-won' : (bid.status === 'lost' ? 'status-lost' : 'status-pending');
+            html += `<tr>
+                <td>${date}</td>
+                <td>${bid.market || '-'}</td>
+                <td>${bid.gameType || '-'}</td>
+                <td><strong>${bid.value || '-'}</strong></td>
+                <td>₹${bid.points || 0}</td>
+                <td class="${statusClass}">${(bid.status || 'PENDING').toUpperCase()}</td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+    
+    loadData();
+    window.filterBids = filterBids;
+</script>
+</body>
+</html>
