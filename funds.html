@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Funds</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        
+        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; }
+        
+        .profile-card { background: #fff; margin: 16px; padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; border: 1px solid #e0e0e0; }
+        .profile-avatar { width: 50px; height: 50px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; }
+        .profile-info { flex: 1; }
+        .profile-name { font-weight: bold; color: #1a1a2e; }
+        .profile-phone { font-size: 12px; color: #888; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px; }
+        .menu-card { background: #fff; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; border: 1px solid #e0e0e0; }
+        .menu-card:hover { border-color: #007bff; }
+        .menu-icon { font-size: 36px; margin-bottom: 8px; }
+        .menu-title { font-weight: bold; color: #1a1a2e; }
+        
+        .screen { padding: 16px; }
+        .input-field { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; }
+        .btn { width: 100%; padding: 14px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; }
+        .back-btn { background: none; border: none; font-size: 20px; cursor: pointer; margin-bottom: 16px; }
+        
+        .bid-card, .transaction-card { background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0; }
+        .hidden { display: none; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
+        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
+        .nav-item.active { color: #007bff; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; border-radius: 20px; padding: 24px; width: 90%; max-width: 350px; }
+        .modal-content h3 { margin-bottom: 16px; text-align: center; }
+        .modal-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .modal-btn.close { background: #6c757d; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <span class="app-name">SAVI777</span>
+        <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
+    </div>
+    
+    <div class="profile-card" onclick="showProfileModal()">
+        <div class="profile-avatar">SA</div>
+        <div class="profile-info">
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-phone" id="profilePhone">Loading...</div>
+        </div>
+        <div>→</div>
+    </div>
+    
+    <div id="mainMenu">
+        <div class="menu-grid">
+            <div class="menu-card" onclick="showAddBank()">
+                <div class="menu-icon">🏦</div>
+                <div class="menu-title">Add Bank</div>
+            </div>
+            <div class="menu-card" onclick="showBidHistory()">
+                <div class="menu-icon">📋</div>
+                <div class="menu-title">Bid History</div>
+            </div>
+            <div class="menu-card" onclick="showTransactionHistory()">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">Transactions</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="bankScreen" class="screen hidden">
+        <button class="back-btn" onclick="showMainMenu()">← Back</button>
+        <h3>Bank Details</h3>
+        <input type="text" id="accountHolder" class="input-field" placeholder="Account Holder">
+        <input type="text" id="bankName" class="input-field" placeholder="Bank Name">
+        <input type="text" id="accountNumber" class="input-field" placeholder="Account Number">
+        <input type="text" id="ifscCode" class="input-field" placeholder="IFSC Code">
+        <button class="btn" id="saveBankBtn">Save Bank Details</button>
+    </div>
+    
+    <div id="bidHistoryScreen" class="screen hidden">
+        <button class="back-btn" onclick="showMainMenu()">← Back</button>
+        <h3>Bid History</h3>
+        <div id="bidsList"></div>
+    </div>
+    
+    <div id="transactionHistoryScreen" class="screen hidden">
+        <button class="back-btn" onclick="showMainMenu()">← Back</button>
+        <h3>Transaction History</h3>
+        <div id="transactionsList"></div>
+    </div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
+        <div class="nav-item" onclick="location.href='deposit.html'">Deposit</div>
+        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
+        <div class="nav-item active" onclick="location.href='funds.html'">Funds</div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3>My Profile</h3>
+        <div id="profileInfo"></div>
+        <button class="modal-btn" onclick="showChangePinModal()">Change MPIN</button>
+        <button class="modal-btn close" onclick="closeProfileModal()">Close</button>
+    </div>
+</div>
+
+<div id="changePinModal" class="modal">
+    <div class="modal-content">
+        <h3>Change MPIN</h3>
+        <input type="password" id="oldPin" class="input-field" placeholder="Current MPIN" maxlength="4">
+        <input type="password" id="newPin" class="input-field" placeholder="New MPIN" maxlength="4">
+        <input type="password" id="confirmPin" class="input-field" placeholder="Confirm MPIN" maxlength="4">
+        <button class="modal-btn" onclick="updatePin()">Update</button>
+        <button class="modal-btn close" onclick="closeChangePinModal()">Cancel</button>
+        <div id="pinMsg" style="color:#dc3545; margin-top:8px;"></div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let currentUser = null;
+    let currentUserData = null;
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+        await loadUserData();
+    });
+    
+    async function loadUserData() {
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        currentUserData = doc.data();
+        document.getElementById('userBalance').innerText = currentUserData?.balance || 0;
+        document.getElementById('profileName').innerHTML = currentUserData?.name || 'User';
+        document.getElementById('profilePhone').innerHTML = currentUserData?.phone || '';
+    }
+    
+    function showMainMenu() {
+        document.getElementById('mainMenu').classList.remove('hidden');
+        document.getElementById('bankScreen').classList.add('hidden');
+        document.getElementById('bidHistoryScreen').classList.add('hidden');
+        document.getElementById('transactionHistoryScreen').classList.add('hidden');
+    }
+    
+    function showAddBank() {
+        document.getElementById('mainMenu').classList.add('hidden');
+        document.getElementById('bankScreen').classList.remove('hidden');
+        loadBankDetails();
+    }
+    
+    function loadBankDetails() {
+        if (currentUserData?.bankDetails) {
+            document.getElementById('accountHolder').value = currentUserData.bankDetails.accountHolder || '';
+            document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
+            document.getElementById('accountNumber').value = currentUserData.bankDetails.accountNumber || '';
+            document.getElementById('ifscCode').value = currentUserData.bankDetails.ifscCode || '';
+        }
+    }
+    
+    document.getElementById('saveBankBtn').onclick = async () => {
+        const accountHolder = document.getElementById('accountHolder').value.trim();
+        const bankName = document.getElementById('bankName').value.trim();
+        const accountNumber = document.getElementById('accountNumber').value.trim();
+        const ifscCode = document.getElementById('ifscCode').value.trim();
+        if (!accountHolder || !bankName || !accountNumber || !ifscCode) {
+            alert('Fill all fields');
+            return;
+        }
+        await db.collection('users').doc(currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
+        alert('Bank details saved!');
+        showMainMenu();
+    };
+    
+    async function showBidHistory() {
+        document.getElementById('mainMenu').classList.add('hidden');
+        document.getElementById('bidHistoryScreen').classList.remove('hidden');
+        const snapshot = await db.collection('bids').where('userId', '==', currentUser.uid).orderBy('createdAt', 'desc').get();
+        const container = document.getElementById('bidsList');
+        if (snapshot.empty) { container.innerHTML = '<div>No bids found</div>'; return; }
+        let html = '';
+        snapshot.forEach(doc => {
+            const b = doc.data();
+            const date = b.createdAt?.toDate().toLocaleString() || 'Pending';
+            html += `<div class="bid-card"><strong>${b.market}</strong> | ${b.gameType}: ${b.value}<br>₹${b.points} | ${date}</div>`;
+        });
+        container.innerHTML = html;
+    }
+    
+    async function showTransactionHistory() {
+        document.getElementById('mainMenu').classList.add('hidden');
+        document.getElementById('transactionHistoryScreen').classList.remove('hidden');
+        const snapshot = await db.collection('transactions').where('userId', '==', currentUser.uid).orderBy('date', 'desc').get();
+        const container = document.getElementById('transactionsList');
+        if (snapshot.empty) { container.innerHTML = '<div>No transactions found</div>'; return; }
+        let html = '';
+        snapshot.forEach(doc => {
+            const t = doc.data();
+            const date = t.date?.toDate().toLocaleString() || 'Pending';
+            html += `<div class="transaction-card"><strong>${t.type === 'credit' ? 'Deposit' : 'Withdrawal'}</strong><br>Amount: ₹${t.amount}<br>Status: ${t.status || 'Pending'}<br>${date}</div>`;
+        });
+        container.innerHTML = html;
+    }
+    
+    function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
+    
+    function showProfileModal() {
+        document.getElementById('profileInfo').innerHTML = `<div>${currentUserData?.name}</div><div>${currentUserData?.phone}</div><div>Balance: ₹${currentUserData?.balance}</div>`;
+        document.getElementById('profileModal').style.display = 'flex';
+    }
+    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+    
+    function showChangePinModal() { closeProfileModal(); document.getElementById('changePinModal').style.display = 'flex'; }
+    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; }
+    
+    async function updatePin() {
+        const oldPin = document.getElementById('oldPin').value;
+        const newPin = document.getElementById('newPin').value;
+        const confirmPin = document.getElementById('confirmPin').value;
+        if (!oldPin || !newPin || !confirmPin) { document.getElementById('pinMsg').innerHTML = 'Fill all fields'; return; }
+        if (newPin.length !== 4) { document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits'; return; }
+        if (newPin !== confirmPin) { document.getElementById('pinMsg').innerHTML = 'MPINs do not match'; return; }
+        if (oldPin !== currentUserData.pin) { document.getElementById('pinMsg').innerHTML = 'Current MPIN incorrect'; return; }
+        await db.collection('users').doc(currentUser.uid).update({ pin: newPin });
+        document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
+        document.getElementById('pinMsg').style.color = '#28a745';
+        setTimeout(() => closeChangePinModal(), 1500);
+    }
+    
+    window.showMainMenu = showMainMenu;
+    window.showAddBank = showAddBank;
+    window.showBidHistory = showBidHistory;
+    window.showTransactionHistory = showTransactionHistory;
+    window.showBalance = showBalance;
+    window.showProfileModal = showProfileModal;
+    window.closeProfileModal = closeProfileModal;
+    window.showChangePinModal = showChangePinModal;
+    window.closeChangePinModal = closeChangePinModal;
+    window.updatePin = updatePin;
+</script>
+</body>
+</html>
