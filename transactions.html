@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Transactions</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; }
+        .container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; padding: 20px; }
+        .header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .back-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
+        .title { font-size: 20px; font-weight: bold; flex: 1; text-align: center; color: #1a1a2e; }
+        .transaction-card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #e0e0e0; }
+        .transaction-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .transaction-type { font-weight: bold; }
+        .transaction-amount { font-size: 18px; font-weight: bold; }
+        .transaction-status { font-size: 12px; padding: 4px 8px; border-radius: 12px; display: inline-block; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .transaction-date { font-size: 11px; color: #888; margin-top: 8px; }
+        .no-data { text-align: center; color: #888; padding: 40px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="title">Transactions</div>
+        <div style="width:30px;"></div>
+    </div>
+    <div id="transactionsList">Loading...</div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    async function loadTransactions() {
+        const user = auth.currentUser;
+        if (!user) { window.location.href = 'index.html'; return; }
+        
+        const transactions = await db.collection('transactions').where('userId', '==', user.uid).orderBy('date', 'desc').get();
+        const withdrawals = await db.collection('withdrawRequests').where('userId', '==', user.uid).orderBy('date', 'desc').get();
+        
+        const container = document.getElementById('transactionsList');
+        let html = '';
+        
+        for (const doc of withdrawals.docs) {
+            const w = doc.data();
+            const date = w.date?.toDate().toLocaleString() || 'Pending';
+            const statusClass = w.status === 'Completed' ? 'status-approved' : (w.status === 'Rejected' ? 'status-rejected' : 'status-pending');
+            html += `
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <span class="transaction-type">Withdrawal Request</span>
+                        <span class="transaction-amount">-₹${w.amount}</span>
+                    </div>
+                    <div><span class="transaction-status ${statusClass}">${w.status || 'Pending'}</span></div>
+                    <div class="transaction-date">${date}</div>
+                </div>
+            `;
+        }
+        
+        for (const doc of transactions.docs) {
+            const t = doc.data();
+            if (t.type === 'credit') {
+                const date = t.date?.toDate().toLocaleString() || 'Pending';
+                const statusClass = t.status === 'Completed' ? 'status-approved' : (t.status === 'Rejected' ? 'status-rejected' : 'status-pending');
+                html += `
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <span class="transaction-type">Deposit</span>
+                            <span class="transaction-amount">+₹${t.amount}</span>
+                        </div>
+                        <div><span class="transaction-status ${statusClass}">${t.status || 'Pending'}</span></div>
+                        <div class="transaction-date">${date}</div>
+                    </div>
+                `;
+            }
+        }
+        
+        container.innerHTML = html || '<div class="no-data">No transactions found</div>';
+    }
+    
+    function goBack() { window.location.href = 'dashboard.html'; }
+    
+    auth.onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; else loadTransactions(); });
+</script>
+</body>
+</html>
