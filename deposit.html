@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Deposit</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        
+        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; }
+        
+        .deposit-card { background: #fff; margin: 16px; border-radius: 20px; padding: 20px; }
+        .deposit-title { font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #1a1a2e; }
+        
+        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        .amount-btn { background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px; padding: 14px; text-align: center; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .amount-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+        
+        .custom-amount input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; }
+        
+        .upi-info { background: #f5f5f5; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px; }
+        .upi-id { font-size: 18px; font-weight: bold; color: #007bff; margin: 8px 0; }
+        .copy-btn { background: #007bff; border: none; padding: 8px 20px; border-radius: 20px; color: #fff; cursor: pointer; }
+        
+        .utr-section { margin-bottom: 16px; }
+        .utr-section input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
+        
+        .submit-btn { width: 100%; padding: 16px; background: #28a745; border: none; border-radius: 30px; color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        
+        .message { padding: 12px; border-radius: 12px; text-align: center; margin-top: 16px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .hidden { display: none; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
+        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
+        .nav-item.active { color: #007bff; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <span class="app-name">SAVI777</span>
+        <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
+    </div>
+    
+    <div class="deposit-card">
+        <div class="deposit-title">Add Funds</div>
+        
+        <div class="amount-grid">
+            <div class="amount-btn" onclick="selectAmount(200)">₹200</div>
+            <div class="amount-btn" onclick="selectAmount(500)">₹500</div>
+            <div class="amount-btn" onclick="selectAmount(1000)">₹1000</div>
+            <div class="amount-btn" onclick="selectAmount(2000)">₹2000</div>
+            <div class="amount-btn" onclick="selectAmount(5000)">₹5000</div>
+            <div class="amount-btn" onclick="selectAmount(10000)">₹10000</div>
+        </div>
+        
+        <div class="custom-amount">
+            <input type="number" id="customAmount" placeholder="Enter custom amount (Min ₹200)">
+        </div>
+        
+        <div class="upi-info">
+            <div>Send payment to this UPI ID:</div>
+            <div class="upi-id" id="upiIdDisplay">Loading...</div>
+            <button class="copy-btn" onclick="copyUpiId()">Copy UPI ID</button>
+        </div>
+        
+        <div class="utr-section">
+            <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID">
+        </div>
+        
+        <button class="submit-btn" id="submitBtn">Submit Deposit Request</button>
+        
+        <div id="message" class="message hidden"></div>
+    </div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
+        <div class="nav-item active" onclick="location.href='deposit.html'">Deposit</div>
+        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
+        <div class="nav-item" onclick="location.href='chat.html'">Support</div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let currentUser = null;
+    let selectedAmount = 200;
+    let upiId = "savi777@okhdfcbank";
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+        await loadUserData();
+        await loadUpiSettings();
+    });
+    
+    async function loadUserData() {
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        document.getElementById('userBalance').innerText = doc.data()?.balance || 0;
+    }
+    
+    async function loadUpiSettings() {
+        const doc = await db.collection('settings').doc('upi').get();
+        if (doc.exists && doc.data().upiId) upiId = doc.data().upiId;
+        document.getElementById('upiIdDisplay').innerHTML = upiId;
+    }
+    
+    function selectAmount(amount) {
+        selectedAmount = amount;
+        document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('customAmount').value = '';
+    }
+    
+    function getAmount() {
+        const custom = parseInt(document.getElementById('customAmount').value);
+        if (custom && custom >= 200) return custom;
+        return selectedAmount;
+    }
+    
+    function showMessage(msg, type) {
+        const div = document.getElementById('message');
+        div.innerText = msg;
+        div.className = `message ${type}`;
+        div.classList.remove('hidden');
+        setTimeout(() => div.classList.add('hidden'), 5000);
+    }
+    
+    function copyUpiId() {
+        navigator.clipboard.writeText(upiId);
+        showMessage('UPI ID copied!', 'success');
+    }
+    
+    document.getElementById('submitBtn').onclick = async () => {
+        const amount = getAmount();
+        const utr = document.getElementById('utrNumber').value.trim();
+        
+        if (amount < 200) { showMessage('Minimum deposit is ₹200', 'error'); return; }
+        if (!utr) { showMessage('Please enter UTR number', 'error'); return; }
+        if (!confirm(`Submit deposit request of ₹${amount}?\nUTR: ${utr}`)) return;
+        
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = 'Submitting...';
+        
+        await db.collection('transactions').add({
+            userId: currentUser.uid, type: 'credit', amount: amount,
+            userUTR: utr, status: 'Pending',
+            date: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        showMessage(`Deposit request submitted! Amount: ₹${amount}`, 'success');
+        document.getElementById('utrNumber').value = '';
+        btn.disabled = false;
+        btn.innerText = 'Submit Deposit Request';
+    };
+    
+    function showBalance() {
+        db.collection('users').doc(currentUser.uid).get().then(doc => {
+            alert(`Balance: ₹${doc.data()?.balance || 0}`);
+        });
+    }
+    
+    window.selectAmount = selectAmount;
+    window.copyUpiId = copyUpiId;
+    window.showBalance = showBalance;
+</script>
+</body>
+</html>
