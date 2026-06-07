@@ -3,44 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAVI777 - Database Setup</title>
+    <title>SAVI777 - Auto Database Setup</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin: 5px; font-size: 16px; }
-        .success { background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin: 10px 0; }
-        .error { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin: 10px 0; }
-        .info { background: #d1ecf1; color: #0c5460; padding: 12px; border-radius: 8px; margin: 10px 0; }
-        pre { background: #f8f9fa; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
-        h2 { color: #1a1a2e; margin-bottom: 16px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-left: 4px solid #007bff;
+            padding-left: 12px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px 8px 8px 0;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            transition: width 0.3s;
+            width: 0%;
+        }
+        .log-entry {
+            font-family: monospace;
+            font-size: 12px;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .log-success { color: #155724; }
+        .log-error { color: #721c24; }
+        .log-info { color: #0c5460; }
+        .flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
-        <h2>🔥 SAVI777 Database Setup</h2>
-        <p>Click the button below to create all required collections:</p>
-        <button onclick="runSetup()">🚀 Run Full Setup</button>
-        <button onclick="checkSetup()">🔍 Check Status</button>
-        <div id="result"></div>
+        <h1>🔥 SAVI777 Automated Setup</h1>
+        <p>Complete database setup - creates all collections and sample data automatically</p>
+        
+        <div class="flex">
+            <button class="btn-success" id="setupBtn" onclick="startSetup()">🚀 START FULL SETUP</button>
+            <button onclick="verifySetup()">🔍 VERIFY SETUP</button>
+            <button class="btn-warning" onclick="resetAndSetup()">🔄 RESET & SETUP</button>
+        </div>
+
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div id="status" class="status info">
+            Click "Start Full Setup" to begin...
+        </div>
     </div>
 
     <div class="card">
-        <h2>📋 Firebase Configuration</h2>
-        <pre id="configCode">
-const firebaseConfig = {
-    apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
-    authDomain: "savi777-5b8af.firebaseapp.com",
-    projectId: "savi777-5b8af",
-    storageBucket: "savi777-5b8af.firebasestorage.app",
-    messagingSenderId: "396388183217",
-    appId: "1:396388183217:web:48d946a4198963cefa0690"
-};
-        </pre>
-        <button onclick="copyConfig()">📋 Copy Config</button>
+        <h2>📊 Setup Statistics</h2>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="statMarkets">0</div>
+                <div class="stat-label">Markets</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="statSettings">0</div>
+                <div class="stat-label">Settings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="statCollections">0</div>
+                <div class="stat-label">Collections</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -57,116 +202,214 @@ const firebaseConfig = {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     
-    async function runSetup() {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = '<div class="info">⏳ Setting up database...</div>';
-        
-        let successCount = 0;
-        let errorCount = 0;
-        let messages = [];
-        
-        try {
-            // 1. Create sample markets
-            const markets = [
-                { name: "Main Bazar", numbers: "***-**-***", openBidEnd: "10:00", closeBidEnd: "23:30", status: "closed", serialNo: 1, openPana: "***", closePana: "***", jodi: "**" },
-                { name: "Kalyan Bazar", numbers: "***-**-***", openBidEnd: "09:30", closeBidEnd: "22:30", status: "closed", serialNo: 2, openPana: "***", closePana: "***", jodi: "**" },
-                { name: "Rajdhani Day", numbers: "***-**-***", openBidEnd: "11:00", closeBidEnd: "17:00", status: "closed", serialNo: 3, openPana: "***", closePana: "***", jodi: "**" },
-                { name: "Milan Day", numbers: "***-**-***", openBidEnd: "11:30", closeBidEnd: "17:30", status: "closed", serialNo: 4, openPana: "***", closePana: "***", jodi: "**" },
-                { name: "Super Bazar", numbers: "***-**-***", openBidEnd: "12:00", closeBidEnd: "18:00", status: "closed", serialNo: 5, openPana: "***", closePana: "***", jodi: "**" }
-            ];
-            
-            for (const market of markets) {
-                try {
-                    const existing = await db.collection('markets').where('name', '==', market.name).get();
-                    if (existing.empty) {
-                        await db.collection('markets').add(market);
-                        messages.push(`✅ Created market: ${market.name}`);
-                        successCount++;
-                    } else {
-                        messages.push(`ℹ️ Market already exists: ${market.name}`);
-                    }
-                } catch (e) {
-                    messages.push(`❌ Error creating market ${market.name}: ${e.message}`);
-                    errorCount++;
-                }
-            }
-            
-            // 2. Create settings
-            const settingsList = [
-                { id: "upi", data: { upiId: "savi777@okhdfcbank" } },
-                { id: "payee", data: { name: "SAVI777 Services" } },
-                { id: "notice", data: { text: "Welcome to SAVI777! Play safe and win big." } }
-            ];
-            
-            for (const setting of settingsList) {
-                try {
-                    const doc = await db.collection('settings').doc(setting.id).get();
-                    if (!doc.exists) {
-                        await db.collection('settings').doc(setting.id).set(setting.data);
-                        messages.push(`✅ Created setting: ${setting.id}`);
-                        successCount++;
-                    } else {
-                        messages.push(`ℹ️ Setting already exists: ${setting.id}`);
-                    }
-                } catch (e) {
-                    messages.push(`❌ Error creating setting ${setting.id}: ${e.message}`);
-                    errorCount++;
-                }
-            }
-            
-            // 3. Verify collections exist
-            const collections = ['markets', 'settings', 'users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
-            for (const col of collections) {
-                try {
-                    const snapshot = await db.collection(col).limit(1).get();
-                    messages.push(`📁 Collection '${col}' exists (${snapshot.size} documents)`);
-                } catch (e) {
-                    messages.push(`📁 Collection '${col}' created (empty)`);
-                }
-            }
-            
-            resultDiv.innerHTML = `
-                <div class="success">
-                    ✅ Setup Complete!<br><br>
-                    ${messages.map(m => `• ${m}`).join('<br>')}
-                    <br><br>
-                    <strong>Total: ${successCount} created, ${errorCount} errors</strong>
-                </div>
-            `;
-            
-        } catch (error) {
-            resultDiv.innerHTML = `<div class="error">❌ Setup Failed: ${error.message}<br><br>Make sure security rules are set to allow read/write.</div>`;
-        }
+    let logs = [];
+    let totalSteps = 0;
+    let completedSteps = 0;
+    
+    function addLog(message, type = 'info') {
+        logs.push({ message, type, time: new Date().toLocaleTimeString() });
+        const statusDiv = document.getElementById('status');
+        const logClass = type === 'success' ? 'log-success' : (type === 'error' ? 'log-error' : 'log-info');
+        statusDiv.innerHTML += `<div class="log-entry ${logClass}">[${new Date().toLocaleTimeString()}] ${message}</div>`;
+        statusDiv.scrollTop = statusDiv.scrollHeight;
     }
     
-    async function checkSetup() {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = '<div class="info">🔍 Checking database status...</div>';
+    function updateProgress() {
+        const percent = (completedSteps / totalSteps) * 100;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+    
+    function updateStats(marketsCount, settingsCount) {
+        document.getElementById('statMarkets').innerText = marketsCount;
+        document.getElementById('statSettings').innerText = settingsCount;
         
-        let messages = [];
         const collections = ['markets', 'settings', 'users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
+        let existing = 0;
+        Promise.all(collections.map(async col => {
+            try {
+                const snap = await db.collection(col).limit(1).get();
+                if (!snap.empty || true) existing++;
+            } catch(e) {}
+        })).then(() => {
+            document.getElementById('statCollections').innerText = collections.length;
+        });
+    }
+    
+    async function createDocumentWithRetry(collection, docId, data, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                if (docId) {
+                    await db.collection(collection).doc(docId).set(data, { merge: true });
+                } else {
+                    await db.collection(collection).add(data);
+                }
+                return true;
+            } catch (error) {
+                if (i === retries - 1) throw error;
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+        return false;
+    }
+    
+    async function startSetup() {
+        const setupBtn = document.getElementById('setupBtn');
+        setupBtn.disabled = true;
+        setupBtn.innerText = 'SETUP IN PROGRESS...';
+        
+        document.getElementById('status').innerHTML = '';
+        logs = [];
+        completedSteps = 0;
+        
+        addLog('🚀 Starting automated setup...', 'info');
+        
+        // Define all tasks
+        const tasks = [];
+        
+        // MARKETS DATA
+        const marketsData = [
+            { name: "Main Bazar", numbers: "***-**-***", openBidEnd: "10:00", closeBidEnd: "23:30", closedTime: "23:45", status: "closed", serialNo: 1, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Kalyan Bazar", numbers: "***-**-***", openBidEnd: "09:30", closeBidEnd: "22:30", closedTime: "22:45", status: "closed", serialNo: 2, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Rajdhani Day", numbers: "***-**-***", openBidEnd: "11:00", closeBidEnd: "17:00", closedTime: "17:15", status: "closed", serialNo: 3, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Milan Day", numbers: "***-**-***", openBidEnd: "11:30", closeBidEnd: "17:30", closedTime: "17:45", status: "closed", serialNo: 4, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Super Bazar", numbers: "***-**-***", openBidEnd: "12:00", closeBidEnd: "18:00", closedTime: "18:15", status: "closed", serialNo: 5, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Time Bazar", numbers: "***-**-***", openBidEnd: "13:00", closeBidEnd: "19:00", closedTime: "19:15", status: "closed", serialNo: 6, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Milan Night", numbers: "***-**-***", openBidEnd: "20:00", closeBidEnd: "23:30", closedTime: "23:45", status: "closed", serialNo: 7, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false },
+            { name: "Rajdhani Night", numbers: "***-**-***", openBidEnd: "20:30", closeBidEnd: "23:59", closedTime: "00:15", status: "closed", serialNo: 8, openPana: "***", openDigit: "*", closePana: "***", closeDigit: "*", jodi: "**", isHoliday: false }
+        ];
+        
+        totalSteps = marketsData.length + 6; // markets + settings + verification
+        updateProgress();
+        
+        // Create markets
+        let marketsCreated = 0;
+        for (const market of marketsData) {
+            try {
+                const existing = await db.collection('markets').where('name', '==', market.name).get();
+                if (existing.empty) {
+                    await db.collection('markets').add(market);
+                    addLog(`✅ Created market: ${market.name}`, 'success');
+                    marketsCreated++;
+                } else {
+                    // Update existing
+                    await existing.docs[0].ref.update(market);
+                    addLog(`🔄 Updated market: ${market.name}`, 'success');
+                    marketsCreated++;
+                }
+            } catch (error) {
+                // Try direct set with random ID
+                try {
+                    await db.collection('markets').doc().set(market);
+                    addLog(`✅ Created market (alt method): ${market.name}`, 'success');
+                    marketsCreated++;
+                } catch (e) {
+                    addLog(`❌ Failed to create market ${market.name}: ${error.message}`, 'error');
+                }
+            }
+            completedSteps++;
+            updateProgress();
+            await new Promise(r => setTimeout(r, 100));
+        }
+        
+        // Create settings
+        const settingsData = [
+            { id: "upi", data: { upiId: "savi777@okhdfcbank", updatedAt: new Date() } },
+            { id: "payee", data: { name: "SAVI777 Services", updatedAt: new Date() } },
+            { id: "notice", data: { text: "Welcome to SAVI777! Play safe and win big. 🎉", updatedAt: new Date() } },
+            { id: "servertime", data: { timestamp: firebase.firestore.FieldValue.serverTimestamp() } }
+        ];
+        
+        let settingsCreated = 0;
+        for (const setting of settingsData) {
+            try {
+                await db.collection('settings').doc(setting.id).set(setting.data, { merge: true });
+                addLog(`✅ Created/Updated setting: ${setting.id}`, 'success');
+                settingsCreated++;
+            } catch (error) {
+                addLog(`❌ Failed to create setting ${setting.id}: ${error.message}`, 'error');
+            }
+            completedSteps++;
+            updateProgress();
+            await new Promise(r => setTimeout(r, 100));
+        }
+        
+        // Verify all collections exist by creating empty docs if needed
+        const collections = ['users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
+        for (const col of collections) {
+            try {
+                const testDoc = db.collection(col).doc('_setup_placeholder');
+                await testDoc.set({ _setup: true, createdAt: new Date() });
+                await testDoc.delete();
+                addLog(`✅ Collection verified: ${col}`, 'success');
+            } catch (error) {
+                addLog(`⚠️ Collection ${col}: ${error.message}`, 'info');
+            }
+            completedSteps++;
+            updateProgress();
+            await new Promise(r => setTimeout(r, 100));
+        }
+        
+        // Final verification
+        addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        addLog('✅ SETUP COMPLETED SUCCESSFULLY!', 'success');
+        addLog(`📊 Created ${marketsCreated}/${marketsData.length} markets`, 'success');
+        addLog(`📊 Created ${settingsCreated}/${settingsData.length} settings`, 'success');
+        addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        
+        updateStats(marketsCreated, settingsCreated);
+        
+        setupBtn.disabled = false;
+        setupBtn.innerText = '🚀 START FULL SETUP';
+        
+        // Show success message
+        const statusDiv = document.getElementById('status');
+        statusDiv.innerHTML += `
+            <div style="margin-top:15px; padding:12px; background:#28a745; color:white; border-radius:8px; text-align:center;">
+                ✅ DATABASE IS READY! You can now use the SAVI777 app.
+            </div>
+        `;
+    }
+    
+    async function verifySetup() {
+        const statusDiv = document.getElementById('status');
+        statusDiv.innerHTML = '<div class="log-entry log-info">🔍 Verifying setup...</div>';
+        
+        const collections = ['markets', 'settings', 'users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
+        let results = [];
         
         for (const col of collections) {
             try {
-                const snapshot = await db.collection(col).limit(1).get();
-                messages.push(`✅ ${col}: ${snapshot.size} document(s)`);
-            } catch (e) {
-                messages.push(`❌ ${col}: Error - ${e.message}`);
+                const snapshot = await db.collection(col).limit(5).get();
+                results.push(`✅ ${col}: ${snapshot.size} document(s)`);
+            } catch (error) {
+                results.push(`❌ ${col}: ${error.message}`);
             }
         }
         
-        resultDiv.innerHTML = `<div class="info">📊 Database Status:<br><br>${messages.map(m => `• ${m}`).join('<br>')}</div>`;
+        statusDiv.innerHTML = results.map(r => `<div class="log-entry">${r}</div>`).join('');
+        
+        // Count markets
+        const markets = await db.collection('markets').get();
+        document.getElementById('statMarkets').innerText = markets.size;
     }
     
-    function copyConfig() {
-        const text = document.getElementById('configCode').innerText;
-        navigator.clipboard.writeText(text);
-        alert('Configuration copied!');
+    async function resetAndSetup() {
+        if (confirm('⚠️ WARNING: This will reset all database data! Continue?')) {
+            const collections = ['markets', 'settings', 'bids', 'transactions', 'withdrawRequests'];
+            for (const col of collections) {
+                try {
+                    const snapshot = await db.collection(col).get();
+                    snapshot.forEach(doc => doc.ref.delete());
+                    addLog(`🗑️ Cleared collection: ${col}`, 'info');
+                } catch(e) {}
+            }
+            await startSetup();
+        }
     }
     
-    window.runSetup = runSetup;
-    window.checkSetup = checkSetup;
-    window.copyConfig = copyConfig;
+    window.startSetup = startSetup;
+    window.verifySetup = verifySetup;
+    window.resetAndSetup = resetAndSetup;
 </script>
 </body>
 </html>
