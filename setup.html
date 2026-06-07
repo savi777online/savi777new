@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAVI777 - Database Setup</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin: 5px; font-size: 16px; }
+        .success { background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin: 10px 0; }
+        .error { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin: 10px 0; }
+        .info { background: #d1ecf1; color: #0c5460; padding: 12px; border-radius: 8px; margin: 10px 0; }
+        pre { background: #f8f9fa; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+        h2 { color: #1a1a2e; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2>🔥 SAVI777 Database Setup</h2>
+        <p>Click the button below to create all required collections:</p>
+        <button onclick="runSetup()">🚀 Run Full Setup</button>
+        <button onclick="checkSetup()">🔍 Check Status</button>
+        <div id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>📋 Firebase Configuration</h2>
+        <pre id="configCode">
+const firebaseConfig = {
+    apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+    authDomain: "savi777-5b8af.firebaseapp.com",
+    projectId: "savi777-5b8af",
+    storageBucket: "savi777-5b8af.firebasestorage.app",
+    messagingSenderId: "396388183217",
+    appId: "1:396388183217:web:48d946a4198963cefa0690"
+};
+        </pre>
+        <button onclick="copyConfig()">📋 Copy Config</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    async function runSetup() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<div class="info">⏳ Setting up database...</div>';
+        
+        let successCount = 0;
+        let errorCount = 0;
+        let messages = [];
+        
+        try {
+            // 1. Create sample markets
+            const markets = [
+                { name: "Main Bazar", numbers: "***-**-***", openBidEnd: "10:00", closeBidEnd: "23:30", status: "closed", serialNo: 1, openPana: "***", closePana: "***", jodi: "**" },
+                { name: "Kalyan Bazar", numbers: "***-**-***", openBidEnd: "09:30", closeBidEnd: "22:30", status: "closed", serialNo: 2, openPana: "***", closePana: "***", jodi: "**" },
+                { name: "Rajdhani Day", numbers: "***-**-***", openBidEnd: "11:00", closeBidEnd: "17:00", status: "closed", serialNo: 3, openPana: "***", closePana: "***", jodi: "**" },
+                { name: "Milan Day", numbers: "***-**-***", openBidEnd: "11:30", closeBidEnd: "17:30", status: "closed", serialNo: 4, openPana: "***", closePana: "***", jodi: "**" },
+                { name: "Super Bazar", numbers: "***-**-***", openBidEnd: "12:00", closeBidEnd: "18:00", status: "closed", serialNo: 5, openPana: "***", closePana: "***", jodi: "**" }
+            ];
+            
+            for (const market of markets) {
+                try {
+                    const existing = await db.collection('markets').where('name', '==', market.name).get();
+                    if (existing.empty) {
+                        await db.collection('markets').add(market);
+                        messages.push(`✅ Created market: ${market.name}`);
+                        successCount++;
+                    } else {
+                        messages.push(`ℹ️ Market already exists: ${market.name}`);
+                    }
+                } catch (e) {
+                    messages.push(`❌ Error creating market ${market.name}: ${e.message}`);
+                    errorCount++;
+                }
+            }
+            
+            // 2. Create settings
+            const settingsList = [
+                { id: "upi", data: { upiId: "savi777@okhdfcbank" } },
+                { id: "payee", data: { name: "SAVI777 Services" } },
+                { id: "notice", data: { text: "Welcome to SAVI777! Play safe and win big." } }
+            ];
+            
+            for (const setting of settingsList) {
+                try {
+                    const doc = await db.collection('settings').doc(setting.id).get();
+                    if (!doc.exists) {
+                        await db.collection('settings').doc(setting.id).set(setting.data);
+                        messages.push(`✅ Created setting: ${setting.id}`);
+                        successCount++;
+                    } else {
+                        messages.push(`ℹ️ Setting already exists: ${setting.id}`);
+                    }
+                } catch (e) {
+                    messages.push(`❌ Error creating setting ${setting.id}: ${e.message}`);
+                    errorCount++;
+                }
+            }
+            
+            // 3. Verify collections exist
+            const collections = ['markets', 'settings', 'users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
+            for (const col of collections) {
+                try {
+                    const snapshot = await db.collection(col).limit(1).get();
+                    messages.push(`📁 Collection '${col}' exists (${snapshot.size} documents)`);
+                } catch (e) {
+                    messages.push(`📁 Collection '${col}' created (empty)`);
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="success">
+                    ✅ Setup Complete!<br><br>
+                    ${messages.map(m => `• ${m}`).join('<br>')}
+                    <br><br>
+                    <strong>Total: ${successCount} created, ${errorCount} errors</strong>
+                </div>
+            `;
+            
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="error">❌ Setup Failed: ${error.message}<br><br>Make sure security rules are set to allow read/write.</div>`;
+        }
+    }
+    
+    async function checkSetup() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<div class="info">🔍 Checking database status...</div>';
+        
+        let messages = [];
+        const collections = ['markets', 'settings', 'users', 'bids', 'transactions', 'withdrawRequests', 'chats'];
+        
+        for (const col of collections) {
+            try {
+                const snapshot = await db.collection(col).limit(1).get();
+                messages.push(`✅ ${col}: ${snapshot.size} document(s)`);
+            } catch (e) {
+                messages.push(`❌ ${col}: Error - ${e.message}`);
+            }
+        }
+        
+        resultDiv.innerHTML = `<div class="info">📊 Database Status:<br><br>${messages.map(m => `• ${m}`).join('<br>')}</div>`;
+    }
+    
+    function copyConfig() {
+        const text = document.getElementById('configCode').innerText;
+        navigator.clipboard.writeText(text);
+        alert('Configuration copied!');
+    }
+    
+    window.runSetup = runSetup;
+    window.checkSetup = checkSetup;
+    window.copyConfig = copyConfig;
+</script>
+</body>
+</html>
