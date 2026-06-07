@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Withdraw</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        
+        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; }
+        
+        .withdraw-card { background: #fff; margin: 16px; border-radius: 20px; padding: 20px; }
+        .withdraw-title { font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #1a1a2e; }
+        
+        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        .amount-btn { background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px; padding: 14px; text-align: center; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .amount-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+        
+        .custom-amount input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; }
+        
+        .bank-info { background: #f5f5f5; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .bank-detail { padding: 4px 0; color: #333; }
+        .no-bank { color: #dc3545; text-align: center; }
+        
+        .withdraw-btn { width: 100%; padding: 16px; background: #28a745; border: none; border-radius: 30px; color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        
+        .message { padding: 12px; border-radius: 12px; text-align: center; margin-top: 16px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .hidden { display: none; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
+        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
+        .nav-item.active { color: #007bff; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; border-radius: 20px; padding: 24px; width: 90%; max-width: 350px; }
+        .modal-content h3 { margin-bottom: 16px; text-align: center; }
+        .modal-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .modal-btn.close { background: #6c757d; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <span class="app-name">SAVI777</span>
+        <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
+    </div>
+    
+    <div class="withdraw-card">
+        <div class="withdraw-title">Withdraw Funds</div>
+        
+        <div class="amount-grid">
+            <div class="amount-btn" onclick="selectAmount(500)">₹500</div>
+            <div class="amount-btn" onclick="selectAmount(1000)">₹1000</div>
+            <div class="amount-btn" onclick="selectAmount(2000)">₹2000</div>
+            <div class="amount-btn" onclick="selectAmount(5000)">₹5000</div>
+            <div class="amount-btn" onclick="selectAmount(10000)">₹10000</div>
+            <div class="amount-btn" onclick="selectAmount(25000)">₹25000</div>
+        </div>
+        
+        <div class="custom-amount">
+            <input type="number" id="withdrawAmount" placeholder="Enter custom amount (Min ₹500)">
+        </div>
+        
+        <div class="bank-info" id="bankInfo">
+            <h4>Bank Details</h4>
+            <div id="bankContent">Loading...</div>
+        </div>
+        
+        <button class="withdraw-btn" id="withdrawBtn">Request Withdrawal</button>
+        
+        <div id="message" class="message hidden"></div>
+    </div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
+        <div class="nav-item" onclick="location.href='deposit.html'">Deposit</div>
+        <div class="nav-item active" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
+        <div class="nav-item" onclick="location.href='chat.html'">Support</div>
+    </div>
+</div>
+
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <h3>Terms & Conditions</h3>
+        <p>Minimum withdrawal: ₹500</p>
+        <p>Maximum: ₹2,50,000 per day</p>
+        <p>Processing: 10-60 minutes</p>
+        <p>Timing: 10 AM - 11 PM</p>
+        <button class="modal-btn" onclick="acceptTerms()">I Agree & Continue</button>
+        <button class="modal-btn close" onclick="closeTerms()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let currentUser = null;
+    let selectedAmount = 500;
+    let pendingAmount = 0;
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+        await loadUserData();
+        await loadBankDetails();
+    });
+    
+    async function loadUserData() {
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        document.getElementById('userBalance').innerText = doc.data()?.balance || 0;
+    }
+    
+    async function loadBankDetails() {
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        const bank = doc.data()?.bankDetails;
+        const container = document.getElementById('bankContent');
+        if (bank && bank.accountNumber) {
+            container.innerHTML = `
+                <div class="bank-detail">Account: ${bank.accountHolder}</div>
+                <div class="bank-detail">Bank: ${bank.bankName}</div>
+                <div class="bank-detail">Account No: ${bank.accountNumber}</div>
+                <div class="bank-detail">IFSC: ${bank.ifscCode}</div>
+            `;
+        } else {
+            container.innerHTML = '<div class="no-bank">No bank details found. Please add in profile.</div>';
+        }
+    }
+    
+    function selectAmount(amount) {
+        selectedAmount = amount;
+        document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('withdrawAmount').value = '';
+    }
+    
+    function getAmount() {
+        const custom = parseInt(document.getElementById('withdrawAmount').value);
+        if (custom && custom >= 500) return custom;
+        return selectedAmount;
+    }
+    
+    function showMessage(msg, type) {
+        const div = document.getElementById('message');
+        div.innerText = msg;
+        div.className = `message ${type}`;
+        div.classList.remove('hidden');
+        setTimeout(() => div.classList.add('hidden'), 5000);
+    }
+    
+    document.getElementById('withdrawBtn').onclick = async () => {
+        const amount = getAmount();
+        if (amount < 500) { showMessage('Minimum withdrawal is ₹500', 'error'); return; }
+        if (amount > 250000) { showMessage('Maximum withdrawal is ₹2,50,000', 'error'); return; }
+        
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        const balance = doc.data()?.balance || 0;
+        if (balance < amount) { showMessage(`Insufficient balance! You have ₹${balance}`, 'error'); return; }
+        
+        const bank = doc.data()?.bankDetails;
+        if (!bank || !bank.accountNumber) { showMessage('Please add bank details first', 'error'); return; }
+        
+        pendingAmount = amount;
+        document.getElementById('termsModal').style.display = 'flex';
+    };
+    
+    function closeTerms() {
+        document.getElementById('termsModal').style.display = 'none';
+    }
+    
+    async function acceptTerms() {
+        document.getElementById('termsModal').style.display = 'none';
+        const amount = pendingAmount;
+        
+        const btn = document.getElementById('withdrawBtn');
+        btn.disabled = true;
+        btn.innerText = 'Processing...';
+        
+        await db.collection('withdrawRequests').add({
+            userId: currentUser.uid, amount: amount,
+            bankDetails: (await db.collection('users').doc(currentUser.uid).get()).data().bankDetails,
+            status: 'Pending', date: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        showMessage(`Withdrawal request of ₹${amount} submitted!`, 'success');
+        btn.disabled = false;
+        btn.innerText = 'Request Withdrawal';
+        pendingAmount = 0;
+    }
+    
+    function showBalance() {
+        db.collection('users').doc(currentUser.uid).get().then(doc => {
+            alert(`Balance: ₹${doc.data()?.balance || 0}`);
+        });
+    }
+    
+    window.selectAmount = selectAmount;
+    window.showBalance = showBalance;
+    window.acceptTerms = acceptTerms;
+    window.closeTerms = closeTerms;
+</script>
+</body>
+</html>
