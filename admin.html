@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SAVI777 - Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; }
+        
+        .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-card { background: #fff; padding: 40px; border-radius: 20px; width: 320px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .login-card h2 { color: #1a1a2e; margin-bottom: 20px; }
+        .login-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .login-card button { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; }
+        .login-card button:hover { background: #0056b3; }
+        
+        .admin-panel { display: none; }
+        .sidebar { width: 260px; background: #fff; min-height: 100vh; position: fixed; border-right: 1px solid #e0e0e0; }
+        .sidebar h2 { color: #1a1a2e; padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
+        .sidebar-item { padding: 15px 25px; color: #333; cursor: pointer; border-bottom: 1px solid #eee; transition: all 0.3s; }
+        .sidebar-item:hover { background: #e3f2fd; color: #007bff; }
+        .notification-badge { background: #dc3545; color: #fff; border-radius: 20px; padding: 2px 8px; font-size: 11px; margin-left: 8px; }
+        
+        .main-content { margin-left: 260px; padding: 25px; }
+        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0; }
+        .card h3 { margin-bottom: 15px; color: #1a1a2e; border-left: 3px solid #007bff; padding-left: 12px; }
+        input, select, textarea { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 8px; width: calc(100% - 10px); }
+        button { background: #007bff; border: none; padding: 10px 20px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .hidden { display: none; }
+        
+        .market-item, .user-item, .request-item { background: #fff; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #e0e0e0; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
+        .status-open { background: #d4edda; color: #155724; }
+        .status-close { background: #fff3cd; color: #856404; }
+        .status-closed { background: #f8d7da; color: #721c24; }
+        
+        .request-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .request-tab { padding: 8px 20px; cursor: pointer; border-radius: 20px; background: #e0e0e0; }
+        .request-tab.active { background: #007bff; color: #fff; }
+        
+        @media (max-width: 768px) { 
+            .sidebar { width: 70px; } 
+            .sidebar h2 { font-size: 12px; padding: 15px 5px; } 
+            .sidebar-item { padding: 12px; text-align: center; font-size: 11px; }
+            .main-content { margin-left: 70px; } 
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <h2>SAVI777 ADMIN</h2>
+        <input type="password" id="adminPass" placeholder="Enter Password">
+        <button onclick="login()">Login</button>
+        <div id="loginError" style="color:#dc3545; margin-top:10px;"></div>
+    </div>
+</div>
+
+<div id="adminPanel" class="admin-panel">
+    <div class="sidebar">
+        <h2>SAVI777</h2>
+        <div class="sidebar-item" onclick="showSection('markets')">Markets</div>
+        <div class="sidebar-item" onclick="showSection('users')">Users</div>
+        <div class="sidebar-item" onclick="showSection('deposits')">Deposits</div>
+        <div class="sidebar-item" onclick="showSection('withdrawals')">Withdrawals</div>
+        <div class="sidebar-item" onclick="showSection('notice')">Notice</div>
+        <div class="sidebar-item" onclick="showSection('settings')">Settings</div>
+        <div class="sidebar-item" onclick="logout()">Logout</div>
+    </div>
+
+    <div class="main-content">
+        <div id="marketsSection">
+            <div class="card">
+                <h3>Add New Market</h3>
+                <input type="text" id="marketName" placeholder="Market Name">
+                <input type="text" id="marketNumbers" placeholder="Numbers (e.g., 440-8*-***)">
+                <input type="time" id="openBidEnd" placeholder="Open Bid End Time">
+                <input type="time" id="closeBidEnd" placeholder="Close Bid End Time">
+                <select id="marketStatus">
+                    <option value="open">OPEN</option>
+                    <option value="close">CLOSE</option>
+                    <option value="closed">CLOSED</option>
+                    <option value="holiday">HOLIDAY</option>
+                </select>
+                <button onclick="addMarket()">Add Market</button>
+            </div>
+            <div class="card">
+                <h3>Manage Markets</h3>
+                <div id="marketsList">Loading...</div>
+            </div>
+        </div>
+        
+        <div id="usersSection" class="hidden">
+            <div class="card">
+                <h3>Users Management</h3>
+                <input type="text" id="searchInput" placeholder="Search by name or mobile...">
+                <div id="usersList">Loading...</div>
+            </div>
+        </div>
+        
+        <div id="depositsSection" class="hidden">
+            <div class="card">
+                <h3>Deposit Requests</h3>
+                <div class="request-tabs">
+                    <div class="request-tab active" onclick="showDepositTab('pending')">Pending</div>
+                    <div class="request-tab" onclick="showDepositTab('completed')">Completed</div>
+                    <div class="request-tab" onclick="showDepositTab('rejected')">Rejected</div>
+                </div>
+                <div id="depositsList">Loading...</div>
+            </div>
+        </div>
+        
+        <div id="withdrawalsSection" class="hidden">
+            <div class="card">
+                <h3>Withdrawal Requests</h3>
+                <div class="request-tabs">
+                    <div class="request-tab active" onclick="showWithdrawalTab('pending')">Pending</div>
+                    <div class="request-tab" onclick="showWithdrawalTab('completed')">Completed</div>
+                    <div class="request-tab" onclick="showWithdrawalTab('rejected')">Rejected</div>
+                </div>
+                <div id="withdrawalsList">Loading...</div>
+            </div>
+        </div>
+        
+        <div id="noticeSection" class="hidden">
+            <div class="card">
+                <h3>Notice Board</h3>
+                <textarea id="noticeText" rows="3" style="width:100%; padding:10px;"></textarea>
+                <button onclick="updateNotice()">Update Notice</button>
+            </div>
+        </div>
+        
+        <div id="settingsSection" class="hidden">
+            <div class="card">
+                <h3>Change Password</h3>
+                <input type="password" id="oldPass" placeholder="Old Password">
+                <input type="password" id="newPass" placeholder="New Password">
+                <button onclick="changePassword()">Update</button>
+            </div>
+            <div class="card">
+                <h3>UPI Settings</h3>
+                <input type="text" id="upiId" placeholder="UPI ID">
+                <button onclick="updateUPI()">Update UPI</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let adminPassword = "admin123";
+    let allUsers = [];
+    let currentDepositTab = "pending";
+    let currentWithdrawalTab = "pending";
+    
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        loadMarkets();
+        loadUsers();
+        loadDeposits();
+        loadWithdrawals();
+        loadNotice();
+        loadSettings();
+    }
+    
+    function login() {
+        const pwd = document.getElementById('adminPass').value;
+        if (pwd === adminPassword) {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadMarkets();
+            loadUsers();
+            loadDeposits();
+            loadWithdrawals();
+            loadNotice();
+            loadSettings();
+        } else {
+            document.getElementById('loginError').innerText = 'Wrong password!';
+        }
+    }
+    
+    function showSection(section) {
+        document.querySelectorAll('[id$="Section"]').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`${section}Section`).classList.remove('hidden');
+        if (section === 'deposits') loadDeposits();
+        if (section === 'withdrawals') loadWithdrawals();
+    }
+    
+    function showDepositTab(tab) {
+        currentDepositTab = tab;
+        document.querySelectorAll('#depositsSection .request-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        loadDeposits();
+    }
+    
+    function showWithdrawalTab(tab) {
+        currentWithdrawalTab = tab;
+        document.querySelectorAll('#withdrawalsSection .request-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        loadWithdrawals();
+    }
+    
+    async function loadMarkets() {
+        db.collection('markets').orderBy('serialNo', 'asc').onSnapshot((snapshot) => {
+            let html = '';
+            snapshot.forEach(doc => {
+                const m = doc.data();
+                let statusClass = m.status === 'open' ? 'status-open' : (m.status === 'close' ? 'status-close' : 'status-closed');
+                html += `
+                    <div class="market-item">
+                        <div><strong>${m.name}</strong> <span class="status-badge ${statusClass}">${m.status.toUpperCase()}</span></div>
+                        <div>Numbers: ${m.numbers || '***'}</div>
+                        <div>Open: ${m.openBidEnd || '--'} | Close: ${m.closeBidEnd || '--'}</div>
+                        <div>Result: ${m.openPana || '***'} - ${m.jodi || '**'} - ${m.closePana || '***'}</div>
+                        <button onclick="deleteMarket('${doc.id}')" class="btn-danger">Delete</button>
+                    </div>
+                `;
+            });
+            document.getElementById('marketsList').innerHTML = html || '<p>No markets</p>';
+        });
+    }
+    
+    async function addMarket() {
+        const name = document.getElementById('marketName').value;
+        if (!name) { alert('Enter market name'); return; }
+        const markets = await db.collection('markets').get();
+        let maxSerial = 0;
+        markets.forEach(doc => { if (doc.data().serialNo > maxSerial) maxSerial = doc.data().serialNo; });
+        await db.collection('markets').add({
+            name, numbers: document.getElementById('marketNumbers').value || '***-**-***',
+            openBidEnd: document.getElementById('openBidEnd').value,
+            closeBidEnd: document.getElementById('closeBidEnd').value,
+            status: document.getElementById('marketStatus').value,
+            serialNo: maxSerial + 1,
+            openPana: '***', openDigit: '*', closePana: '***', closeDigit: '*', jodi: '**'
+        });
+        alert('Market added!');
+        document.getElementById('marketName').value = '';
+    }
+    
+    async function deleteMarket(id) {
+        if (confirm('Delete market?')) await db.collection('markets').doc(id).delete();
+    }
+    
+    async function loadUsers() {
+        db.collection('users').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+            allUsers = [];
+            snapshot.forEach(doc => { allUsers.push({ uid: doc.id, ...doc.data() }); });
+            displayUsers();
+        });
+    }
+    
+    function displayUsers() {
+        const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+        let filtered = allUsers.filter(u => 
+            (u.name || '').toLowerCase().includes(searchTerm) || 
+            (u.phone || '').toLowerCase().includes(searchTerm)
+        );
+        let html = '';
+        filtered.forEach(user => {
+            html += `
+                <div class="user-item">
+                    <div><strong>${user.name || 'Unknown'}</strong> | ${user.phone || 'No phone'}</div>
+                    <div>Balance: ₹${user.balance || 0}</div>
+                    <div>
+                        <button onclick="updateBalance('${user.uid}', 'add')">Add</button>
+                        <button onclick="updateBalance('${user.uid}', 'remove')">Remove</button>
+                        <button onclick="toggleBlockUser('${user.uid}')" class="btn-warning">${user.blocked ? 'Unblock' : 'Block'}</button>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('usersList').innerHTML = html || '<p>No users</p>';
+    }
+    
+    document.getElementById('searchInput')?.addEventListener('input', displayUsers);
+    
+    async function updateBalance(uid, action) {
+        const amount = parseInt(prompt(`Enter amount to ${action}:`));
+        if (!amount || amount <= 0) return;
+        const userDoc = await db.collection('users').doc(uid).get();
+        const currentBalance = userDoc.data().balance || 0;
+        let newBalance = action === 'add' ? currentBalance + amount : currentBalance - amount;
+        if (newBalance < 0) { alert('Insufficient balance'); return; }
+        await db.collection('users').doc(uid).update({ balance: newBalance });
+        alert(`Balance updated!`);
+    }
+    
+    async function toggleBlockUser(uid) {
+        const userDoc = await db.collection('users').doc(uid).get();
+        const isBlocked = userDoc.data().blocked || false;
+        await db.collection('users').doc(uid).update({ blocked: !isBlocked });
+        alert(`User ${!isBlocked ? 'blocked' : 'unblocked'}`);
+    }
+    
+    async function loadDeposits() {
+        const status = currentDepositTab === 'pending' ? 'Pending' : (currentDepositTab === 'completed' ? 'Completed' : 'Rejected');
+        const snapshot = await db.collection('transactions').where('type', '==', 'credit').where('status', '==', status).get();
+        let html = '';
+        for (const doc of snapshot.docs) {
+            const d = doc.data();
+            const user = await db.collection('users').doc(d.userId).get();
+            html += `<div class="request-item">
+                <div><strong>${user.data()?.name || 'Unknown'}</strong> | ₹${d.amount}</div>
+                <div>UTR: ${d.userUTR || 'N/A'}</div>
+                ${currentDepositTab === 'pending' ? `
+                    <button onclick="approveDeposit('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
+                    <button onclick="rejectDeposit('${doc.id}')" class="btn-danger">Reject</button>
+                ` : ''}
+            </div>`;
+        }
+        document.getElementById('depositsList').innerHTML = html || '<p>No deposits</p>';
+    }
+    
+    async function approveDeposit(id, amount, userId) {
+        if (confirm(`Approve ₹${amount}?`)) {
+            const user = await db.collection('users').doc(userId).get();
+            await db.collection('users').doc(userId).update({ balance: (user.data().balance || 0) + amount });
+            await db.collection('transactions').doc(id).update({ status: 'Completed' });
+            alert('Approved!');
+            loadDeposits();
+        }
+    }
+    
+    async function rejectDeposit(id) {
+        if (confirm('Reject?')) {
+            await db.collection('transactions').doc(id).update({ status: 'Rejected' });
+            alert('Rejected!');
+            loadDeposits();
+        }
+    }
+    
+    async function loadWithdrawals() {
+        const status = currentWithdrawalTab === 'pending' ? 'Pending' : (currentWithdrawalTab === 'completed' ? 'Completed' : 'Rejected');
+        const snapshot = await db.collection('withdrawRequests').where('status', '==', status).get();
+        let html = '';
+        for (const doc of snapshot.docs) {
+            const d = doc.data();
+            const user = await db.collection('users').doc(d.userId).get();
+            html += `<div class="request-item">
+                <div><strong>${user.data()?.name || 'Unknown'}</strong> | ₹${d.amount}</div>
+                ${currentWithdrawalTab === 'pending' ? `
+                    <button onclick="approveWithdraw('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
+                    <button onclick="rejectWithdraw('${doc.id}')" class="btn-danger">Reject</button>
+                ` : ''}
+            </div>`;
+        }
+        document.getElementById('withdrawalsList').innerHTML = html || '<p>No withdrawals</p>';
+    }
+    
+    async function approveWithdraw(id, amount, userId) {
+        if (confirm(`Approve ₹${amount}?`)) {
+            const user = await db.collection('users').doc(userId).get();
+            if ((user.data().balance || 0) < amount) { alert('Insufficient balance'); return; }
+            await db.collection('users').doc(userId).update({ balance: (user.data().balance || 0) - amount });
+            await db.collection('withdrawRequests').doc(id).update({ status: 'Completed' });
+            alert('Approved!');
+            loadWithdrawals();
+        }
+    }
+    
+    async function rejectWithdraw(id) {
+        if (confirm('Reject?')) {
+            await db.collection('withdrawRequests').doc(id).update({ status: 'Rejected' });
+            alert('Rejected!');
+            loadWithdrawals();
+        }
+    }
+    
+    function loadNotice() {
+        db.collection('settings').doc('notice').onSnapshot((doc) => {
+            document.getElementById('noticeText').value = doc.exists ? doc.data().text : 'Welcome to SAVI777!';
+        });
+    }
+    
+    async function updateNotice() {
+        await db.collection('settings').doc('notice').set({ text: document.getElementById('noticeText').value });
+        alert('Notice updated!');
+    }
+    
+    function loadSettings() {
+        db.collection('settings').doc('upi').get().then(d => {
+            if (d.exists) document.getElementById('upiId').value = d.data().upiId;
+        });
+    }
+    
+    async function updateUPI() {
+        await db.collection('settings').doc('upi').set({ upiId: document.getElementById('upiId').value });
+        alert('UPI updated!');
+    }
+    
+    function changePassword() {
+        const old = document.getElementById('oldPass').value;
+        const newP = document.getElementById('newPass').value;
+        if (old === adminPassword) {
+            adminPassword = newP;
+            alert('Password changed!');
+        } else {
+            alert('Wrong password!');
+        }
+    }
+    
+    function logout() {
+        sessionStorage.removeItem('adminLoggedIn');
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+    
+    window.login = login;
+    window.showSection = showSection;
+    window.showDepositTab = showDepositTab;
+    window.showWithdrawalTab = showWithdrawalTab;
+    window.addMarket = addMarket;
+    window.deleteMarket = deleteMarket;
+    window.updateBalance = updateBalance;
+    window.toggleBlockUser = toggleBlockUser;
+    window.approveDeposit = approveDeposit;
+    window.rejectDeposit = rejectDeposit;
+    window.approveWithdraw = approveWithdraw;
+    window.rejectWithdraw = rejectWithdraw;
+    window.updateNotice = updateNotice;
+    window.updateUPI = updateUPI;
+    window.changePassword = changePassword;
+    window.logout = logout;
+</script>
+</body>
+</html>
