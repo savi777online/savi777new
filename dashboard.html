@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SAVI777 - Dashboard</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f0f2f5; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        
+        .header { background: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
+        
+        .profile-card { background: #fff; margin: 16px; padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; border: 1px solid #e0e0e0; }
+        .profile-avatar { width: 50px; height: 50px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; }
+        .profile-info { flex: 1; }
+        .profile-name { color: #1a1a2e; font-size: 16px; font-weight: bold; }
+        .profile-phone { color: #666; font-size: 12px; }
+        .profile-arrow { color: #007bff; font-size: 14px; }
+        
+        .notice-bar { background: #e3f2fd; margin: 16px; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #90caf9; }
+        .notice-text { flex: 1; color: #0d47a1; font-size: 13px; font-weight: 500; }
+        .notice-close { color: #0d47a1; font-size: 18px; cursor: pointer; background: none; border: none; }
+        
+        .live-clock { background: #fff; margin: 16px; padding: 12px 20px; border-radius: 30px; display: flex; justify-content: center; gap: 20px; border: 1px solid #e0e0e0; }
+        .clock-time { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+        .clock-date { font-size: 14px; color: #666; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px; }
+        .menu-item { background: #fff; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; border: 1px solid #e0e0e0; transition: all 0.3s; }
+        .menu-item:hover { border-color: #007bff; transform: translateY(-2px); }
+        .menu-icon { font-size: 28px; margin-bottom: 6px; }
+        .menu-label { font-size: 11px; color: #333; font-weight: 500; }
+        
+        .market-card { background: #fff; margin: 16px; border-radius: 16px; padding: 16px; border: 1px solid #e0e0e0; transition: all 0.3s; }
+        .market-card:hover { border-color: #007bff; }
+        .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .market-name { font-size: 18px; font-weight: bold; color: #1a1a2e; }
+        .market-status { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .status-open { background: #d4edda; color: #155724; }
+        .status-close { background: #fff3cd; color: #856404; }
+        .status-closed { background: #f8d7da; color: #721c24; }
+        .status-holiday { background: #e2e3e5; color: #383d41; }
+        
+        .result-box { background: #f8f9fa; border-radius: 12px; padding: 12px; text-align: center; margin: 12px 0; }
+        .result-numbers { font-size: 20px; font-weight: bold; color: #1a1a2e; font-family: monospace; }
+        
+        .market-timings { display: flex; justify-content: center; gap: 24px; margin: 12px 0; font-size: 12px; color: #666; }
+        .play-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .play-btn:hover { background: #0056b3; }
+        .play-btn:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
+        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
+        .nav-item.active { color: #007bff; }
+        
+        .loader { display: flex; justify-content: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top: 3px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; border-radius: 24px; padding: 24px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
+        .modal-content h3 { color: #1a1a2e; margin-bottom: 16px; text-align: center; }
+        .modal-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .modal-btn.logout { background: #dc3545; }
+        .modal-btn.close { background: #6c757d; }
+        .modal-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .rate-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <span class="app-name">SAVI777</span>
+        <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
+    </div>
+    
+    <div class="profile-card" onclick="showProfileModal()">
+        <div class="profile-avatar">SA</div>
+        <div class="profile-info">
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-phone" id="profilePhone">Loading...</div>
+        </div>
+        <div class="profile-arrow">→</div>
+    </div>
+    
+    <div id="noticeBar" class="notice-bar" onclick="showNoticeModal()">
+        <span class="notice-text" id="noticeText">Welcome to SAVI777! Play and Win.</span>
+        <button class="notice-close" onclick="event.stopPropagation(); closeNotice()">✕</button>
+    </div>
+    
+    <div class="live-clock">
+        <span class="clock-time" id="liveClockTime">--:--:--</span>
+        <span class="clock-date" id="liveClockDate">--/--/----</span>
+    </div>
+    
+    <div class="menu-grid">
+        <div class="menu-item" onclick="location.href='deposit.html'"><div class="menu-icon">💰</div><div class="menu-label">Deposit</div></div>
+        <div class="menu-item" onclick="location.href='withdraw.html'"><div class="menu-icon">💸</div><div class="menu-label">Withdraw</div></div>
+        <div class="menu-item" onclick="location.href='mybids.html'"><div class="menu-icon">📋</div><div class="menu-label">My Bids</div></div>
+        <div class="menu-item" onclick="location.href='funds.html'"><div class="menu-icon">🏦</div><div class="menu-label">Funds</div></div>
+    </div>
+    
+    <div id="marketsList">
+        <div class="loader"><div class="spinner"></div></div>
+    </div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="location.reload()">🏠 Home</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">📋 Bids</div>
+        <div class="nav-item" onclick="location.href='funds.html'">🏦 Funds</div>
+        <div class="nav-item" onclick="location.href='chat.html'">💬 Support</div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal"><div class="modal-content"><h3>My Profile</h3><div id="profileInfo"></div><button class="modal-btn" onclick="showGameRatesModal()">Game Rates</button><button class="modal-btn" onclick="showChangePinModal()">Change MPIN</button><button class="modal-btn" onclick="showBankModal()">Bank Details</button><button class="modal-btn logout" onclick="logout()">Logout</button><button class="modal-btn close" onclick="closeProfileModal()">Close</button></div></div>
+
+<div id="gameRatesModal" class="modal"><div class="modal-content"><h3>Game Rates</h3><div class="rate-row"><span>Single Digit</span><span>10x</span></div><div class="rate-row"><span>Jodi</span><span>100x</span></div><div class="rate-row"><span>Single Pana</span><span>160x</span></div><div class="rate-row"><span>Double Pana</span><span>320x</span></div><div class="rate-row"><span>Triple Pana</span><span>1000x</span></div><div class="rate-row"><span>Half Sangam A</span><span>1000x</span></div><div class="rate-row"><span>Half Sangam B</span><span>1000x</span></div><div class="rate-row"><span>Full Sangam</span><span>10000x</span></div><button class="modal-btn close" onclick="closeGameRatesModal()">Close</button></div></div>
+
+<div id="changePinModal" class="modal"><div class="modal-content"><h3>Change MPIN</h3><input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4"><input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4"><input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4"><button class="modal-btn" onclick="updatePin()">Update</button><button class="modal-btn close" onclick="closeChangePinModal()">Cancel</button><div id="pinMsg" style="color:#dc3545; text-align:center; margin-top:8px;"></div></div></div>
+
+<div id="bankModal" class="modal"><div class="modal-content"><h3>Bank Details</h3><input type="text" id="bankAccountHolder" class="modal-input" placeholder="Account Holder"><input type="text" id="bankName" class="modal-input" placeholder="Bank Name"><input type="text" id="bankAccountNumber" class="modal-input" placeholder="Account Number"><input type="text" id="bankIfsc" class="modal-input" placeholder="IFSC Code"><button class="modal-btn" onclick="saveBankDetails()">Save</button><button class="modal-btn close" onclick="closeBankModal()">Cancel</button><div id="bankMsg" style="color:#28a745; text-align:center; margin-top:8px;"></div></div></div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+        authDomain: "savi777-5b8af.firebaseapp.com",
+        projectId: "savi777-5b8af",
+        storageBucket: "savi777-5b8af.firebasestorage.app",
+        messagingSenderId: "396388183217",
+        appId: "1:396388183217:web:48d946a4198963cefa0690",
+        measurementId: "G-42PDZRC747"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    let marketsData = [];
+    let currentUserData = null;
+    let serverTimeCache = null;
+    let lastServerTimeFetch = 0;
+    let clockInterval = null;
+    let statusUpdateInterval = null;
+    
+    async function getServerTime() {
+        const now = Date.now();
+        if (serverTimeCache && (now - lastServerTimeFetch) < 2000) {
+            const elapsed = (now - lastServerTimeFetch) / 1000;
+            return new Date(serverTimeCache.getTime() + (elapsed * 1000));
+        }
+        try {
+            const docRef = db.collection('settings').doc('servertime');
+            await docRef.set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            const doc = await docRef.get();
+            serverTimeCache = doc.data().timestamp.toDate();
+            lastServerTimeFetch = now;
+            return serverTimeCache;
+        } catch (error) {
+            return serverTimeCache || new Date();
+        }
+    }
+    
+    function formatTimeTo12Hour(timeStr) {
+        if (!timeStr) return '--:--';
+        const parts = timeStr.split(':');
+        let hours = parseInt(parts[0]);
+        const minutes = parts[1];
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes} ${ampm}`;
+    }
+    
+    function formatCurrentTime(date) {
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+    
+    function timeToMinutes(timeStr) {
+        if (!timeStr) return null;
+        const parts = timeStr.split(':');
+        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+    
+    async function calculateMarketStatus(openBidEnd, closeBidEnd, adminStatus) {
+        if (adminStatus === 'holiday') return 'holiday';
+        const now = await getServerTime();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const openEnd = timeToMinutes(openBidEnd);
+        const closeEnd = timeToMinutes(closeBidEnd);
+        if (openEnd && currentMinutes < openEnd) return 'open';
+        else if (openEnd && closeEnd && currentMinutes >= openEnd && currentMinutes < closeEnd) return 'close';
+        else return 'closed';
+    }
+    
+    async function updateLiveClock() {
+        try {
+            const serverTime = await getServerTime();
+            document.getElementById('liveClockTime').innerHTML = formatCurrentTime(serverTime);
+            const day = serverTime.getDate().toString().padStart(2, '0');
+            const month = (serverTime.getMonth() + 1).toString().padStart(2, '0');
+            const year = serverTime.getFullYear();
+            document.getElementById('liveClockDate').innerHTML = `${day}/${month}/${year}`;
+        } catch (error) { console.error("Clock error:", error); }
+    }
+    
+    async function updateAllMarketStatuses() {
+        if (!marketsData.length) return;
+        let needsRender = false;
+        for (let i = 0; i < marketsData.length; i++) {
+            const market = marketsData[i];
+            const newStatus = await calculateMarketStatus(market.openBidEnd, market.closeBidEnd, market.originalStatus);
+            if (market.status !== newStatus) {
+                market.status = newStatus;
+                needsRender = true;
+            }
+        }
+        if (needsRender) renderMarkets();
+    }
+    
+    function listenToMarkets() {
+        db.collection('markets').onSnapshot(async (snapshot) => {
+            const newMarketsData = [];
+            for (const doc of snapshot.docs) {
+                const data = doc.data();
+                const calculatedStatus = await calculateMarketStatus(data.openBidEnd, data.closeBidEnd, data.status);
+                newMarketsData.push({
+                    id: doc.id, name: data.name, numbers: data.numbers,
+                    openBidEnd: data.openBidEnd, closeBidEnd: data.closeBidEnd,
+                    status: calculatedStatus, originalStatus: data.status,
+                    openPana: data.openPana || '***', closePana: data.closePana || '***',
+                    jodi: data.jodi || '**', serialNo: data.serialNo || 999
+                });
+            }
+            newMarketsData.sort((a, b) => a.serialNo - b.serialNo);
+            marketsData = newMarketsData;
+            renderMarkets();
+        });
+    }
+    
+    function listenToNotice() {
+        db.collection('settings').doc('notice').onSnapshot((doc) => {
+            const text = doc.exists ? doc.data().text : 'Welcome to SAVI777!';
+            document.getElementById('noticeText').innerHTML = text;
+        });
+    }
+    
+    function getStatusText(status) {
+        if (status === 'open') return 'OPEN Bidding';
+        if (status === 'close') return 'CLOSE Bidding';
+        if (status === 'holiday') return 'HOLIDAY - Closed';
+        return 'Market Closed';
+    }
+    
+    function getStatusClass(status) {
+        if (status === 'open') return 'status-open';
+        if (status === 'close') return 'status-close';
+        if (status === 'holiday') return 'status-holiday';
+        return 'status-closed';
+    }
+    
+    function openBetting(market) {
+        window.location.href = `betting.html?market=${encodeURIComponent(market.name)}&status=${market.status}&marketId=${market.id}`;
+    }
+    
+    function renderMarkets() {
+        const container = document.getElementById('marketsList');
+        if (marketsData.length === 0) {
+            container.innerHTML = '<div style="text-align:center; color:#666; padding:40px;">No markets available.</div>';
+            return;
+        }
+        let html = '';
+        marketsData.forEach(market => {
+            const isPlayable = market.status === 'open' || market.status === 'close';
+            const resultDisplay = `${market.openPana} - ${market.jodi} - ${market.closePana}`;
+            const openBidEnd12 = formatTimeTo12Hour(market.openBidEnd);
+            const closeBidEnd12 = formatTimeTo12Hour(market.closeBidEnd);
+            html += `
+                <div class="market-card">
+                    <div class="market-header">
+                        <span class="market-name">${market.name}</span>
+                        <span class="market-status ${getStatusClass(market.status)}">${getStatusText(market.status)}</span>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-numbers">${resultDisplay}</div>
+                    </div>
+                    <div class="market-timings">
+                        <span>Open: ${openBidEnd12}</span>
+                        <span>Close: ${closeBidEnd12}</span>
+                    </div>
+                    <button class="play-btn" onclick='openBetting(${JSON.stringify(market)})' ${!isPlayable ? 'disabled' : ''}>
+                        ${isPlayable ? 'PLAY NOW' : 'CLOSED'}
+                    </button>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    
+    async function loadUserData() {
+        const user = auth.currentUser;
+        if (!user) { window.location.href = 'index.html'; return; }
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                currentUserData = doc.data();
+                document.getElementById('userBalance').innerText = currentUserData.balance || 0;
+                document.getElementById('profileName').innerHTML = currentUserData.name || 'User';
+                document.getElementById('profilePhone').innerHTML = currentUserData.phone || '';
+            }
+        } catch (error) { console.error("Error loading user:", error); }
+    }
+    
+    function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
+    
+    function showProfileModal() {
+        if (currentUserData) {
+            document.getElementById('profileInfo').innerHTML = `<div style="text-align:center;"><div style="font-size:18px;">${currentUserData.name}</div><div style="color:#666;">${currentUserData.phone}</div><div style="font-size:20px; margin-top:10px;">₹${currentUserData.balance}</div></div>`;
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+    }
+    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+    function showGameRatesModal() { closeProfileModal(); document.getElementById('gameRatesModal').style.display = 'flex'; }
+    function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
+    
+    function logout() {
+        auth.signOut().then(() => {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+    }
+    
+    function showChangePinModal() { closeProfileModal(); document.getElementById('changePinModal').style.display = 'flex'; }
+    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; document.getElementById('pinMsg').innerHTML = ''; }
+    
+    async function updatePin() {
+        const oldPin = document.getElementById('oldPin').value;
+        const newPin = document.getElementById('newPin').value;
+        const confirmPin = document.getElementById('confirmPin').value;
+        if (!oldPin || !newPin || !confirmPin) { document.getElementById('pinMsg').innerHTML = 'Fill all fields'; return; }
+        if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits'; return; }
+        if (newPin !== confirmPin) { document.getElementById('pinMsg').innerHTML = 'MPINs do not match'; return; }
+        if (oldPin !== currentUserData.pin) { document.getElementById('pinMsg').innerHTML = 'Current MPIN incorrect'; return; }
+        await db.collection('users').doc(auth.currentUser.uid).update({ pin: newPin });
+        currentUserData.pin = newPin;
+        document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
+        document.getElementById('pinMsg').style.color = '#28a745';
+        setTimeout(() => closeChangePinModal(), 1500);
+    }
+    
+    function showBankModal() { closeProfileModal(); document.getElementById('bankModal').style.display = 'flex'; loadBankDetails(); }
+    function closeBankModal() { document.getElementById('bankModal').style.display = 'none'; document.getElementById('bankMsg').innerHTML = ''; }
+    
+    function loadBankDetails() {
+        if (currentUserData?.bankDetails) {
+            document.getElementById('bankAccountHolder').value = currentUserData.bankDetails.accountHolder || '';
+            document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
+            document.getElementById('bankAccountNumber').value = currentUserData.bankDetails.accountNumber || '';
+            document.getElementById('bankIfsc').value = currentUserData.bankDetails.ifscCode || '';
+        }
+    }
+    
+    async function saveBankDetails() {
+        const accountHolder = document.getElementById('bankAccountHolder').value.trim();
+        const bankName = document.getElementById('bankName').value.trim();
+        const accountNumber = document.getElementById('bankAccountNumber').value.trim();
+        const ifscCode = document.getElementById('bankIfsc').value.trim();
+        if (!accountHolder || !bankName || !accountNumber || !ifscCode) {
+            document.getElementById('bankMsg').innerHTML = 'Fill all fields';
+            document.getElementById('bankMsg').style.color = '#dc3545';
+            return;
+        }
+        await db.collection('users').doc(auth.currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
+        currentUserData.bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
+        document.getElementById('bankMsg').innerHTML = 'Bank details saved!';
+        document.getElementById('bankMsg').style.color = '#28a745';
+        setTimeout(() => closeBankModal(), 1500);
+    }
+    
+    function showNoticeModal() { alert(document.getElementById('noticeText').innerText); }
+    function closeNotice() { document.getElementById('noticeBar').style.display = 'none'; }
+    
+    async function init() {
+        listenToMarkets();
+        listenToNotice();
+        clockInterval = setInterval(async () => await updateLiveClock(), 1000);
+        statusUpdateInterval = setInterval(async () => await updateAllMarketStatuses(), 1000);
+    }
+    
+    setInterval(() => {
+        if (auth.currentUser) {
+            db.collection('users').doc(auth.currentUser.uid).get().then(doc => {
+                if (doc.exists) {
+                    document.getElementById('userBalance').innerText = doc.data().balance || 0;
+                    currentUserData = doc.data();
+                }
+            });
+        }
+    }, 30000);
+    
+    auth.onAuthStateChanged(user => {
+        if (!user) window.location.href = 'index.html';
+        else { loadUserData(); init(); }
+    });
+    
+    window.showBalance = showBalance;
+    window.showProfileModal = showProfileModal;
+    window.closeProfileModal = closeProfileModal;
+    window.showGameRatesModal = showGameRatesModal;
+    window.closeGameRatesModal = closeGameRatesModal;
+    window.showChangePinModal = showChangePinModal;
+    window.closeChangePinModal = closeChangePinModal;
+    window.updatePin = updatePin;
+    window.showBankModal = showBankModal;
+    window.closeBankModal = closeBankModal;
+    window.saveBankDetails = saveBankDetails;
+    window.closeNotice = closeNotice;
+    window.logout = logout;
+</script>
+</body>
+</html>
