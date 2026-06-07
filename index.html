@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SAVI777 - Login</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0a0a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #1a1a2e;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #aaa;
+        }
+
+        .pin-input {
+            font-size: 20px;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 16px;
+            color: #007bff;
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            margin: 20px 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .success-text {
+            color: #28a745;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 14px;
+            color: #007bff;
+            font-weight: 500;
+            margin: 15px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 11px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Phone Login Screen -->
+        <div id="phoneScreen" class="login-card">
+            <div class="app-title">SAVI777</div>
+            <div class="app-subtitle">Login to your account</div>
+            <div class="input-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="phoneNumber" class="input-field" placeholder="Enter 10-digit mobile number">
+            </div>
+            <button class="btn" id="sendOtpBtn">Send OTP</button>
+            <button class="link" id="showPinBtn">Login with MPIN</button>
+            <button class="link" id="forgotPinLink">Forgot MPIN?</button>
+            <div id="phoneError" class="error-text"></div>
+            <div class="footer">Secure & Trusted Platform</div>
+        </div>
+
+        <!-- OTP Verification Screen -->
+        <div id="otpScreen" class="login-card hidden">
+            <div class="app-title">Verify OTP</div>
+            <div class="app-subtitle">Enter verification code</div>
+            <div class="timer" id="timer">60 seconds remaining</div>
+            <div class="input-group">
+                <label>OTP Code</label>
+                <input type="text" id="otpCode" class="input-field" placeholder="Enter 6-digit OTP" maxlength="6">
+            </div>
+            <button class="btn" id="verifyOtpBtn">Verify & Login</button>
+            <button class="link" id="resendOtpBtn">Resend OTP</button>
+            <div id="otpError" class="error-text"></div>
+        </div>
+
+        <!-- MPIN Login Screen -->
+        <div id="pinScreen" class="login-card hidden">
+            <div class="app-title">Enter MPIN</div>
+            <div class="app-subtitle">4-digit security PIN</div>
+            <div class="input-group">
+                <label>MPIN</label>
+                <input type="password" id="pinInput" class="input-field pin-input" placeholder="●●●●" maxlength="4" inputmode="numeric">
+            </div>
+            <button class="btn" id="verifyPinBtn">Login</button>
+            <button class="link" id="forgotPinFromPinBtn">Forgot MPIN?</button>
+            <div id="pinError" class="error-text"></div>
+        </div>
+
+        <!-- Registration Screen -->
+        <div id="registerScreen" class="login-card hidden">
+            <div class="app-title">Complete Profile</div>
+            <div class="app-subtitle">Set up your account</div>
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="regName" class="input-field" placeholder="Enter your full name">
+            </div>
+            <div class="input-group">
+                <label>Create MPIN (4 digits)</label>
+                <input type="password" id="regPin" class="input-field pin-input" placeholder="●●●●" maxlength="4">
+            </div>
+            <div class="input-group">
+                <label>Confirm MPIN</label>
+                <input type="password" id="regConfirmPin" class="input-field pin-input" placeholder="●●●●" maxlength="4">
+            </div>
+            <button class="btn" id="registerBtn">Register</button>
+            <div id="regError" class="error-text"></div>
+        </div>
+
+        <!-- Reset MPIN - Phone Screen -->
+        <div id="resetPinScreen" class="login-card hidden">
+            <div class="app-title">Reset MPIN</div>
+            <div class="app-subtitle">Enter registered mobile number</div>
+            <div class="input-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="resetPhone" class="input-field" placeholder="Enter 10-digit mobile number">
+            </div>
+            <button class="btn" id="sendResetOtpBtn">Send OTP</button>
+            <button class="link" id="backToLogin">Back to Login</button>
+            <div id="resetError" class="error-text"></div>
+        </div>
+
+        <!-- Reset MPIN - OTP Screen -->
+        <div id="resetOtpScreen" class="login-card hidden">
+            <div class="app-title">Reset MPIN</div>
+            <div class="app-subtitle">Verify and set new MPIN</div>
+            <div class="timer" id="resetTimer">60 seconds remaining</div>
+            <div class="input-group">
+                <label>OTP Code</label>
+                <input type="text" id="resetOtpCode" class="input-field" placeholder="Enter 6-digit OTP" maxlength="6">
+            </div>
+            <div class="input-group">
+                <label>New MPIN (4 digits)</label>
+                <input type="password" id="newPinReset" class="input-field pin-input" placeholder="●●●●" maxlength="4">
+            </div>
+            <div class="input-group">
+                <label>Confirm MPIN</label>
+                <input type="password" id="confirmPinReset" class="input-field pin-input" placeholder="●●●●" maxlength="4">
+            </div>
+            <button class="btn" id="resetPinBtn">Reset MPIN</button>
+            <button class="link" id="backToLoginFromReset">Back to Login</button>
+            <div id="resetOtpError" class="error-text"></div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBf35TW3xiBhwCYFHFNwrB9olxJ3sj2cPw",
+            authDomain: "savi777-5b8af.firebaseapp.com",
+            projectId: "savi777-5b8af",
+            storageBucket: "savi777-5b8af.firebasestorage.app",
+            messagingSenderId: "396388183217",
+            appId: "1:396388183217:web:48d946a4198963cefa0690",
+            measurementId: "G-42PDZRC747"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        
+        let confirmationResult = null, currentPhone = null, countdown = 0, timerInterval = null, recaptchaVerifier = null;
+        let resetConfirmationResult = null, resetPhoneNumber = null;
+        
+        function showScreen(screen) {
+            const screens = ['phoneScreen', 'otpScreen', 'pinScreen', 'registerScreen', 'resetPinScreen', 'resetOtpScreen'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            screen.classList.remove('hidden');
+        }
+        
+        function showError(elementId, message) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.innerText = message;
+                setTimeout(() => el.innerText = '', 4000);
+            }
+        }
+        
+        function initRecaptcha() {
+            if (!recaptchaVerifier) {
+                const container = document.createElement('div');
+                container.id = 'recaptcha-container';
+                container.style.position = 'absolute';
+                container.style.left = '-9999px';
+                document.body.appendChild(container);
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+            }
+            return recaptchaVerifier;
+        }
+        
+        function startTimer(seconds, timerElementId) {
+            countdown = seconds;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (countdown <= 1) clearInterval(timerInterval);
+                const timerEl = document.getElementById(timerElementId);
+                if (timerEl && countdown > 0) {
+                    timerEl.innerText = `${countdown} seconds remaining`;
+                }
+                countdown--;
+            }, 1000);
+        }
+        
+        // Send OTP
+        document.getElementById('sendOtpBtn').onclick = function() {
+            const phone = document.getElementById('phoneNumber').value.replace(/\D/g, '');
+            if (!phone || phone.length < 10) {
+                showError('phoneError', 'Enter valid 10-digit number');
+                return;
+            }
+            currentPhone = '+91' + phone;
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+            const verifier = initRecaptcha();
+            auth.signInWithPhoneNumber(currentPhone, verifier).then(confirmation => {
+                confirmationResult = confirmation;
+                showScreen(document.getElementById('otpScreen'));
+                startTimer(60, 'timer');
+                btn.disabled = false;
+                btn.innerText = 'Send OTP';
+            }).catch(error => {
+                showError('phoneError', error.message);
+                btn.disabled = false;
+                btn.innerText = 'Send OTP';
+            });
+        };
+        
+        // Verify OTP
+        document.getElementById('verifyOtpBtn').onclick = function() {
+            const code = document.getElementById('otpCode').value;
+            if (!code || code.length !== 6) {
+                showError('otpError', 'Enter 6-digit OTP');
+                return;
+            }
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Verifying...';
+            confirmationResult.confirm(code).then(result => {
+                const user = result.user;
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists && doc.data().pin) {
+                        showScreen(document.getElementById('pinScreen'));
+                    } else {
+                        showScreen(document.getElementById('registerScreen'));
+                    }
+                    btn.disabled = false;
+                    btn.innerText = 'Verify & Login';
+                }).catch(() => {
+                    showScreen(document.getElementById('registerScreen'));
+                    btn.disabled = false;
+                    btn.innerText = 'Verify & Login';
+                });
+            }).catch(error => {
+                showError('otpError', 'Invalid OTP');
+                btn.disabled = false;
+                btn.innerText = 'Verify & Login';
+            });
+        };
+        
+        // Resend OTP
+        document.getElementById('resendOtpBtn').onclick = function() {
+            if (!currentPhone) return;
+            const verifier = initRecaptcha();
+            auth.signInWithPhoneNumber(currentPhone, verifier).then(confirmation => {
+                confirmationResult = confirmation;
+                startTimer(60, 'timer');
+                showError('otpError', 'OTP resent!');
+            }).catch(error => showError('otpError', error.message));
+        };
+        
+        // Forgot MPIN links
+        document.getElementById('forgotPinLink').onclick = function() {
+            showScreen(document.getElementById('resetPinScreen'));
+        };
+        document.getElementById('forgotPinFromPinBtn').onclick = function() {
+            showScreen(document.getElementById('resetPinScreen'));
+        };
+        
+        // Send Reset OTP
+        document.getElementById('sendResetOtpBtn').onclick = function() {
+            const phone = document.getElementById('resetPhone').value.replace(/\D/g, '');
+            if (!phone || phone.length < 10) {
+                showError('resetError', 'Enter valid 10-digit number');
+                return;
+            }
+            resetPhoneNumber = '+91' + phone;
+            
+            db.collection('users').where('phone', '==', resetPhoneNumber).get().then((snapshot) => {
+                if (snapshot.empty) {
+                    showError('resetError', 'No account found with this number');
+                    return;
+                }
+                const btn = this;
+                btn.disabled = true;
+                btn.innerText = 'Sending...';
+                const verifier = initRecaptcha();
+                auth.signInWithPhoneNumber(resetPhoneNumber, verifier).then(confirmation => {
+                    resetConfirmationResult = confirmation;
+                    showScreen(document.getElementById('resetOtpScreen'));
+                    startTimer(60, 'resetTimer');
+                    btn.disabled = false;
+                    btn.innerText = 'Send OTP';
+                }).catch(error => {
+                    showError('resetError', error.message);
+                    btn.disabled = false;
+                    btn.innerText = 'Send OTP';
+                });
+            }).catch(() => {
+                showError('resetError', 'Error checking user');
+            });
+        };
+        
+        // Reset MPIN
+        document.getElementById('resetPinBtn').onclick = function() {
+            const otp = document.getElementById('resetOtpCode').value;
+            const newPin = document.getElementById('newPinReset').value;
+            const confirmPin = document.getElementById('confirmPinReset').value;
+            
+            if (!otp || otp.length !== 6) {
+                showError('resetOtpError', 'Enter 6-digit OTP');
+                return;
+            }
+            if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+                showError('resetOtpError', 'MPIN must be 4 digits');
+                return;
+            }
+            if (newPin !== confirmPin) {
+                showError('resetOtpError', 'MPINs do not match');
+                return;
+            }
+            
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Verifying...';
+            
+            resetConfirmationResult.confirm(otp).then((result) => {
+                const user = result.user;
+                db.collection('users').doc(user.uid).update({ pin: newPin }).then(() => {
+                    alert('MPIN reset successfully! Please login with new MPIN.');
+                    showScreen(document.getElementById('phoneScreen'));
+                    document.getElementById('resetPhone').value = '';
+                    document.getElementById('resetOtpCode').value = '';
+                    document.getElementById('newPinReset').value = '';
+                    document.getElementById('confirmPinReset').value = '';
+                    btn.disabled = false;
+                    btn.innerText = 'Reset MPIN';
+                }).catch((err) => {
+                    showError('resetOtpError', 'Error updating PIN');
+                    btn.disabled = false;
+                    btn.innerText = 'Reset MPIN';
+                });
+            }).catch((error) => {
+                showError('resetOtpError', 'Invalid OTP');
+                btn.disabled = false;
+                btn.innerText = 'Reset MPIN';
+            });
+        };
+        
+        // Back to login buttons
+        document.getElementById('backToLogin').onclick = function() {
+            showScreen(document.getElementById('phoneScreen'));
+            document.getElementById('resetPhone').value = '';
+        };
+        document.getElementById('backToLoginFromReset').onclick = function() {
+            showScreen(document.getElementById('phoneScreen'));
+        };
+        
+        // Register
+        document.getElementById('registerBtn').onclick = function() {
+            const name = document.getElementById('regName').value.trim();
+            const pin = document.getElementById('regPin').value;
+            const confirmPin = document.getElementById('regConfirmPin').value;
+            
+            if (!name) {
+                showError('regError', 'Enter your name');
+                return;
+            }
+            if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+                showError('regError', 'MPIN must be 4 digits');
+                return;
+            }
+            if (pin !== confirmPin) {
+                showError('regError', 'MPINs do not match');
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (!user) {
+                showError('regError', 'Session expired');
+                return;
+            }
+            
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Creating...';
+            
+            db.collection('users').doc(user.uid).set({
+                uid: user.uid,
+                phone: user.phoneNumber,
+                name: name,
+                pin: pin,
+                balance: 0,
+                role: 'user',
+                createdAt: new Date()
+            }).then(() => {
+                window.location.href = 'dashboard.html';
+            }).catch(error => {
+                showError('regError', error.message);
+                btn.disabled = false;
+                btn.innerText = 'Register';
+            });
+        };
+        
+        // Verify MPIN
+        document.getElementById('verifyPinBtn').onclick = function() {
+            const pin = document.getElementById('pinInput').value;
+            if (!pin || pin.length !== 4) {
+                showError('pinError', 'Enter 4-digit MPIN');
+                return;
+            }
+            const user = auth.currentUser;
+            if (!user) {
+                showScreen(document.getElementById('phoneScreen'));
+                return;
+            }
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Verifying...';
+            db.collection('users').doc(user.uid).get().then(doc => {
+                if (doc.exists && doc.data().pin === pin) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showError('pinError', 'Invalid MPIN');
+                }
+                btn.disabled = false;
+                btn.innerText = 'Login';
+            }).catch(error => {
+                showError('pinError', 'Error verifying PIN');
+                btn.disabled = false;
+                btn.innerText = 'Login';
+            });
+        };
+        
+        // Show MPIN login
+        document.getElementById('showPinBtn').onclick = function() {
+            const user = auth.currentUser;
+            if (!user) {
+                showScreen(document.getElementById('phoneScreen'));
+                return;
+            }
+            db.collection('users').doc(user.uid).get().then(doc => {
+                if (doc.exists && doc.data().pin) {
+                    showScreen(document.getElementById('pinScreen'));
+                } else {
+                    showScreen(document.getElementById('phoneScreen'));
+                }
+            }).catch(() => showScreen(document.getElementById('phoneScreen')));
+        };
+        
+        // Auth state listener
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists && doc.data().pin) {
+                        showScreen(document.getElementById('pinScreen'));
+                    } else if (doc.exists && !doc.data().pin) {
+                        showScreen(document.getElementById('registerScreen'));
+                    } else {
+                        showScreen(document.getElementById('phoneScreen'));
+                    }
+                }).catch(() => showScreen(document.getElementById('phoneScreen')));
+            } else {
+                showScreen(document.getElementById('phoneScreen'));
+            }
+        });
+    </script>
+</body>
+</html>
