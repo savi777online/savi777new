@@ -3,70 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SAVI777 - My Bids</title>
+    <title>DURGA - My Bids</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; padding-bottom: 70px; }
-        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
-        
-        .header { background: #fff; padding: 15px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #e0e0e0; }
-        .back-btn { background: none; border: none; font-size: 24px; cursor: pointer; }
-        .title { font-size: 18px; font-weight: bold; flex: 1; text-align: center; color: #1a1a2e; }
-        
-        .tab-bar { display: flex; background: #fff; margin: 16px; border-radius: 12px; padding: 4px; }
-        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; color: #888; }
-        .tab.active { background: #007bff; color: #fff; }
-        
-        .bid-card { background: #fff; margin: 12px; border-radius: 16px; padding: 16px; border: 1px solid #e0e0e0; }
-        .bid-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .market-name { font-weight: bold; color: #1a1a2e; }
-        .status { padding: 4px 12px; border-radius: 20px; font-size: 12px; }
-        .status-won { background: #d4edda; color: #155724; }
-        .status-lost { background: #f8d7da; color: #721c24; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .bid-detail { margin: 8px 0; color: #666; font-size: 14px; }
-        .bid-date { font-size: 11px; color: #888; margin-top: 8px; }
-        
-        .no-data { text-align: center; color: #888; padding: 40px; }
-        .hidden { display: none; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
-        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
-        .nav-item.active { color: #007bff; }
-        
-        .clear-btn { background: #dc3545; color: #fff; border: none; padding: 10px 20px; border-radius: 30px; margin: 8px 16px; cursor: pointer; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding-bottom: 80px;
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #ffffff;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+            color: #00aa55;
+            animation: blockPulse 2s infinite;
+        }
+        @keyframes blockPulse {
+            0% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+            50% { opacity: 1; text-shadow: 0 0 5px rgba(0,170,85,0.3); }
+            100% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+        }
+
+        .tab-bar {
+            display: flex;
+            background: #ffffff;
+            margin: 16px;
+            border-radius: 60px;
+            padding: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50px;
+            color: #888;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .tab.active {
+            background: #ff9800;
+            color: #ffffff;
+        }
+
+        .bid-card {
+            background: #ffffff;
+            margin: 12px 16px;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        .bid-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .market-name {
+            font-weight: 700;
+            color: #1a1a2e;
+            font-size: 15px;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-won {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        .status-lost {
+            background: #fee2e2;
+            color: #f44336;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .bid-detail {
+            margin: 8px 0;
+            color: #666;
+            font-size: 13px;
+        }
+        .bid-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+        }
+        .hidden {
+            display: none;
+        }
+
+        .clear-btn {
+            background: #f44336;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            margin: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            z-index: 100;
+        }
+        .bottom-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 6px 0;
+            flex: 1;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff9800;
+        }
+        .bottom-item:active {
+            transform: scale(0.95);
+        }
+        .bottom-home {
+            background: #3b82f6;
+            color: #ffffff !important;
+            padding: 8px 0;
+            border-radius: 40px;
+            margin: 0 8px;
+            flex: 1.2;
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
     <div class="header">
         <button class="back-btn" onclick="location.href='dashboard.html'">←</button>
-        <div class="title">My Bids</div>
-        <div style="width:30px;"></div>
+        <div class="title">MY BIDS</div>
+        <div style="width: 30px;"></div>
     </div>
     
     <div class="tab-bar">
-        <div class="tab active" onclick="showTab('bids')">Bids</div>
-        <div class="tab" onclick="showTab('transactions')">Transactions</div>
-        <div class="tab" onclick="showTab('rates')">Rates</div>
+        <div class="tab active" onclick="showTab('bids')">BIDS</div>
+        <div class="tab" onclick="showTab('transactions')">TRANSACTIONS</div>
+        <div class="tab" onclick="showTab('rates')">RATES</div>
     </div>
     
     <div id="bidsTab">
-        <button class="clear-btn" onclick="clearAllBids()">Clear All Bids</button>
+        <button class="clear-btn" onclick="clearAllBids()">CLEAR ALL BIDS</button>
         <div id="bidsList">Loading...</div>
     </div>
     
     <div id="transactionsTab" class="hidden">
-        <button class="clear-btn" onclick="clearAllTransactions()">Clear All Transactions</button>
+        <button class="clear-btn" onclick="clearAllTransactions()">CLEAR ALL TRANSACTIONS</button>
         <div id="transactionsList">Loading...</div>
     </div>
     
     <div id="ratesTab" class="hidden">
         <div class="bid-card">
-            <div class="bid-header"><span class="market-name">Game Rates</span></div>
+            <div class="bid-header"><span class="market-name">GAME RATES</span></div>
             <div class="bid-detail">Single Digit: 10x</div>
             <div class="bid-detail">Jodi: 100x</div>
             <div class="bid-detail">Single Pana: 160x</div>
@@ -79,11 +222,11 @@
     </div>
     
     <div class="bottom-nav">
-        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
-        <div class="nav-item" onclick="location.href='deposit.html'">Deposit</div>
-        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
-        <div class="nav-item active" onclick="location.href='mybids.html'">Bids</div>
-        <div class="nav-item" onclick="location.href='chat.html'">Support</div>
+        <div class="bottom-item" onclick="location.href='history.html'">HISTORY</div>
+        <div class="bottom-item" onclick="location.href='mybids.html'">PASSBOOK</div>
+        <div class="bottom-item bottom-home" onclick="location.href='dashboard.html'">HOME</div>
+        <div class="bottom-item" onclick="location.href='funds.html'">FUNDS</div>
+        <div class="bottom-item" onclick="location.href='chat.html'">SUPPORT</div>
     </div>
 </div>
 
@@ -94,8 +237,7 @@
         projectId: "savi777-5b8af",
         storageBucket: "savi777-5b8af.firebasestorage.app",
         messagingSenderId: "396388183217",
-        appId: "1:396388183217:web:48d946a4198963cefa0690",
-        measurementId: "G-42PDZRC747"
+        appId: "1:396388183217:web:48d946a4198963cefa0690"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -159,7 +301,7 @@
             html += `
                 <div class="bid-card">
                     <div class="bid-header">
-                        <span class="market-name">${isCredit ? 'Deposit' : 'Withdrawal'}</span>
+                        <span class="market-name">${isCredit ? 'DEPOSIT' : 'WITHDRAWAL'}</span>
                         <span class="status ${t.status === 'Completed' ? 'status-won' : 'status-pending'}">${t.status || 'PENDING'}</span>
                     </div>
                     <div class="bid-detail" style="font-size:18px; font-weight:bold;">${isCredit ? '+' : '-'} ₹${t.amount}</div>
