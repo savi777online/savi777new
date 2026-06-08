@@ -21,31 +21,56 @@
         .admin-panel { display: none; }
         .sidebar { width: 260px; background: #fff; min-height: 100vh; position: fixed; border-right: 1px solid #e0e0e0; }
         .sidebar h2 { color: #1a1a2e; padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
-        .sidebar-item { padding: 15px 25px; color: #333; cursor: pointer; border-bottom: 1px solid #eee; transition: all 0.3s; }
+        .sidebar-item { padding: 15px 25px; color: #333; cursor: pointer; border-bottom: 1px solid #eee; transition: all 0.3s; position: relative; }
         .sidebar-item:hover { background: #e3f2fd; color: #007bff; }
-        .notification-badge { background: #dc3545; color: #fff; border-radius: 20px; padding: 2px 8px; font-size: 11px; margin-left: 8px; }
+        
+        .notification-badge { position: absolute; right: 15px; top: 12px; background: #dc3545; color: #fff; border-radius: 20px; padding: 2px 8px; font-size: 11px; }
+        
+        .request-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .request-tab { padding: 8px 20px; cursor: pointer; border-radius: 20px; background: #f8f9fa; color: #333; font-weight: 500; }
+        .request-tab.active { background: #007bff; color: #fff; }
         
         .main-content { margin-left: 260px; padding: 25px; }
-        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0; }
+        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .card h3 { margin-bottom: 15px; color: #1a1a2e; border-left: 3px solid #007bff; padding-left: 12px; }
-        input, select, textarea { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 8px; width: calc(100% - 10px); }
-        button { background: #007bff; border: none; padding: 10px 20px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; margin: 5px; }
-        button:hover { background: #0056b3; }
-        .btn-danger { background: #dc3545; }
-        .btn-danger:hover { background: #c82333; }
-        .btn-success { background: #28a745; }
-        .btn-warning { background: #ffc107; color: #333; }
-        .hidden { display: none; }
+        input, select, textarea { padding: 10px; margin: 5px; background: #fff; border: 1px solid #ddd; border-radius: 8px; color: #333; width: calc(100% - 10px); }
+        button { background: #007bff; border: none; padding: 8px 16px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; margin: 5px; transition: all 0.3s; }
+        button:hover { background: #0056b3; transform: scale(1.02); }
         
-        .market-item, .user-item, .request-item { background: #fff; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #e0e0e0; }
-        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
+        .market-item, .user-item, .request-item { background: #fff; padding: 20px; margin: 15px 0; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .market-info { margin-bottom: 15px; }
+        .market-actions { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; display: inline-block; }
         .status-open { background: #d4edda; color: #155724; }
-        .status-close { background: #fff3cd; color: #856404; }
+        .status-close { background: #d1ecf1; color: #0c5460; }
         .status-closed { background: #f8d7da; color: #721c24; }
+        .status-holiday { background: #e2e3e5; color: #383d41; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-reset { background: #6c757d; }
+        .btn-info { background: #17a2b8; }
         
-        .request-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .request-tab { padding: 8px 20px; cursor: pointer; border-radius: 20px; background: #e0e0e0; }
-        .request-tab.active { background: #007bff; color: #fff; }
+        .results-container { display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0; }
+        .result-card { background: #f8f9fa; border-radius: 12px; padding: 15px 25px; min-width: 160px; text-align: center; }
+        .result-pana { font-size: 32px; font-weight: bold; color: #1a1a2e; }
+        
+        .input-group { display: flex; gap: 15px; flex-wrap: wrap; margin: 10px 0; align-items: center; }
+        .input-group label { min-width: 100px; }
+        .input-group input { width: 120px; margin: 0; }
+        
+        .market-header-row { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 12px; background: #f8f9fa; border-radius: 10px; margin-bottom: 8px; }
+        .market-header-row:hover { background: #e9ecef; }
+        .market-detail-row { display: none; background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e0e0e0; }
+        .market-detail-row.open { display: block; }
+        .toggle-icon { font-size: 18px; color: #007bff; margin-right: 10px; }
+        
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
+        .sort-bar { display: flex; gap: 12px; margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 12px; align-items: center; flex-wrap: wrap; }
+        .sort-select { width: auto; margin: 0; padding: 8px 12px; }
+        
+        .hidden { display: none; }
         
         @media (max-width: 768px) { 
             .sidebar { width: 70px; } 
@@ -70,9 +95,15 @@
     <div class="sidebar">
         <h2>SAVI777</h2>
         <div class="sidebar-item" onclick="showSection('markets')">Markets</div>
-        <div class="sidebar-item" onclick="showSection('users')">Users</div>
-        <div class="sidebar-item" onclick="showSection('deposits')">Deposits</div>
-        <div class="sidebar-item" onclick="showSection('withdrawals')">Withdrawals</div>
+        <div class="sidebar-item" onclick="showSection('users')" id="usersMenuItem">Users</div>
+        <div class="sidebar-item" onclick="showSection('deposits')" id="depositsMenuItem">
+            Deposits
+            <span id="depositBadge" class="notification-badge" style="display:none;">0</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('withdrawals')" id="withdrawalsMenuItem">
+            Withdrawals
+            <span id="withdrawalBadge" class="notification-badge" style="display:none;">0</span>
+        </div>
         <div class="sidebar-item" onclick="showSection('notice')">Notice</div>
         <div class="sidebar-item" onclick="showSection('settings')">Settings</div>
         <div class="sidebar-item" onclick="logout()">Logout</div>
@@ -84,8 +115,14 @@
                 <h3>Add New Market</h3>
                 <input type="text" id="marketName" placeholder="Market Name">
                 <input type="text" id="marketNumbers" placeholder="Numbers (e.g., 440-8*-***)">
-                <input type="time" id="openBidEnd" placeholder="Open Bid End Time">
-                <input type="time" id="closeBidEnd" placeholder="Close Bid End Time">
+                <div class="input-group">
+                    <label>Open Bid End:</label>
+                    <input type="time" id="openBidEnd">
+                </div>
+                <div class="input-group">
+                    <label>Close Bid End:</label>
+                    <input type="time" id="closeBidEnd">
+                </div>
                 <select id="marketStatus">
                     <option value="open">OPEN</option>
                     <option value="close">CLOSE</option>
@@ -93,6 +130,8 @@
                     <option value="holiday">HOLIDAY</option>
                 </select>
                 <button onclick="addMarket()">Add Market</button>
+                <button onclick="deleteAllMarkets()" class="btn-danger">Delete All</button>
+                <button onclick="resetAllMarketsResults()" class="btn-warning">Reset All Results</button>
             </div>
             <div class="card">
                 <h3>Manage Markets</h3>
@@ -103,7 +142,20 @@
         <div id="usersSection" class="hidden">
             <div class="card">
                 <h3>Users Management</h3>
-                <input type="text" id="searchInput" placeholder="Search by name or mobile...">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name or mobile...">
+                    <button onclick="searchUsers()" class="btn-info">Search</button>
+                    <button onclick="clearSearch()" class="btn-reset">Clear</button>
+                </div>
+                <div class="sort-bar">
+                    <label>Sort By:</label>
+                    <select id="sortUsersSelect" class="sort-select" onchange="applyUserSort()">
+                        <option value="newest">Newest First</option>
+                        <option value="balanceHigh">Balance: High to Low</option>
+                        <option value="balanceLow">Balance: Low to High</option>
+                    </select>
+                </div>
+                <div id="userCount" class="user-count"></div>
                 <div id="usersList">Loading...</div>
             </div>
         </div>
@@ -149,8 +201,13 @@
             </div>
             <div class="card">
                 <h3>UPI Settings</h3>
-                <input type="text" id="upiId" placeholder="UPI ID">
+                <input type="text" id="upiId" placeholder="UPI ID" value="savi777@okhdfcbank">
                 <button onclick="updateUPI()">Update UPI</button>
+            </div>
+            <div class="card">
+                <h3>Payee Name</h3>
+                <input type="text" id="payeeName" placeholder="Payee Name" value="SAVI777 Services">
+                <button onclick="updatePayeeName()">Update</button>
             </div>
         </div>
     </div>
@@ -163,8 +220,7 @@
         projectId: "savi777-5b8af",
         storageBucket: "savi777-5b8af.firebasestorage.app",
         messagingSenderId: "396388183217",
-        appId: "1:396388183217:web:48d946a4198963cefa0690",
-        measurementId: "G-42PDZRC747"
+        appId: "1:396388183217:web:48d946a4198963cefa0690"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -175,6 +231,9 @@
     let allUsers = [];
     let currentDepositTab = "pending";
     let currentWithdrawalTab = "pending";
+    let openMarketId = null;
+    let depositListener = null;
+    let withdrawalListener = null;
     
     if (sessionStorage.getItem('adminLoggedIn') === 'true') {
         document.getElementById('loginScreen').style.display = 'none';
@@ -185,6 +244,7 @@
         loadWithdrawals();
         loadNotice();
         loadSettings();
+        startNotificationListeners();
     }
     
     function login() {
@@ -199,16 +259,47 @@
             loadWithdrawals();
             loadNotice();
             loadSettings();
+            startNotificationListeners();
         } else {
             document.getElementById('loginError').innerText = 'Wrong password!';
         }
     }
     
+    function startNotificationListeners() {
+        if (depositListener) depositListener();
+        depositListener = db.collection('transactions').where('type', '==', 'credit').where('status', '==', 'Pending').onSnapshot((snapshot) => {
+            const count = snapshot.size;
+            const badge = document.getElementById('depositBadge');
+            if (count > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+            if (currentDepositTab === 'pending') loadDeposits();
+        });
+        
+        if (withdrawalListener) withdrawalListener();
+        withdrawalListener = db.collection('withdrawRequests').where('status', '==', 'Pending').onSnapshot((snapshot) => {
+            const count = snapshot.size;
+            const badge = document.getElementById('withdrawalBadge');
+            if (count > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+            if (currentWithdrawalTab === 'pending') loadWithdrawals();
+        });
+    }
+    
     function showSection(section) {
-        document.querySelectorAll('[id$="Section"]').forEach(el => el.classList.add('hidden'));
+        const sections = ['marketsSection', 'usersSection', 'depositsSection', 'withdrawalsSection', 'noticeSection', 'settingsSection'];
+        sections.forEach(s => document.getElementById(s).classList.add('hidden'));
         document.getElementById(`${section}Section`).classList.remove('hidden');
         if (section === 'deposits') loadDeposits();
         if (section === 'withdrawals') loadWithdrawals();
+        if (section === 'users') loadUsers();
     }
     
     function showDepositTab(tab) {
@@ -225,23 +316,95 @@
         loadWithdrawals();
     }
     
+    function formatTimeTo12Hour(timeStr) {
+        if (!timeStr) return '--:--';
+        let [hours, minutes] = timeStr.split(':');
+        let hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12;
+        return `${hour}:${minutes} ${ampm}`;
+    }
+    
+    function toggleMarketDetails(marketId) {
+        const detailDiv = document.getElementById(`market_detail_${marketId}`);
+        if (detailDiv) {
+            if (openMarketId === marketId) {
+                detailDiv.classList.remove('open');
+                openMarketId = null;
+            } else {
+                if (openMarketId) {
+                    const prevDiv = document.getElementById(`market_detail_${openMarketId}`);
+                    if (prevDiv) prevDiv.classList.remove('open');
+                }
+                detailDiv.classList.add('open');
+                openMarketId = marketId;
+            }
+        }
+    }
+    
+    const gameRates = {
+        'Single Digit': 10, 'Jodi': 100, 'Single Pana': 160,
+        'Double Pana': 320, 'Triple Pana': 1000,
+        'Half Sangam A': 1000, 'Half Sangam B': 1000, 'Full Sangam': 10000
+    };
+    
     async function loadMarkets() {
         db.collection('markets').orderBy('serialNo', 'asc').onSnapshot((snapshot) => {
             let html = '';
             snapshot.forEach(doc => {
                 const m = doc.data();
-                let statusClass = m.status === 'open' ? 'status-open' : (m.status === 'close' ? 'status-close' : 'status-closed');
+                let statusClass = '', statusText = '';
+                if (m.status === 'open') { statusClass = 'status-open'; statusText = 'OPEN'; }
+                else if (m.status === 'close') { statusClass = 'status-close'; statusText = 'CLOSE'; }
+                else if (m.status === 'holiday') { statusClass = 'status-holiday'; statusText = 'HOLIDAY'; }
+                else { statusClass = 'status-closed'; statusText = 'CLOSED'; }
+                
+                const openBidEnd12 = formatTimeTo12Hour(m.openBidEnd);
+                const closeBidEnd12 = formatTimeTo12Hour(m.closeBidEnd);
+                
                 html += `
                     <div class="market-item">
-                        <div><strong>${m.name}</strong> <span class="status-badge ${statusClass}">${m.status.toUpperCase()}</span></div>
-                        <div>Numbers: ${m.numbers || '***'}</div>
-                        <div>Open: ${m.openBidEnd || '--'} | Close: ${m.closeBidEnd || '--'}</div>
-                        <div>Result: ${m.openPana || '***'} - ${m.jodi || '**'} - ${m.closePana || '***'}</div>
-                        <button onclick="deleteMarket('${doc.id}')" class="btn-danger">Delete</button>
+                        <div class="market-header-row" onclick="toggleMarketDetails('${doc.id}')">
+                            <span class="toggle-icon">${openMarketId === doc.id ? '▼' : '▶'}</span>
+                            <span><strong>${m.name || 'No name'}</strong> <span class="status-badge ${statusClass}">${statusText}</span></span>
+                            <button onclick="event.stopPropagation(); deleteMarket('${doc.id}')" class="btn-danger">Delete</button>
+                        </div>
+                        <div id="market_detail_${doc.id}" class="market-detail-row">
+                            <div class="market-info">
+                                <div>Numbers: ${m.numbers || '***'}</div>
+                                <div>Open End: ${openBidEnd12} | Close End: ${closeBidEnd12}</div>
+                                <div class="results-container">
+                                    <div class="result-card"><div class="result-pana">${m.openPana || '***'}</div><div>Open Pana</div></div>
+                                    <div class="result-card"><div class="result-pana">${m.jodi || '**'}</div><div>Jodi</div></div>
+                                    <div class="result-card"><div class="result-pana">${m.closePana || '***'}</div><div>Close Pana</div></div>
+                                </div>
+                                <div class="input-group"><label>Open Pana:</label><input type="text" id="openPana_${doc.id}" placeholder="3 digits" value="${m.openPana !== '***' ? m.openPana : ''}" maxlength="3"></div>
+                                <div class="input-group"><label>Close Pana:</label><input type="text" id="closePana_${doc.id}" placeholder="3 digits" value="${m.closePana !== '***' ? m.closePana : ''}" maxlength="3"></div>
+                                <div class="input-group"><label>Jodi:</label><input type="text" id="jodi_${doc.id}" placeholder="2 digits" value="${m.jodi !== '**' ? m.jodi : ''}" maxlength="2"></div>
+                                <div class="input-group">
+                                    <label>Status:</label>
+                                    <select id="status_${doc.id}">
+                                        <option value="open" ${m.status === 'open' ? 'selected' : ''}>Open</option>
+                                        <option value="close" ${m.status === 'close' ? 'selected' : ''}>Close</option>
+                                        <option value="closed" ${m.status === 'closed' ? 'selected' : ''}>Closed</option>
+                                        <option value="holiday" ${m.status === 'holiday' ? 'selected' : ''}>Holiday</option>
+                                    </select>
+                                    <button onclick="updateMarket('${doc.id}')">Update</button>
+                                </div>
+                                <div class="input-group">
+                                    <label>Open End:</label>
+                                    <input type="time" id="openEnd_${doc.id}" value="${m.openBidEnd || ''}">
+                                    <label>Close End:</label>
+                                    <input type="time" id="closeEnd_${doc.id}" value="${m.closeBidEnd || ''}">
+                                    <button onclick="updateMarketTimings('${doc.id}')">Save Times</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
-            document.getElementById('marketsList').innerHTML = html || '<p>No markets</p>';
+            if (snapshot.empty) html = '<p>No markets. Add one above!</p>';
+            document.getElementById('marketsList').innerHTML = html;
         });
     }
     
@@ -250,55 +413,112 @@
         if (!name) { alert('Enter market name'); return; }
         const markets = await db.collection('markets').get();
         let maxSerial = 0;
-        markets.forEach(doc => { if (doc.data().serialNo > maxSerial) maxSerial = doc.data().serialNo; });
+        markets.forEach(doc => { if (doc.data().serialNo && doc.data().serialNo > maxSerial) maxSerial = doc.data().serialNo; });
         await db.collection('markets').add({
             name, numbers: document.getElementById('marketNumbers').value || '***-**-***',
             openBidEnd: document.getElementById('openBidEnd').value,
             closeBidEnd: document.getElementById('closeBidEnd').value,
             status: document.getElementById('marketStatus').value,
             serialNo: maxSerial + 1,
-            openPana: '***', openDigit: '*', closePana: '***', closeDigit: '*', jodi: '**'
+            openPana: '***', closePana: '***', jodi: '**'
         });
         alert('Market added!');
         document.getElementById('marketName').value = '';
+        document.getElementById('marketNumbers').value = '';
+    }
+    
+    async function updateMarket(marketId) {
+        const openPana = document.getElementById(`openPana_${marketId}`).value;
+        const closePana = document.getElementById(`closePana_${marketId}`).value;
+        const jodi = document.getElementById(`jodi_${marketId}`).value;
+        const status = document.getElementById(`status_${marketId}`).value;
+        await db.collection('markets').doc(marketId).update({ openPana, closePana, jodi, status });
+        alert('Market updated!');
+    }
+    
+    async function updateMarketTimings(marketId) {
+        const openBidEnd = document.getElementById(`openEnd_${marketId}`).value;
+        const closeBidEnd = document.getElementById(`closeEnd_${marketId}`).value;
+        await db.collection('markets').doc(marketId).update({ openBidEnd, closeBidEnd });
+        alert('Timings updated!');
     }
     
     async function deleteMarket(id) {
-        if (confirm('Delete market?')) await db.collection('markets').doc(id).delete();
+        if (confirm('Delete this market?')) await db.collection('markets').doc(id).delete();
+    }
+    
+    async function deleteAllMarkets() {
+        if (confirm('Delete ALL markets?')) {
+            const markets = await db.collection('markets').get();
+            const batch = db.batch();
+            markets.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+            alert('All markets deleted!');
+        }
+    }
+    
+    async function resetAllMarketsResults() {
+        if (confirm('Reset ALL market results?')) {
+            const markets = await db.collection('markets').get();
+            const batch = db.batch();
+            markets.forEach(doc => {
+                batch.update(doc.ref, { openPana: '***', closePana: '***', jodi: '**' });
+            });
+            await batch.commit();
+            alert('All results reset!');
+        }
     }
     
     async function loadUsers() {
         db.collection('users').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
             allUsers = [];
-            snapshot.forEach(doc => { allUsers.push({ uid: doc.id, ...doc.data() }); });
-            displayUsers();
+            snapshot.forEach(doc => {
+                allUsers.push({ uid: doc.id, ...doc.data() });
+            });
+            displayFilteredUsers();
         });
     }
     
-    function displayUsers() {
+    function displayFilteredUsers() {
         const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+        const sortType = document.getElementById('sortUsersSelect')?.value || 'newest';
+        
         let filtered = allUsers.filter(u => 
             (u.name || '').toLowerCase().includes(searchTerm) || 
             (u.phone || '').toLowerCase().includes(searchTerm)
         );
+        
+        if (sortType === 'newest') {
+            filtered.sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+        } else if (sortType === 'balanceHigh') {
+            filtered.sort((a, b) => (b.balance || 0) - (a.balance || 0));
+        } else if (sortType === 'balanceLow') {
+            filtered.sort((a, b) => (a.balance || 0) - (b.balance || 0));
+        }
+        
+        document.getElementById('userCount').innerHTML = `Total Users: ${filtered.length}`;
+        
         let html = '';
         filtered.forEach(user => {
+            const isBlocked = user.blocked === true;
             html += `
-                <div class="user-item">
-                    <div><strong>${user.name || 'Unknown'}</strong> | ${user.phone || 'No phone'}</div>
-                    <div>Balance: ₹${user.balance || 0}</div>
-                    <div>
-                        <button onclick="updateBalance('${user.uid}', 'add')">Add</button>
-                        <button onclick="updateBalance('${user.uid}', 'remove')">Remove</button>
-                        <button onclick="toggleBlockUser('${user.uid}')" class="btn-warning">${user.blocked ? 'Unblock' : 'Block'}</button>
+                <div class="user-item ${isBlocked ? 'user-blocked' : ''}">
+                    <div><strong>${user.name || 'Unknown'}</strong><br>${user.phone || 'No phone'}<br>Balance: ₹${user.balance || 0}</div>
+                    <div style="margin-top:10px;">
+                        <button onclick="updateBalance('${user.uid}', 'add')" class="btn-success">Add</button>
+                        <button onclick="updateBalance('${user.uid}', 'remove')" class="btn-danger">Remove</button>
+                        <button onclick="toggleBlockUser('${user.uid}', '${user.name}', ${isBlocked})" class="btn-warning">${isBlocked ? 'Unblock' : 'Block'}</button>
+                        <button onclick="deleteUser('${user.uid}', '${user.name}')" class="btn-danger">Delete</button>
                     </div>
                 </div>
             `;
         });
-        document.getElementById('usersList').innerHTML = html || '<p>No users</p>';
+        document.getElementById('usersList').innerHTML = html || '<p>No users found</p>';
     }
     
-    document.getElementById('searchInput')?.addEventListener('input', displayUsers);
+    function searchUsers() { displayFilteredUsers(); }
+    function clearSearch() { document.getElementById('searchInput').value = ''; displayFilteredUsers(); }
+    function applyUserSort() { displayFilteredUsers(); }
     
     async function updateBalance(uid, action) {
         const amount = parseInt(prompt(`Enter amount to ${action}:`));
@@ -308,14 +528,21 @@
         let newBalance = action === 'add' ? currentBalance + amount : currentBalance - amount;
         if (newBalance < 0) { alert('Insufficient balance'); return; }
         await db.collection('users').doc(uid).update({ balance: newBalance });
-        alert(`Balance updated!`);
+        alert(`Balance updated! New balance: ₹${newBalance}`);
     }
     
-    async function toggleBlockUser(uid) {
-        const userDoc = await db.collection('users').doc(uid).get();
-        const isBlocked = userDoc.data().blocked || false;
-        await db.collection('users').doc(uid).update({ blocked: !isBlocked });
-        alert(`User ${!isBlocked ? 'blocked' : 'unblocked'}`);
+    async function toggleBlockUser(uid, name, isBlocked) {
+        if (confirm(`${isBlocked ? 'Unblock' : 'Block'} user "${name}"?`)) {
+            await db.collection('users').doc(uid).update({ blocked: !isBlocked });
+            alert(`User ${!isBlocked ? 'blocked' : 'unblocked'}!`);
+        }
+    }
+    
+    async function deleteUser(uid, name) {
+        if (confirm(`Delete user "${name}" permanently?`)) {
+            await db.collection('users').doc(uid).delete();
+            alert(`User deleted!`);
+        }
     }
     
     async function loadDeposits() {
@@ -325,16 +552,22 @@
         for (const doc of snapshot.docs) {
             const d = doc.data();
             const user = await db.collection('users').doc(d.userId).get();
-            html += `<div class="request-item">
-                <div><strong>${user.data()?.name || 'Unknown'}</strong> | ₹${d.amount}</div>
-                <div>UTR: ${d.userUTR || 'N/A'}</div>
-                ${currentDepositTab === 'pending' ? `
-                    <button onclick="approveDeposit('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
-                    <button onclick="rejectDeposit('${doc.id}')" class="btn-danger">Reject</button>
-                ` : ''}
-            </div>`;
+            const date = d.date?.toDate().toLocaleString() || 'Pending';
+            html += `
+                <div class="request-item">
+                    <div><strong>${user.data()?.name || 'Unknown'}</strong> | ${user.data()?.phone || 'N/A'}</div>
+                    <div>Amount: ₹${d.amount} | UTR: ${d.userUTR || 'N/A'}</div>
+                    <div>Date: ${date}</div>
+                    ${currentDepositTab === 'pending' ? `
+                        <div style="margin-top:10px;">
+                            <button onclick="approveDeposit('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
+                            <button onclick="rejectDeposit('${doc.id}')" class="btn-danger">Reject</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
         }
-        document.getElementById('depositsList').innerHTML = html || '<p>No deposits</p>';
+        document.getElementById('depositsList').innerHTML = html || '<p>No deposits found</p>';
     }
     
     async function approveDeposit(id, amount, userId) {
@@ -342,15 +575,15 @@
             const user = await db.collection('users').doc(userId).get();
             await db.collection('users').doc(userId).update({ balance: (user.data().balance || 0) + amount });
             await db.collection('transactions').doc(id).update({ status: 'Completed' });
-            alert('Approved!');
+            alert('Deposit approved!');
             loadDeposits();
         }
     }
     
     async function rejectDeposit(id) {
-        if (confirm('Reject?')) {
+        if (confirm('Reject this deposit?')) {
             await db.collection('transactions').doc(id).update({ status: 'Rejected' });
-            alert('Rejected!');
+            alert('Deposit rejected!');
             loadDeposits();
         }
     }
@@ -362,32 +595,41 @@
         for (const doc of snapshot.docs) {
             const d = doc.data();
             const user = await db.collection('users').doc(d.userId).get();
-            html += `<div class="request-item">
-                <div><strong>${user.data()?.name || 'Unknown'}</strong> | ₹${d.amount}</div>
-                ${currentWithdrawalTab === 'pending' ? `
-                    <button onclick="approveWithdraw('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
-                    <button onclick="rejectWithdraw('${doc.id}')" class="btn-danger">Reject</button>
-                ` : ''}
-            </div>`;
+            const date = d.date?.toDate().toLocaleString() || 'Pending';
+            const bank = d.bankDetails || {};
+            html += `
+                <div class="request-item">
+                    <div><strong>${user.data()?.name || 'Unknown'}</strong> | ${user.data()?.phone || 'N/A'}</div>
+                    <div>Amount: ₹${d.amount}</div>
+                    <div>Bank: ${bank.bankName || 'N/A'} | Account: ${bank.accountNumber || 'N/A'}</div>
+                    <div>Date: ${date}</div>
+                    ${currentWithdrawalTab === 'pending' ? `
+                        <div style="margin-top:10px;">
+                            <button onclick="approveWithdraw('${doc.id}', ${d.amount}, '${d.userId}')" class="btn-success">Approve</button>
+                            <button onclick="rejectWithdraw('${doc.id}')" class="btn-danger">Reject</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
         }
-        document.getElementById('withdrawalsList').innerHTML = html || '<p>No withdrawals</p>';
+        document.getElementById('withdrawalsList').innerHTML = html || '<p>No withdrawals found</p>';
     }
     
     async function approveWithdraw(id, amount, userId) {
-        if (confirm(`Approve ₹${amount}?`)) {
+        if (confirm(`Approve withdrawal of ₹${amount}?`)) {
             const user = await db.collection('users').doc(userId).get();
-            if ((user.data().balance || 0) < amount) { alert('Insufficient balance'); return; }
+            if ((user.data().balance || 0) < amount) { alert('Insufficient balance!'); return; }
             await db.collection('users').doc(userId).update({ balance: (user.data().balance || 0) - amount });
             await db.collection('withdrawRequests').doc(id).update({ status: 'Completed' });
-            alert('Approved!');
+            alert('Withdrawal approved!');
             loadWithdrawals();
         }
     }
     
     async function rejectWithdraw(id) {
-        if (confirm('Reject?')) {
+        if (confirm('Reject this withdrawal?')) {
             await db.collection('withdrawRequests').doc(id).update({ status: 'Rejected' });
-            alert('Rejected!');
+            alert('Withdrawal rejected!');
             loadWithdrawals();
         }
     }
@@ -407,11 +649,19 @@
         db.collection('settings').doc('upi').get().then(d => {
             if (d.exists) document.getElementById('upiId').value = d.data().upiId;
         });
+        db.collection('settings').doc('payee').get().then(d => {
+            if (d.exists) document.getElementById('payeeName').value = d.data().name;
+        });
     }
     
     async function updateUPI() {
         await db.collection('settings').doc('upi').set({ upiId: document.getElementById('upiId').value });
         alert('UPI updated!');
+    }
+    
+    async function updatePayeeName() {
+        await db.collection('settings').doc('payee').set({ name: document.getElementById('payeeName').value });
+        alert('Payee name updated!');
     }
     
     function changePassword() {
@@ -431,20 +681,31 @@
         document.getElementById('adminPanel').style.display = 'none';
     }
     
+    // Global functions
     window.login = login;
     window.showSection = showSection;
     window.showDepositTab = showDepositTab;
     window.showWithdrawalTab = showWithdrawalTab;
+    window.toggleMarketDetails = toggleMarketDetails;
     window.addMarket = addMarket;
+    window.updateMarket = updateMarket;
+    window.updateMarketTimings = updateMarketTimings;
     window.deleteMarket = deleteMarket;
+    window.deleteAllMarkets = deleteAllMarkets;
+    window.resetAllMarketsResults = resetAllMarketsResults;
+    window.searchUsers = searchUsers;
+    window.clearSearch = clearSearch;
+    window.applyUserSort = applyUserSort;
     window.updateBalance = updateBalance;
     window.toggleBlockUser = toggleBlockUser;
+    window.deleteUser = deleteUser;
     window.approveDeposit = approveDeposit;
     window.rejectDeposit = rejectDeposit;
     window.approveWithdraw = approveWithdraw;
     window.rejectWithdraw = rejectWithdraw;
     window.updateNotice = updateNotice;
     window.updateUPI = updateUPI;
+    window.updatePayeeName = updatePayeeName;
     window.changePassword = changePassword;
     window.logout = logout;
 </script>
