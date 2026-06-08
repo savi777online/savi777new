@@ -17,14 +17,14 @@
         }
 
         body {
-            background: #f0f2f5;
-            padding-bottom: 75px;
+            background: #f5f5f5;
+            padding-bottom: 65px;
         }
 
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: #f0f2f5;
+            background: #f5f5f5;
             min-height: 100vh;
             position: relative;
         }
@@ -32,217 +32,159 @@
         /* Header */
         .header {
             background: #ffffff;
-            padding: 16px 20px;
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #eee;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
         }
         .app-name {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: #1a1a2e;
         }
         .balance {
             background: #ff9800;
-            padding: 6px 16px;
-            border-radius: 30px;
+            padding: 5px 14px;
+            border-radius: 20px;
             color: #ffffff;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
         }
 
-        /* Server Time */
-        .server-time {
-            background: #ffffff;
+        /* Offer Banner */
+        .offer-banner {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
             margin: 12px 16px;
-            padding: 10px 16px;
+            padding: 12px 16px;
             border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #e0e0e0;
         }
-        .time-label {
-            font-size: 12px;
-            color: #666;
+        .offer-text {
+            color: #ffffff;
+            font-size: 13px;
             font-weight: 500;
         }
-        .time-value {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1a1a2e;
-            font-family: monospace;
-        }
-
-        /* Profile Row */
-        .profile-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            margin: 12px 16px;
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid #e0e0e0;
-        }
-        .profile-info h3 {
+        .offer-text strong {
             font-size: 16px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-        .profile-info p {
-            font-size: 11px;
-            color: #888;
-            margin-top: 2px;
-        }
-        .view-profile {
-            color: #ff9800;
-            font-size: 12px;
-            font-weight: 600;
         }
 
         /* Action Buttons Row */
         .action-row {
             display: flex;
-            gap: 16px;
-            margin: 16px;
+            gap: 12px;
+            margin: 0 16px 16px 16px;
         }
         .action-btn {
             flex: 1;
             text-align: center;
-            padding: 14px 0;
-            border-radius: 50px;
+            padding: 12px 0;
+            border-radius: 30px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .action-btn:active {
             transform: scale(0.97);
         }
-        .action-btn.deposit {
-            background: #ff9800;
-            color: #ffffff;
-        }
-        .action-btn.withdraw {
-            background: #ff5722;
-            color: #ffffff;
-        }
 
-        /* NEW Badge */
-        .new-badge {
-            background: #ff4444;
-            color: #ffffff;
-            font-size: 9px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 8px;
-            display: inline-block;
+        /* Main Markets Section */
+        .markets-header {
+            padding: 0 16px 8px 16px;
         }
-
-        /* Section Header */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            padding: 0 16px 12px 16px;
-        }
-        .section-title {
-            font-size: 16px;
+        .markets-title {
+            font-size: 18px;
             font-weight: 700;
             color: #1a1a2e;
         }
-        .section-link {
-            font-size: 12px;
-            color: #ff9800;
-            font-weight: 600;
-            cursor: pointer;
-        }
 
-        /* Category Row */
-        .category-row {
+        /* Market Categories Row */
+        .categories-row {
             display: flex;
-            gap: 12px;
-            margin: 0 16px 16px 16px;
+            gap: 16px;
+            margin: 8px 16px 12px 16px;
             overflow-x: auto;
-            padding-bottom: 4px;
         }
-        .category-chip {
-            padding: 8px 20px;
-            border-radius: 40px;
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            font-size: 13px;
+        .category-item {
+            font-size: 14px;
             font-weight: 600;
             color: #666;
-            white-space: nowrap;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
-            transition: all 0.2s;
+            white-space: nowrap;
         }
-        .category-chip:active {
-            transform: scale(0.96);
-        }
-        .category-chip.active {
-            background: #ff9800;
-            color: #ffffff;
-            border-color: #ff9800;
+        .category-item.active {
+            color: #ff9800;
+            border-bottom-color: #ff9800;
         }
 
-        /* Market Cards */
+        /* Market Cards - Exact Style from Image */
         .market-card {
             background: #ffffff;
-            margin: 12px 16px;
-            border-radius: 20px;
-            padding: 16px;
-            border: 1px solid #e0e0e0;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-        }
-        .market-card:active {
-            transform: scale(0.99);
+            margin: 10px 16px;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .market-header {
+        .market-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .market-name {
             font-size: 18px;
             font-weight: 800;
             color: #1a1a2e;
         }
-        .play-link {
-            color: #ff9800;
-            font-size: 14px;
+        .play-btn {
+            background: #ff9800;
+            color: #ffffff;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            background: #fff3e0;
-            padding: 6px 16px;
-            border-radius: 30px;
         }
-        .play-link:active {
-            opacity: 0.7;
+        .play-btn:active {
+            transform: scale(0.96);
+        }
+        .play-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .result-numbers {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             font-family: monospace;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: #1a1a2e;
-            margin-bottom: 12px;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 12px;
-            text-align: center;
+            margin-bottom: 10px;
         }
 
-        .timing-row {
+        .timings-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -251,21 +193,20 @@
         .timing-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             font-size: 12px;
         }
         .timing-label {
             color: #888;
-            font-weight: 500;
         }
         .timing-value {
-            color: #1a1a2e;
-            font-weight: 600;
+            color: #333;
+            font-weight: 500;
         }
-        .status-badge {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 14px;
+        .status-text {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
             border-radius: 20px;
         }
         .status-open {
@@ -281,7 +222,7 @@
             color: #f44336;
         }
 
-        /* Bottom Navigation - Big Size */
+        /* Bottom Navigation - Exact Style */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -293,21 +234,20 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 12px 16px;
-            border-top: 1px solid #e0e0e0;
+            padding: 10px 16px;
+            border-top: 1px solid #e8e8e8;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
         }
         .bottom-item {
             text-align: center;
             cursor: pointer;
-            padding: 8px 0;
-            border-radius: 8px;
+            padding: 6px 0;
             flex: 1;
-            transition: all 0.2s;
             font-size: 12px;
             font-weight: 600;
             color: #888;
+            transition: all 0.2s;
         }
         .bottom-item:active {
             transform: scale(0.95);
@@ -316,28 +256,87 @@
             color: #ff9800;
         }
 
-        /* Loading */
-        .loader {
-            text-align: center;
-            padding: 40px;
-            color: #888;
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.1);
         }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e0e0e0;
-            border-top: 3px solid #ff9800;
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .sidebar-overlay.open {
+            display: block;
+        }
+        .sidebar-header {
+            background: #ff9800;
+            padding: 30px 20px;
+            color: #ffffff;
+        }
+        .sidebar-avatar {
+            width: 60px;
+            height: 60px;
+            background: #ffffff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+            margin-bottom: 12px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .sidebar-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .sidebar-phone {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .sidebar-menu {
+            padding: 20px;
+        }
+        .sidebar-item {
+            padding: 14px 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .sidebar-item:active {
+            color: #ff9800;
+        }
+        .close-sidebar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #ffffff;
+            cursor: pointer;
         }
 
-        /* Modals */
-        .hidden { display: none; }
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -352,13 +351,12 @@
         }
         .modal-content {
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 24px;
             width: 90%;
             max-width: 350px;
         }
         .modal-content h3 {
-            color: #1a1a2e;
             margin-bottom: 16px;
             text-align: center;
         }
@@ -367,7 +365,7 @@
             padding: 12px;
             background: #ff9800;
             border: none;
-            border-radius: 12px;
+            border-radius: 30px;
             color: #ffffff;
             font-weight: 600;
             cursor: pointer;
@@ -375,20 +373,28 @@
         }
         .close-modal {
             background: #e0e0e0;
-            color: #1a1a2e;
+            color: #333;
         }
         .modal-input {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #ddd;
             border-radius: 12px;
         }
         .rate-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #eee;
+        }
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -396,51 +402,43 @@
 <div class="app-container">
     <!-- Header -->
     <div class="header">
-        <span class="app-name">DURGA</span>
+        <div class="header-left">
+            <div class="menu-icon" onclick="openSidebar()">☰</div>
+            <span class="app-name">DURGA</span>
+        </div>
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
 
-    <!-- Server Time -->
-    <div class="server-time">
-        <span class="time-label">📡 SERVER TIME</span>
-        <span class="time-value" id="serverTime">--:--:-- --</span>
-    </div>
-
-    <!-- Profile Row -->
-    <div class="profile-row" onclick="showProfileModal()">
-        <div class="profile-info">
-            <h3 id="profileName">Loading...</h3>
-            <p id="profilePhone">+91 XXXXXXXXXX</p>
-        </div>
-        <div class="view-profile">View Profile →</div>
+    <!-- Offer Banner -->
+    <div class="offer-banner">
+        <span class="offer-text">✨ <strong>um deposit of just ₹300!</strong></span>
     </div>
 
     <!-- Action Buttons -->
     <div class="action-row">
-        <div class="action-btn deposit" onclick="location.href='deposit.html'">Deposit</div>
-        <div class="action-btn withdraw" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="action-btn" onclick="location.href='deposit.html'">Deposit</div>
+        <div class="action-btn" onclick="location.href='withdraw.html'">Withdraw</div>
     </div>
 
-    <!-- Main Markets Section -->
-    <div class="section-header">
-        <span class="section-title">Main Markets <span class="new-badge">NEW</span></span>
-        <span class="section-link" onclick="showAllMarkets()">View All →</span>
+    <!-- Markets Header -->
+    <div class="markets-header">
+        <div class="markets-title">Main Markets</div>
     </div>
 
-    <!-- Category Chips -->
-    <div class="category-row" id="categoryRow">
-        <div class="category-chip active" data-cat="all" onclick="filterMarkets('all')">All</div>
-        <div class="category-chip" data-cat="open" onclick="filterMarkets('open')">🟢 Open</div>
-        <div class="category-chip" data-cat="close" onclick="filterMarkets('close')">🟡 Close</div>
-        <div class="category-chip" data-cat="closed" onclick="filterMarkets('closed')">🔴 Closed</div>
+    <!-- Market Categories -->
+    <div class="categories-row">
+        <div class="category-item active" data-cat="all" onclick="filterMarkets('all')">All</div>
+        <div class="category-item" data-cat="open" onclick="filterMarkets('open')">🟢 Open</div>
+        <div class="category-item" data-cat="close" onclick="filterMarkets('close')">🟡 Close</div>
+        <div class="category-item" data-cat="closed" onclick="filterMarkets('closed')">🔴 Closed</div>
     </div>
 
     <!-- Markets List -->
     <div id="marketsList">
-        <div class="loader"><div class="spinner"></div>Loading markets...</div>
+        <div class="loader">Loading markets...</div>
     </div>
 
-    <!-- Bottom Navigation - Big Size -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="bottom-item" onclick="location.href='history.html'">History</div>
         <div class="bottom-item" onclick="location.href='mybids.html'">Passbook</div>
@@ -450,19 +448,24 @@
     </div>
 </div>
 
-<!-- Profile Modal -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <h3>My Profile</h3>
-        <div id="profileInfo"></div>
-        <button class="modal-btn" onclick="showGameRatesModal()">Game Rates</button>
-        <button class="modal-btn" onclick="showChangePinModal()">Change MPIN</button>
-        <button class="modal-btn" onclick="showBankModal()">Bank Details</button>
-        <button class="modal-btn close-modal" onclick="closeProfileModal()">Close</button>
+<!-- Sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+    <button class="close-sidebar" onclick="closeSidebar()">✕</button>
+    <div class="sidebar-header">
+        <div class="sidebar-avatar" id="sidebarAvatar">👤</div>
+        <div class="sidebar-name" id="sidebarName">User Name</div>
+        <div class="sidebar-phone" id="sidebarPhone">+91 XXXXXXXXXX</div>
+    </div>
+    <div class="sidebar-menu">
+        <div class="sidebar-item" onclick="showGameRatesModal(); closeSidebar()">Game Rates</div>
+        <div class="sidebar-item" onclick="showChangePinModal(); closeSidebar()">Change MPIN</div>
+        <div class="sidebar-item" onclick="showBankModal(); closeSidebar()">Bank Details</div>
+        <div class="sidebar-item" onclick="logout(); closeSidebar()">Logout</div>
     </div>
 </div>
 
-<!-- Game Rates Modal -->
+<!-- Modals -->
 <div id="gameRatesModal" class="modal">
     <div class="modal-content">
         <h3>Game Rates</h3>
@@ -478,7 +481,6 @@
     </div>
 </div>
 
-<!-- Change PIN Modal -->
 <div id="changePinModal" class="modal">
     <div class="modal-content">
         <h3>Change MPIN</h3>
@@ -491,7 +493,6 @@
     </div>
 </div>
 
-<!-- Bank Modal -->
 <div id="bankModal" class="modal">
     <div class="modal-content">
         <h3>Bank Details</h3>
@@ -522,44 +523,6 @@
     let marketsData = [];
     let currentUserData = null;
     let currentFilter = "all";
-    let serverTimeInterval = null;
-    let cachedServerTime = null;
-    let lastServerTimeFetch = 0;
-    
-    // Get Server Time
-    async function getServerTime() {
-        const now = Date.now();
-        if (cachedServerTime && (now - lastServerTimeFetch) < 2000) {
-            const elapsed = (now - lastServerTimeFetch) / 1000;
-            return new Date(cachedServerTime.getTime() + (elapsed * 1000));
-        }
-        try {
-            const docRef = db.collection('settings').doc('servertime');
-            await docRef.set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            const doc = await docRef.get();
-            cachedServerTime = doc.data().timestamp.toDate();
-            lastServerTimeFetch = now;
-            return cachedServerTime;
-        } catch (error) {
-            return cachedServerTime || new Date();
-        }
-    }
-    
-    // Update Server Time Display
-    async function updateServerTimeDisplay() {
-        try {
-            const serverTime = await getServerTime();
-            let hours = serverTime.getHours();
-            const minutes = serverTime.getMinutes().toString().padStart(2, '0');
-            const seconds = serverTime.getSeconds().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-            document.getElementById('serverTime').innerHTML = timeString;
-        } catch (error) {
-            console.error("Server time error:", error);
-        }
-    }
     
     function formatTimeTo12Hour(timeStr) {
         if (!timeStr) return '--:--';
@@ -571,11 +534,11 @@
         return `${hours}:${minutes} ${ampm}`;
     }
     
-    function getStatusDisplay(status) {
-        if (status === 'open') return { text: '🟢 Open for Bids', class: 'status-open' };
-        if (status === 'close') return { text: '🟡 Close Running', class: 'status-close' };
-        if (status === 'holiday') return { text: '🔴 Holiday', class: 'status-closed' };
-        return { text: '🔴 Closed for Today', class: 'status-closed' };
+    function getStatusInfo(status) {
+        if (status === 'open') return { text: 'Open for Bids', class: 'status-open', btnText: 'Play', btnClass: '' };
+        if (status === 'close') return { text: 'Running for Close', class: 'status-close', btnText: 'Play', btnClass: '' };
+        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed', btnText: 'Closed', btnClass: 'disabled' };
+        return { text: 'Closed for Today', class: 'status-closed', btnText: 'Closed', btnClass: 'disabled' };
     }
     
     function listenToMarkets() {
@@ -602,9 +565,9 @@
     
     function filterMarkets(category) {
         currentFilter = category;
-        document.querySelectorAll('.category-chip').forEach(chip => {
-            chip.classList.remove('active');
-            if (chip.dataset.cat === category) chip.classList.add('active');
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.cat === category) item.classList.add('active');
         });
         renderMarkets();
     }
@@ -624,19 +587,20 @@
         
         let html = '';
         filtered.forEach(market => {
-            const statusDisplay = getStatusDisplay(market.status);
+            const statusInfo = getStatusInfo(market.status);
             const resultDisplay = `${market.openPana}-${market.jodi}-${market.closePana}`;
             const openTime = formatTimeTo12Hour(market.openBidEnd);
             const closeTime = formatTimeTo12Hour(market.closeBidEnd);
+            const isPlayable = market.status === 'open' || market.status === 'close';
             
             html += `
                 <div class="market-card">
-                    <div class="market-header">
+                    <div class="market-row">
                         <span class="market-name">${market.name.toUpperCase()}</span>
-                        <span class="play-link" onclick="event.stopPropagation(); openBetting('${market.id}', '${market.name}', '${market.status}')">Play →</span>
+                        <button class="play-btn ${statusInfo.btnClass}" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')" ${!isPlayable ? 'disabled' : ''}>${statusInfo.btnText}</button>
                     </div>
                     <div class="result-numbers">${resultDisplay}</div>
-                    <div class="timing-row">
+                    <div class="timings-row">
                         <div class="timing-item">
                             <span class="timing-label">Open Bids:</span>
                             <span class="timing-value">${openTime}</span>
@@ -646,8 +610,8 @@
                             <span class="timing-value">${closeTime}</span>
                         </div>
                     </div>
-                    <div class="timing-row">
-                        <span class="status-badge ${statusDisplay.class}">${statusDisplay.text}</span>
+                    <div class="timings-row">
+                        <span class="status-text ${statusInfo.class}">${statusInfo.text}</span>
                     </div>
                 </div>
             `;
@@ -658,13 +622,7 @@
     function openBetting(marketId, marketName, status) {
         if (status === 'open' || status === 'close') {
             window.location.href = `betting.html?market=${encodeURIComponent(marketName)}&status=${status}&marketId=${marketId}`;
-        } else {
-            alert(`${marketName} is ${status.toUpperCase()}. Not available for betting.`);
         }
-    }
-    
-    function showAllMarkets() {
-        filterMarkets('all');
     }
     
     async function loadUserData() {
@@ -675,26 +633,43 @@
             if (doc.exists) {
                 currentUserData = doc.data();
                 document.getElementById('userBalance').innerText = currentUserData.balance || 0;
-                document.getElementById('profileName').innerHTML = currentUserData.name || 'User';
-                document.getElementById('profilePhone').innerHTML = currentUserData.phone || '+91 XXXXXXXXXX';
+                const name = currentUserData.name || 'User';
+                const phone = currentUserData.phone || '+91 XXXXXXXXXX';
+                document.getElementById('sidebarName').innerHTML = name;
+                document.getElementById('sidebarPhone').innerHTML = phone;
+                document.getElementById('sidebarAvatar').innerHTML = name.charAt(0).toUpperCase();
             }
         } catch (error) {}
     }
     
     function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
     
+    // Sidebar Functions
+    function openSidebar() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('open');
+    }
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+    
     // Profile Functions
-    function showProfileModal() {
-        if (currentUserData) {
-            document.getElementById('profileInfo').innerHTML = `<div style="text-align:center;"><div style="font-size:18px;">${currentUserData.name}</div><div style="color:#666;">${currentUserData.phone}</div><div style="font-size:20px; margin-top:10px;">₹${currentUserData.balance}</div></div>`;
-            document.getElementById('profileModal').style.display = 'flex';
+    function showGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'flex'; }
+    function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
+    function showChangePinModal() { document.getElementById('changePinModal').style.display = 'flex'; }
+    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; document.getElementById('pinMsg').innerHTML = ''; }
+    function showBankModal() { document.getElementById('bankModal').style.display = 'flex'; loadBankDetails(); }
+    function closeBankModal() { document.getElementById('bankModal').style.display = 'none'; document.getElementById('bankMsg').innerHTML = ''; }
+    
+    function loadBankDetails() {
+        if (currentUserData?.bankDetails) {
+            document.getElementById('bankAccountHolder').value = currentUserData.bankDetails.accountHolder || '';
+            document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
+            document.getElementById('bankAccountNumber').value = currentUserData.bankDetails.accountNumber || '';
+            document.getElementById('bankIfsc').value = currentUserData.bankDetails.ifscCode || '';
         }
     }
-    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
-    function showGameRatesModal() { closeProfileModal(); document.getElementById('gameRatesModal').style.display = 'flex'; }
-    function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
-    function showChangePinModal() { closeProfileModal(); document.getElementById('changePinModal').style.display = 'flex'; }
-    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; document.getElementById('pinMsg').innerHTML = ''; }
     
     async function updatePin() {
         const oldPin = document.getElementById('oldPin').value;
@@ -709,18 +684,6 @@
         document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
         document.getElementById('pinMsg').style.color = '#4caf50';
         setTimeout(() => closeChangePinModal(), 1500);
-    }
-    
-    function showBankModal() { closeProfileModal(); document.getElementById('bankModal').style.display = 'flex'; loadBankDetails(); }
-    function closeBankModal() { document.getElementById('bankModal').style.display = 'none'; document.getElementById('bankMsg').innerHTML = ''; }
-    
-    function loadBankDetails() {
-        if (currentUserData?.bankDetails) {
-            document.getElementById('bankAccountHolder').value = currentUserData.bankDetails.accountHolder || '';
-            document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
-            document.getElementById('bankAccountNumber').value = currentUserData.bankDetails.accountNumber || '';
-            document.getElementById('bankIfsc').value = currentUserData.bankDetails.ifscCode || '';
-        }
     }
     
     async function saveBankDetails() {
@@ -740,24 +703,20 @@
         setTimeout(() => closeBankModal(), 1500);
     }
     
-    // Start server time clock
-    function startServerTimeClock() {
-        updateServerTimeDisplay();
-        if (serverTimeInterval) clearInterval(serverTimeInterval);
-        serverTimeInterval = setInterval(updateServerTimeDisplay, 1000);
+    function logout() {
+        auth.signOut().then(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
     }
     
     auth.onAuthStateChanged(user => {
         if (!user) window.location.href = 'index.html';
-        else { loadUserData(); listenToMarkets(); startServerTimeClock(); }
+        else { loadUserData(); listenToMarkets(); }
     });
     
     window.filterMarkets = filterMarkets;
     window.openBetting = openBetting;
-    window.showAllMarkets = showAllMarkets;
     window.showBalance = showBalance;
-    window.showProfileModal = showProfileModal;
-    window.closeProfileModal = closeProfileModal;
+    window.openSidebar = openSidebar;
+    window.closeSidebar = closeSidebar;
     window.showGameRatesModal = showGameRatesModal;
     window.closeGameRatesModal = closeGameRatesModal;
     window.showChangePinModal = showChangePinModal;
@@ -766,6 +725,7 @@
     window.showBankModal = showBankModal;
     window.closeBankModal = closeBankModal;
     window.saveBankDetails = saveBankDetails;
+    window.logout = logout;
 </script>
 </body>
 </html>
