@@ -16,14 +16,14 @@
         }
 
         body {
-            background: #f0f2f5;
-            padding-bottom: 70px;
+            background: #f5f7fb;
+            padding-bottom: 80px;
         }
 
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: #f0f2f5;
+            background: #f5f7fb;
             min-height: 100vh;
         }
 
@@ -37,32 +37,33 @@
             border-bottom: 1px solid #e8ecf0;
         }
         .app-name {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: #1a1a2e;
             letter-spacing: -0.3px;
         }
         .balance {
-            background: #007bff;
-            padding: 6px 16px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            padding: 8px 18px;
             border-radius: 30px;
             color: #ffffff;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
         }
         .balance:hover {
-            background: #0056b3;
             transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
         }
 
         /* Profile Card */
         .profile-card {
             background: #ffffff;
             margin: 16px;
-            padding: 14px 18px;
-            border-radius: 16px;
+            padding: 12px 18px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -72,12 +73,12 @@
         }
         .profile-card:hover {
             border-color: #007bff;
-            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.1);
         }
         .profile-avatar {
             width: 48px;
             height: 48px;
-            background: #007bff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -107,7 +108,7 @@
 
         /* Notice Bar */
         .notice-bar {
-            background: #e3f2fd;
+            background: #fff3cd;
             margin: 0 16px 16px 16px;
             padding: 10px 16px;
             border-radius: 12px;
@@ -115,16 +116,16 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            border: 1px solid #bbdef5;
+            border: 1px solid #ffeeba;
         }
         .notice-text {
             flex: 1;
-            color: #0d47a1;
+            color: #856404;
             font-size: 12px;
             font-weight: 500;
         }
         .notice-close {
-            color: #0d47a1;
+            color: #856404;
             font-size: 16px;
             cursor: pointer;
             background: none;
@@ -157,78 +158,83 @@
             color: #6c757d;
         }
 
-        /* Navigation Menu - Highlighted */
-        .nav-menu {
+        /* Top Action Bar - Deposit & Withdrawal Only */
+        .action-bar {
             display: flex;
-            justify-content: space-around;
-            background: #ffffff;
+            gap: 16px;
             margin: 0 16px 20px 16px;
-            padding: 8px 12px;
-            border-radius: 60px;
-            border: 1px solid #e8ecf0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
-        .nav-item {
+        .action-btn {
+            flex: 1;
             text-align: center;
-            padding: 8px 12px;
+            padding: 14px 0;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            border-radius: 40px;
             transition: all 0.2s;
-            font-weight: 500;
-            font-size: 13px;
-            color: #6c757d;
+            text-decoration: none;
         }
-        .nav-item:hover {
-            background: #f0f2f5;
-            color: #007bff;
-        }
-        .nav-item.active {
-            background: #007bff;
+        .action-btn.deposit {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
             color: #ffffff;
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+        .action-btn.deposit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40,167,69,0.4);
+        }
+        .action-btn.withdraw {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #1a1a2e;
+            box-shadow: 0 4px 12px rgba(255,193,7,0.3);
+        }
+        .action-btn.withdraw:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255,193,7,0.4);
         }
 
-        /* Markets Section */
+        /* Markets Header */
         .markets-header {
             padding: 0 16px 8px 16px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #6c757d;
             letter-spacing: 0.5px;
         }
 
-        /* Market Card - Reduced Size, Centered Name */
+        /* Market Cards */
         .market-card {
             background: #ffffff;
             margin: 12px 16px;
-            border-radius: 16px;
-            padding: 14px 16px;
+            border-radius: 20px;
+            padding: 16px;
             border: 1px solid #e8ecf0;
             transition: all 0.2s;
         }
         .market-card:hover {
             border-color: #007bff;
-            box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+            box-shadow: 0 4px 16px rgba(0,123,255,0.1);
         }
 
         .market-name {
             text-align: center;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
             color: #1a1a2e;
-            margin-bottom: 10px;
-            letter-spacing: -0.2px;
+            margin-bottom: 12px;
         }
 
         .result-box {
             background: #f8f9fa;
-            border-radius: 12px;
-            padding: 10px;
+            border-radius: 14px;
+            padding: 12px;
             text-align: center;
             margin: 10px 0;
         }
         .result-numbers {
             color: #1a1a2e;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             font-family: monospace;
             letter-spacing: 2px;
@@ -237,7 +243,7 @@
         .market-timings {
             display: flex;
             justify-content: center;
-            gap: 24px;
+            gap: 28px;
             margin: 10px 0 8px 0;
             padding: 6px;
         }
@@ -301,27 +307,28 @@
         .play-btn {
             width: 100%;
             margin-top: 10px;
-            padding: 10px;
-            background: #007bff;
+            padding: 12px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             border: none;
-            border-radius: 40px;
+            border-radius: 50px;
             color: #ffffff;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
         }
         .play-btn:hover {
-            background: #0056b3;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
         }
         .play-btn:disabled {
             background: #ced4da;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        /* Bottom Navigation */
+        /* Bottom Navigation - Home Centered */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -331,19 +338,20 @@
             margin: 0 auto;
             background: #ffffff;
             display: flex;
-            justify-content: space-around;
-            padding: 10px 16px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
             border-top: 1px solid #e8ecf0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
         }
         .bottom-item {
             text-align: center;
             cursor: pointer;
-            padding: 6px 0;
-            border-radius: 8px;
+            padding: 10px 0;
+            border-radius: 12px;
             flex: 1;
             transition: all 0.2s;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 500;
             color: #6c757d;
         }
@@ -354,6 +362,20 @@
         .bottom-item.active {
             color: #007bff;
             font-weight: 600;
+        }
+        /* Home button special styling */
+        .bottom-home {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #ffffff !important;
+            padding: 10px 0;
+            border-radius: 50px;
+            margin: 0 8px;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        .bottom-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,123,255,0.4);
+            color: #ffffff !important;
         }
 
         /* Modals */
@@ -372,8 +394,8 @@
         }
         .modal-content {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 28px;
+            padding: 28px;
             width: 90%;
             max-width: 350px;
             max-height: 80vh;
@@ -381,24 +403,25 @@
         }
         .modal-content h3 {
             color: #1a1a2e;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 700;
         }
         .modal-btn {
             width: 100%;
-            padding: 12px;
-            background: #007bff;
+            padding: 14px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
             border: none;
-            border-radius: 12px;
+            border-radius: 50px;
             color: #ffffff;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 12px;
             transition: all 0.2s;
         }
         .modal-btn:hover {
-            background: #0056b3;
+            transform: scale(1.02);
         }
         .close-modal {
             background: #e9ecef;
@@ -412,17 +435,18 @@
         }
         .modal-input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin: 10px 0;
             border: 1px solid #e8ecf0;
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 14px;
             color: #1a1a2e;
+            font-size: 15px;
         }
         .rate-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #e8ecf0;
         }
         .rate-name {
@@ -430,7 +454,7 @@
         }
         .rate-value {
             color: #1a1a2e;
-            font-weight: 600;
+            font-weight: 700;
         }
         .support-option {
             display: flex;
@@ -438,17 +462,19 @@
             gap: 15px;
             padding: 15px;
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 10px;
             cursor: pointer;
             border: 1px solid #e8ecf0;
+            transition: all 0.2s;
         }
         .support-option:hover {
             border-color: #007bff;
             background: #ffffff;
+            transform: translateX(5px);
         }
         .support-title {
-            font-weight: 600;
+            font-weight: 700;
             color: #1a1a2e;
         }
         .support-desc {
@@ -504,14 +530,10 @@
         <span class="clock-date" id="liveClockDate">--/--/----</span>
     </div>
 
-    <!-- Navigation Menu - Highlighted -->
-    <div class="nav-menu">
-        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
-        <div class="nav-item" onclick="location.href='deposit.html'">Deposit</div>
-        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
-        <div class="nav-item" onclick="location.href='mybids.html'">Passbook</div>
-        <div class="nav-item" onclick="location.href='funds.html'">Funds</div>
-        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
+    <!-- Top Action Bar - Deposit & Withdrawal Only -->
+    <div class="action-bar">
+        <div class="action-btn deposit" onclick="location.href='deposit.html'">DEPOSIT</div>
+        <div class="action-btn withdraw" onclick="location.href='withdraw.html'">WITHDRAW</div>
     </div>
 
     <!-- Markets Section -->
@@ -520,12 +542,12 @@
         <div class="loader"><div class="spinner"></div></div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - Home Centered and Separated -->
     <div class="bottom-nav">
-        <div class="bottom-item active" onclick="location.reload()">Home</div>
         <div class="bottom-item" onclick="location.href='mybids.html'">Passbook</div>
         <div class="bottom-item" onclick="location.href='mybids.html'">My Bids</div>
-        <div class="bottom-item" onclick="location.href='funds.html'">Fund</div>
+        <div class="bottom-item bottom-home" onclick="location.reload()">HOME</div>
+        <div class="bottom-item" onclick="location.href='funds.html'">Funds</div>
         <div class="bottom-item" onclick="location.href='chat.html'">Support</div>
     </div>
 </div>
@@ -860,7 +882,6 @@
     function sendWhatsApp() { window.open('https://wa.me/919113224019', '_blank'); }
     function showNoticeModal() { alert(document.getElementById('noticeText').innerText); }
     function closeNotice() { document.getElementById('noticeBar').style.display = 'none'; }
-    function showGames() { alert('Games coming soon!'); }
     
     async function init() {
         listenToMarkets();
@@ -901,7 +922,6 @@
     window.sendEmail = sendEmail;
     window.sendWhatsApp = sendWhatsApp;
     window.closeNotice = closeNotice;
-    window.showGames = showGames;
     window.logout = logout;
 </script>
 </body>
