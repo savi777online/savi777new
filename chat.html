@@ -21,6 +21,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* Header */
@@ -31,6 +32,7 @@
             align-items: center;
             gap: 15px;
             border-bottom: 1px solid #e0e0e0;
+            flex-shrink: 0;
         }
         .back-btn {
             background: none;
@@ -54,11 +56,6 @@
             0% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
             50% { opacity: 1; text-shadow: 0 0 5px rgba(0,170,85,0.3); }
             100% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
-        }
-        .status-badge {
-            font-size: 11px;
-            color: #10b981;
-            margin-top: 4px;
         }
 
         /* Chat Messages */
@@ -104,18 +101,18 @@
             color: #ff9800;
             font-style: italic;
             background: #f0f2f5;
+            flex-shrink: 0;
         }
 
-        /* Input Area - FIXED */
+        /* Input Area - FIXED (Above Bottom Nav) */
         .input-area {
             background: #ffffff;
             padding: 12px 16px;
             display: flex;
             gap: 10px;
             border-top: 1px solid #e0e0e0;
-            position: sticky;
-            bottom: 0;
-            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: 60px;
         }
         .input-area input {
             flex: 1;
@@ -208,8 +205,8 @@
     <!-- Typing Indicator -->
     <div class="typing-indicator" id="typingIndicator" style="display: none;">Support is typing...</div>
     
-    <!-- Input Area - FIXED (Visible and Working) -->
-    <div class="input-area" id="inputArea">
+    <!-- Input Area - FIXED (Now Visible) -->
+    <div class="input-area">
         <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button onclick="sendMessage()">SEND</button>
     </div>
