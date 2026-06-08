@@ -17,14 +17,14 @@
         }
 
         body {
-            background: #f5f5f5;
+            background: #f0f2f5;
             padding-bottom: 65px;
         }
 
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: #f5f5f5;
+            background: #f0f2f5;
             min-height: 100vh;
             position: relative;
         }
@@ -32,114 +32,146 @@
         /* Header */
         .header {
             background: #ffffff;
-            padding: 14px 20px;
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #e0e0e0;
         }
         .header-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         .menu-icon {
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
             color: #333;
         }
         .app-name {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: #1a1a2e;
         }
         .balance {
             background: #ff9800;
-            padding: 5px 14px;
+            padding: 4px 12px;
             border-radius: 20px;
             color: #ffffff;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
+        }
+
+        /* Time Display */
+        .time-display {
+            background: #ffffff;
+            margin: 10px 16px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+        }
+        .time-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .time-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
         }
 
         /* Offer Banner */
         .offer-banner {
             background: linear-gradient(135deg, #ff9800, #ff5722);
-            margin: 12px 16px;
-            padding: 12px 16px;
-            border-radius: 12px;
+            margin: 0 16px 12px 16px;
+            padding: 10px 16px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .offer-text {
             color: #ffffff;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
         }
         .offer-text strong {
-            font-size: 16px;
+            font-size: 15px;
         }
 
-        /* Action Buttons Row */
+        /* Action Buttons Row - 4 buttons with icons */
         .action-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin: 0 16px 16px 16px;
         }
         .action-btn {
             flex: 1;
             text-align: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 14px;
+            font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
             background: #ffffff;
             border: 1px solid #e0e0e0;
             color: #333;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         .action-btn:active {
             transform: scale(0.97);
         }
 
-        /* Main Markets Section */
-        .markets-header {
+        /* Section Header */
+        .section-header {
             padding: 0 16px 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
         }
-        .markets-title {
-            font-size: 18px;
+        .section-title {
+            font-size: 16px;
             font-weight: 700;
             color: #1a1a2e;
         }
+        .section-link {
+            font-size: 12px;
+            color: #ff9800;
+            font-weight: 500;
+        }
 
-        /* Market Categories Row */
-        .categories-row {
+        /* Category Row */
+        .category-row {
             display: flex;
-            gap: 16px;
-            margin: 8px 16px 12px 16px;
-            overflow-x: auto;
+            gap: 20px;
+            margin: 0 16px 12px 16px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e0e0e0;
         }
         .category-item {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #666;
-            padding-bottom: 4px;
-            border-bottom: 2px solid transparent;
             cursor: pointer;
-            white-space: nowrap;
+            padding-bottom: 6px;
+            border-bottom: 2px solid transparent;
         }
         .category-item.active {
             color: #ff9800;
             border-bottom-color: #ff9800;
         }
 
-        /* Market Cards - Exact Style from Image */
+        /* Market Cards */
         .market-card {
             background: #ffffff;
-            margin: 10px 16px;
+            margin: 12px 16px;
             border-radius: 16px;
             padding: 14px 16px;
             border: 1px solid #e8e8e8;
@@ -153,7 +185,7 @@
             margin-bottom: 10px;
         }
         .market-name {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
             color: #1a1a2e;
         }
@@ -161,9 +193,9 @@
             background: #ff9800;
             color: #ffffff;
             border: none;
-            padding: 6px 20px;
+            padding: 6px 18px;
             border-radius: 30px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
@@ -188,13 +220,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 6px;
         }
         .timing-item {
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 12px;
+            font-size: 11px;
         }
         .timing-label {
             color: #888;
@@ -204,9 +236,9 @@
             font-weight: 500;
         }
         .status-text {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
         }
         .status-open {
@@ -222,7 +254,7 @@
             color: #f44336;
         }
 
-        /* Bottom Navigation - Exact Style */
+        /* Bottom Navigation - Exact as Image */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -234,7 +266,7 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 10px 16px;
+            padding: 8px 12px;
             border-top: 1px solid #e8e8e8;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
@@ -242,12 +274,16 @@
         .bottom-item {
             text-align: center;
             cursor: pointer;
-            padding: 6px 0;
+            padding: 5px 0;
             flex: 1;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 500;
             color: #888;
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
         }
         .bottom-item:active {
             transform: scale(0.95);
@@ -255,8 +291,11 @@
         .bottom-item.active {
             color: #ff9800;
         }
+        .bottom-icon {
+            font-size: 20px;
+        }
 
-        /* Sidebar Menu */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
@@ -409,28 +448,36 @@
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
 
+    <!-- Time Display -->
+    <div class="time-display">
+        <span class="time-label">📡 SERVER TIME</span>
+        <span class="time-value" id="serverTime">--:--:-- --</span>
+    </div>
+
     <!-- Offer Banner -->
     <div class="offer-banner">
         <span class="offer-text">✨ <strong>um deposit of just ₹300!</strong></span>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Action Buttons - Deposit, Withdraw, WhatsApp, Call Us -->
     <div class="action-row">
-        <div class="action-btn" onclick="location.href='deposit.html'">Deposit</div>
-        <div class="action-btn" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="action-btn" onclick="location.href='deposit.html'">💰 Deposit</div>
+        <div class="action-btn" onclick="location.href='withdraw.html'">💸 Withdraw</div>
+        <div class="action-btn" onclick="sendWhatsApp()">📱 WhatsApp</div>
+        <div class="action-btn" onclick="makeCall()">📞 Call Us</div>
     </div>
 
-    <!-- Markets Header -->
-    <div class="markets-header">
-        <div class="markets-title">Main Markets</div>
+    <!-- Main Markets Section -->
+    <div class="section-header">
+        <span class="section-title">Main Markets</span>
+        <span class="section-link" onclick="showAllMarkets()">View All ›</span>
     </div>
 
-    <!-- Market Categories -->
-    <div class="categories-row">
-        <div class="category-item active" data-cat="all" onclick="filterMarkets('all')">All</div>
-        <div class="category-item" data-cat="open" onclick="filterMarkets('open')">🟢 Open</div>
-        <div class="category-item" data-cat="close" onclick="filterMarkets('close')">🟡 Close</div>
-        <div class="category-item" data-cat="closed" onclick="filterMarkets('closed')">🔴 Closed</div>
+    <!-- Category Row - Cricket Bazaar, Starline, Jackpot -->
+    <div class="category-row">
+        <div class="category-item active" data-cat="all" onclick="filterMarkets('all')">Cricket Bazaar</div>
+        <div class="category-item" data-cat="starline" onclick="filterMarkets('starline')">Starline</div>
+        <div class="category-item" data-cat="jackpot" onclick="filterMarkets('jackpot')">Jackpot</div>
     </div>
 
     <!-- Markets List -->
@@ -438,13 +485,28 @@
         <div class="loader">Loading markets...</div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - Icons and Text -->
     <div class="bottom-nav">
-        <div class="bottom-item" onclick="location.href='history.html'">History</div>
-        <div class="bottom-item" onclick="location.href='mybids.html'">Passbook</div>
-        <div class="bottom-item active" onclick="location.reload()">Home</div>
-        <div class="bottom-item" onclick="location.href='funds.html'">Funds</div>
-        <div class="bottom-item" onclick="location.href='chat.html'">Support</div>
+        <div class="bottom-item" onclick="location.href='history.html'">
+            <span class="bottom-icon">📋</span>
+            <span>History</span>
+        </div>
+        <div class="bottom-item" onclick="location.href='mybids.html'">
+            <span class="bottom-icon">📘</span>
+            <span>Passbook</span>
+        </div>
+        <div class="bottom-item active" onclick="location.reload()">
+            <span class="bottom-icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="bottom-item" onclick="location.href='funds.html'">
+            <span class="bottom-icon">💰</span>
+            <span>Funds</span>
+        </div>
+        <div class="bottom-item" onclick="location.href='chat.html'">
+            <span class="bottom-icon">💬</span>
+            <span>Support</span>
+        </div>
     </div>
 </div>
 
@@ -523,6 +585,41 @@
     let marketsData = [];
     let currentUserData = null;
     let currentFilter = "all";
+    let serverTimeInterval = null;
+    let cachedServerTime = null;
+    let lastServerTimeFetch = 0;
+    
+    // Get Server Time
+    async function getServerTime() {
+        const now = Date.now();
+        if (cachedServerTime && (now - lastServerTimeFetch) < 2000) {
+            const elapsed = (now - lastServerTimeFetch) / 1000;
+            return new Date(cachedServerTime.getTime() + (elapsed * 1000));
+        }
+        try {
+            const docRef = db.collection('settings').doc('servertime');
+            await docRef.set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            const doc = await docRef.get();
+            cachedServerTime = doc.data().timestamp.toDate();
+            lastServerTimeFetch = now;
+            return cachedServerTime;
+        } catch (error) {
+            return cachedServerTime || new Date();
+        }
+    }
+    
+    async function updateServerTimeDisplay() {
+        try {
+            const serverTime = await getServerTime();
+            let hours = serverTime.getHours();
+            const minutes = serverTime.getMinutes().toString().padStart(2, '0');
+            const seconds = serverTime.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+            document.getElementById('serverTime').innerHTML = timeString;
+        } catch (error) {}
+    }
     
     function formatTimeTo12Hour(timeStr) {
         if (!timeStr) return '--:--';
@@ -535,10 +632,10 @@
     }
     
     function getStatusInfo(status) {
-        if (status === 'open') return { text: 'Open for Bids', class: 'status-open', btnText: 'Play', btnClass: '' };
-        if (status === 'close') return { text: 'Running for Close', class: 'status-close', btnText: 'Play', btnClass: '' };
-        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed', btnText: 'Closed', btnClass: 'disabled' };
-        return { text: 'Closed for Today', class: 'status-closed', btnText: 'Closed', btnClass: 'disabled' };
+        if (status === 'open') return { text: 'Open for Bids', class: 'status-open', btnText: 'Play' };
+        if (status === 'close') return { text: 'Running for Close', class: 'status-close', btnText: 'Play' };
+        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed', btnText: 'Closed' };
+        return { text: 'Closed for Today', class: 'status-closed', btnText: 'Closed' };
     }
     
     function listenToMarkets() {
@@ -555,7 +652,8 @@
                     openBidEnd: data.openBidEnd,
                     closeBidEnd: data.closeBidEnd,
                     status: data.status || 'closed',
-                    serialNo: data.serialNo || 999
+                    serialNo: data.serialNo || 999,
+                    category: data.category || 'all'
                 });
             });
             marketsData.sort((a, b) => a.serialNo - b.serialNo);
@@ -567,9 +665,16 @@
         currentFilter = category;
         document.querySelectorAll('.category-item').forEach(item => {
             item.classList.remove('active');
-            if (item.dataset.cat === category) item.classList.add('active');
+            if (item.innerText.toLowerCase().replace(' ', '') === category || 
+                (item.dataset.cat === category)) {
+                item.classList.add('active');
+            }
         });
         renderMarkets();
+    }
+    
+    function showAllMarkets() {
+        filterMarkets('all');
     }
     
     function renderMarkets() {
@@ -577,7 +682,7 @@
         let filtered = [...marketsData];
         
         if (currentFilter !== 'all') {
-            filtered = filtered.filter(m => m.status === currentFilter);
+            filtered = filtered.filter(m => m.category === currentFilter || m.name.toLowerCase().includes(currentFilter));
         }
         
         if (filtered.length === 0) {
@@ -597,7 +702,7 @@
                 <div class="market-card">
                     <div class="market-row">
                         <span class="market-name">${market.name.toUpperCase()}</span>
-                        <button class="play-btn ${statusInfo.btnClass}" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')" ${!isPlayable ? 'disabled' : ''}>${statusInfo.btnText}</button>
+                        <button class="play-btn ${!isPlayable ? 'disabled' : ''}" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')" ${!isPlayable ? 'disabled' : ''}>${statusInfo.btnText}</button>
                     </div>
                     <div class="result-numbers">${resultDisplay}</div>
                     <div class="timings-row">
@@ -643,6 +748,8 @@
     }
     
     function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
+    function sendWhatsApp() { window.open('https://wa.me/919113224019', '_blank'); }
+    function makeCall() { window.location.href = 'tel:+919113224019'; }
     
     // Sidebar Functions
     function openSidebar() {
@@ -654,7 +761,6 @@
         document.getElementById('sidebarOverlay').classList.remove('open');
     }
     
-    // Profile Functions
     function showGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'flex'; }
     function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
     function showChangePinModal() { document.getElementById('changePinModal').style.display = 'flex'; }
@@ -707,14 +813,23 @@
         auth.signOut().then(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
     }
     
+    function startServerTimeClock() {
+        updateServerTimeDisplay();
+        if (serverTimeInterval) clearInterval(serverTimeInterval);
+        serverTimeInterval = setInterval(updateServerTimeDisplay, 1000);
+    }
+    
     auth.onAuthStateChanged(user => {
         if (!user) window.location.href = 'index.html';
-        else { loadUserData(); listenToMarkets(); }
+        else { loadUserData(); listenToMarkets(); startServerTimeClock(); }
     });
     
     window.filterMarkets = filterMarkets;
     window.openBetting = openBetting;
+    window.showAllMarkets = showAllMarkets;
     window.showBalance = showBalance;
+    window.sendWhatsApp = sendWhatsApp;
+    window.makeCall = makeCall;
     window.openSidebar = openSidebar;
     window.closeSidebar = closeSidebar;
     window.showGameRatesModal = showGameRatesModal;
