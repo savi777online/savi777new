@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DURGA - Support Chat</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -38,6 +38,9 @@
             font-size: 24px;
             cursor: pointer;
             color: #333;
+        }
+        .back-btn:active {
+            transform: scale(0.95);
         }
         .chat-title {
             flex: 1;
@@ -103,21 +106,24 @@
             background: #f0f2f5;
         }
 
-        /* Input Area */
+        /* Input Area - FIXED */
         .input-area {
             background: #ffffff;
             padding: 12px 16px;
             display: flex;
             gap: 10px;
             border-top: 1px solid #e0e0e0;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
         }
         .input-area input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 14px 18px;
             border: 1px solid #e0e0e0;
             border-radius: 30px;
             outline: none;
-            font-size: 14px;
+            font-size: 15px;
             background: #f5f5f5;
         }
         .input-area input:focus {
@@ -126,10 +132,11 @@
         .input-area button {
             background: #ff9800;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 30px;
             color: #ffffff;
             font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -186,19 +193,23 @@
     </style>
 </head>
 <body>
+    <!-- Chat Header -->
     <div class="chat-header">
         <button class="back-btn" onclick="goBack()">←</button>
         <div class="chat-title">DURGA SUPPORT</div>
         <div style="width: 30px;"></div>
     </div>
     
+    <!-- Chat Messages Area -->
     <div class="chat-messages" id="chatMessages">
         <div class="welcome">💬 Send a message to support. We'll respond shortly.</div>
     </div>
     
+    <!-- Typing Indicator -->
     <div class="typing-indicator" id="typingIndicator" style="display: none;">Support is typing...</div>
     
-    <div class="input-area">
+    <!-- Input Area - FIXED (Visible and Working) -->
+    <div class="input-area" id="inputArea">
         <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button onclick="sendMessage()">SEND</button>
     </div>
@@ -228,16 +239,25 @@
         
         let currentUser = null;
         let chatRoomId = null;
+        let currentUserData = null;
         
         auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'index.html'; return; }
+            if (!user) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
             currentUser = user;
+            
+            // Load user data
             const userDoc = await db.collection('users').doc(user.uid).get();
-            const userData = userDoc.data();
+            currentUserData = userDoc.data();
             chatRoomId = `chat_${user.uid}`;
             
+            // Create chat document if not exists
             await db.collection('chats').doc(chatRoomId).set({
-                userId: user.uid, userName: userData?.name || 'User', userPhone: userData?.phone || '',
+                userId: user.uid,
+                userName: currentUserData?.name || 'User',
+                userPhone: currentUserData?.phone || '',
                 lastActive: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
             
@@ -245,25 +265,36 @@
         });
         
         function setupChat() {
-            db.collection('chats').doc(chatRoomId).collection('messages').orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
-                const container = document.getElementById('chatMessages');
-                if (snapshot.empty) {
-                    container.innerHTML = '<div class="welcome">💬 Send a message to support. We\'ll respond shortly.</div>';
-                    return;
-                }
-                let html = '';
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    const isUser = msg.senderId === currentUser.uid;
-                    const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '';
-                    html += `<div class="message ${isUser ? 'user-message' : 'support-message'}">
-                        ${escapeHtml(msg.text)}<div class="message-time">${time}</div>
-                    </div>`;
+            // Listen for messages
+            db.collection('chats').doc(chatRoomId).collection('messages')
+                .orderBy('timestamp', 'asc')
+                .onSnapshot((snapshot) => {
+                    const container = document.getElementById('chatMessages');
+                    if (snapshot.empty) {
+                        container.innerHTML = '<div class="welcome">💬 Send a message to support. We\'ll respond shortly.</div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const msg = doc.data();
+                        const isUser = msg.senderId === currentUser.uid;
+                        const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || '';
+                        
+                        html += `
+                            <div class="message ${isUser ? 'user-message' : 'support-message'}">
+                                ${escapeHtml(msg.text)}
+                                <div class="message-time">${time}</div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                    container.scrollTop = container.scrollHeight;
+                }, (error) => {
+                    console.error("Error loading messages:", error);
                 });
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-            });
             
+            // Listen for typing indicator from admin
             db.collection('chats').doc(chatRoomId).onSnapshot((doc) => {
                 if (doc.exists && doc.data().adminTyping) {
                     document.getElementById('typingIndicator').style.display = 'block';
@@ -277,19 +308,54 @@
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
             if (!text) return;
+            
             input.value = '';
             
-            await db.collection('chats').doc(chatRoomId).collection('messages').add({
-                senderId: currentUser.uid, senderName: 'User', text: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(), isUser: true
-            });
-            await db.collection('chats').doc(chatRoomId).set({
-                lastMessage: text, lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(), unread: true
-            }, { merge: true });
+            try {
+                // Add message to subcollection
+                await db.collection('chats').doc(chatRoomId).collection('messages').add({
+                    senderId: currentUser.uid,
+                    senderName: currentUserData?.name || 'User',
+                    text: text,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    isUser: true
+                });
+                
+                // Update chat document
+                await db.collection('chats').doc(chatRoomId).set({
+                    lastMessage: text,
+                    lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
+                    unread: true
+                }, { merge: true });
+                
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert("Error sending message: " + error.message);
+            }
         }
         
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-        function goBack() { window.location.href = 'dashboard.html'; }
+        function escapeHtml(str) { 
+            if (!str) return ''; 
+            return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); 
+        }
+        
+        function goBack() { 
+            window.location.href = 'dashboard.html'; 
+        }
+        
+        // Typing indicator for user
+        let typingTimeout;
+        const inputField = document.getElementById('messageInput');
+        if (inputField) {
+            inputField.addEventListener('input', () => {
+                if (!chatRoomId) return;
+                db.collection('chats').doc(chatRoomId).update({ userTyping: true }).catch(() => {});
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    db.collection('chats').doc(chatRoomId).update({ userTyping: false }).catch(() => {});
+                }, 1000);
+            });
+        }
         
         window.sendMessage = sendMessage;
         window.goBack = goBack;
