@@ -8,166 +8,529 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f5f7fa; padding-bottom: 70px; }
-        .app-container { max-width: 500px; margin: 0 auto; background: #f5f7fa; min-height: 100vh; }
-        
-        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9ecef; }
-        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
-        .balance { background: linear-gradient(135deg, #007bff, #0056b3); padding: 5px 15px; border-radius: 30px; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
-        
-        .profile-row { display: flex; align-items: center; gap: 12px; background: #fff; margin: 10px; padding: 12px 15px; border-radius: 20px; border: 1px solid #e9ecef; cursor: pointer; }
-        .profile-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; }
-        .profile-info { flex: 1; }
-        .profile-name { color: #1a1a2e; font-size: 16px; font-weight: bold; }
-        .profile-phone { color: #6c757d; font-size: 12px; }
-        .view-profile { color: #007bff; font-size: 12px; }
-        
-        .notice-board { background: linear-gradient(135deg, #007bff, #0056b3); margin: 10px; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .notice-text { flex: 1; color: #fff; font-weight: bold; font-size: 13px; }
-        .close-notice { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
-        
-        .live-clock {
-            background: #fff;
-            margin: 10px 10px 15px 10px;
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e9ecef;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .clock-time {
-            font-size: 16px;
+
+        body {
+            background: #f0f2f5;
+            padding-bottom: 70px;
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .app-name {
+            font-size: 20px;
             font-weight: 700;
             color: #1a1a2e;
+            letter-spacing: -0.3px;
+        }
+        .balance {
+            background: #007bff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .balance:hover {
+            background: #0056b3;
+            transform: scale(1.02);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: #ffffff;
+            margin: 16px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            border: 1px solid #e8ecf0;
+            transition: all 0.2s;
+        }
+        .profile-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+        .profile-avatar {
+            width: 48px;
+            height: 48px;
+            background: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .profile-info {
+            flex: 1;
+        }
+        .profile-name {
+            color: #1a1a2e;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .profile-phone {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .profile-arrow {
+            color: #007bff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Notice Bar */
+        .notice-bar {
+            background: #e3f2fd;
+            margin: 0 16px 16px 16px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid #bbdef5;
+        }
+        .notice-text {
+            flex: 1;
+            color: #0d47a1;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .notice-close {
+            color: #0d47a1;
+            font-size: 16px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            opacity: 0.7;
+        }
+        .notice-close:hover {
+            opacity: 1;
+        }
+
+        /* Live Clock */
+        .live-clock {
+            background: #ffffff;
+            margin: 0 16px 20px 16px;
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border: 1px solid #e8ecf0;
+        }
+        .clock-time {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
             font-family: monospace;
-            letter-spacing: 1px;
-            background: #f8f9fa;
-            padding: 4px 14px;
-            border-radius: 25px;
         }
         .clock-date {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        /* Navigation Menu - Highlighted */
+        .nav-menu {
+            display: flex;
+            justify-content: space-around;
+            background: #ffffff;
+            margin: 0 16px 20px 16px;
+            padding: 8px 12px;
+            border-radius: 60px;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .nav-item {
+            text-align: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        .nav-item:hover {
+            background: #f0f2f5;
+            color: #007bff;
+        }
+        .nav-item.active {
+            background: #007bff;
+            color: #ffffff;
+        }
+
+        /* Markets Section */
+        .markets-header {
+            padding: 0 16px 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+        }
+
+        /* Market Card - Reduced Size, Centered Name */
+        .market-card {
+            background: #ffffff;
+            margin: 12px 16px;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e8ecf0;
+            transition: all 0.2s;
+        }
+        .market-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+        }
+
+        .market-name {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            letter-spacing: -0.2px;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .result-numbers {
+            color: #1a1a2e;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .market-timings {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 10px 0 8px 0;
+            padding: 6px;
+        }
+        .timing-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+        .green-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+        }
+        .orange-dot {
+            width: 8px;
+            height: 8px;
+            background: #ffc107;
+            border-radius: 50%;
+        }
+        .timing-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .timing-value {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .market-status {
+            text-align: center;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto 10px;
+            font-weight: 600;
+        }
+        .status-closed {
+            background: #fee2e2;
+            color: #dc3545;
+        }
+        .status-close {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+        .status-open {
+            background: #d4edda;
+            color: #28a745;
+        }
+        .status-holiday {
+            background: #e2e3e5;
+            color: #6c757d;
+        }
+        .status-wrapper {
+            text-align: center;
+        }
+
+        .play-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            border-radius: 40px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .play-btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .play-btn:disabled {
+            background: #ced4da;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 16px;
+            border-top: 1px solid #e8ecf0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .bottom-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 6px 0;
+            border-radius: 8px;
+            flex: 1;
+            transition: all 0.2s;
+            font-size: 11px;
+            font-weight: 500;
+            color: #6c757d;
+        }
+        .bottom-item:hover {
+            color: #007bff;
+            transform: translateY(-2px);
+        }
+        .bottom-item.active {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        /* Modals */
+        .hidden { display: none; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            width: 90%;
+            max-width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover {
+            background: #0056b3;
+        }
+        .close-modal {
+            background: #e9ecef;
+            color: #1a1a2e;
+        }
+        .logout-btn {
+            background: #dc3545;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #e8ecf0;
+            background: #f8f9fa;
+            border-radius: 12px;
+            color: #1a1a2e;
+        }
+        .rate-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .rate-name {
+            color: #6c757d;
+        }
+        .rate-value {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        .support-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #e8ecf0;
+        }
+        .support-option:hover {
+            border-color: #007bff;
+            background: #ffffff;
+        }
+        .support-title {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .support-desc {
             font-size: 12px;
             color: #6c757d;
-            background: #f8f9fa;
-            padding: 4px 12px;
-            border-radius: 25px;
         }
-        
-        .games-row { display: flex; justify-content: space-around; background: #fff; margin: 10px; padding: 12px; border-radius: 20px; border: 1px solid #e9ecef; }
-        .game-icon { text-align: center; color: #6c757d; font-size: 11px; cursor: pointer; transition: all 0.3s; }
-        .game-icon:hover { transform: translateY(-5px); color: #007bff; }
-        .game-icon span { display: block; margin-top: 4px; }
-        
-        .market-card { background: #fff; margin: 12px; border-radius: 20px; padding: 16px; border: 1px solid #e9ecef; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .market-card:hover { transform: translateY(-2px); border-color: #007bff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
-        .market-name { color: #1a1a2e; font-size: 18px; font-weight: bold; }
-        .market-numbers { color: #6c757d; font-size: 12px; font-family: monospace; background: #f8f9fa; padding: 4px 8px; border-radius: 8px; }
-        
-        .result-box { background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 10px 0; text-align: center; }
-        .result-numbers { color: #1a1a2e; font-size: 22px; font-weight: bold; letter-spacing: 2px; font-family: monospace; }
-        
-        .market-timings { display: flex; justify-content: center; gap: 25px; margin: 10px 0 5px 0; padding: 8px; background: #f8f9fa; border-radius: 30px; }
-        .timing-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-        .green-dot { width: 10px; height: 10px; background: #28a745; border-radius: 50%; }
-        .orange-dot { width: 10px; height: 10px; background: #ffc107; border-radius: 50%; }
-        .timing-label { color: #6c757d; font-weight: 500; }
-        .timing-value { color: #1a1a2e; font-weight: bold; }
-        
-        .market-status { font-size: 11px; padding: 4px 12px; border-radius: 20px; display: inline-block; font-weight: 600; }
-        .status-closed { background: #fee2e2; color: #dc3545; }
-        .status-close { background: #fff3cd; color: #ffc107; }
-        .status-open { background: #d4edda; color: #28a745; }
-        .status-holiday { background: #e2e3e5; color: #6c757d; }
-        
-        .play-btn { width: 100%; margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
-        .play-btn:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(0,123,255,0.4); }
-        .play-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #ced4da; transform: none; box-shadow: none; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 10px; border-top: 1px solid #e9ecef; }
-        .nav-item { text-align: center; color: #6c757d; cursor: pointer; font-size: 10px; transition: all 0.3s; flex: 1; }
-        .nav-item:hover { color: #007bff; transform: translateY(-3px); }
-        .nav-item span { font-size: 10px; display: block; margin-top: 2px; }
-        .nav-item.active { color: #007bff; }
-        
-        .hidden { display: none; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: #fff; border-radius: 24px; padding: 25px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto; border: none; }
-        .modal-content h3 { color: #1a1a2e; margin-bottom: 15px; text-align: center; }
-        .modal-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .close-modal { background: #e9ecef; color: #1a1a2e; }
-        .logout-btn { background: #dc3545; color: #fff; }
-        .modal-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e9ecef; background: #f8f9fa; border-radius: 12px; color: #1a1a2e; }
-        
-        .rate-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
-        .rate-name { color: #6c757d; }
-        .rate-value { color: #1a1a2e; font-weight: bold; }
-        
-        .support-option { display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; border: 1px solid #e9ecef; }
-        .support-option:hover { background: #fff; border-color: #007bff; transform: translateX(5px); }
-        .support-text { flex: 1; }
-        .support-title { font-weight: bold; color: #1a1a2e; }
-        .support-desc { font-size: 12px; color: #6c757d; }
-        
-        .loader { display: flex; justify-content: center; align-items: center; padding: 40px; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #e9ecef; border-top: 3px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e8ecf0;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
+    <!-- Header -->
     <div class="header">
         <span class="app-name">SAVI777</span>
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
-    
-    <div class="profile-row" onclick="showProfileModal()">
+
+    <!-- Profile Card -->
+    <div class="profile-card" onclick="showProfileModal()">
         <div class="profile-avatar">SA</div>
         <div class="profile-info">
             <div class="profile-name" id="profileName">Loading...</div>
             <div class="profile-phone" id="profilePhone">Loading...</div>
         </div>
-        <div class="view-profile">View →</div>
+        <div class="profile-arrow">→</div>
     </div>
-    
-    <div id="noticeBoard" class="notice-board" onclick="showNoticeModal()">
-        <div class="notice-text" id="noticeText">Welcome to SAVI777! Play big · Win big</div>
-        <button class="close-notice" onclick="event.stopPropagation(); closeNotice()">✕</button>
+
+    <!-- Notice Bar -->
+    <div id="noticeBar" class="notice-bar" onclick="showNoticeModal()">
+        <div class="notice-text" id="noticeText">Welcome to SAVI777! Play and win.</div>
+        <button class="notice-close" onclick="event.stopPropagation(); closeNotice()">✕</button>
     </div>
-    
-    <div class="live-clock" id="liveClock">
+
+    <!-- Live Clock -->
+    <div class="live-clock">
         <span class="clock-time" id="liveClockTime">--:--:--</span>
         <span class="clock-date" id="liveClockDate">--/--/----</span>
     </div>
-    
-    <div class="games-row">
-        <div class="game-icon" onclick="showGames()"><span>Games</span></div>
-        <div class="game-icon" onclick="window.location.href='deposit.html'"><span>Deposit</span></div>
-        <div class="game-icon" onclick="window.location.href='withdraw.html'"><span>Withdraw</span></div>
-        <div class="game-icon" onclick="window.location.href='mybids.html'"><span>My Bids</span></div>
+
+    <!-- Navigation Menu - Highlighted -->
+    <div class="nav-menu">
+        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
+        <div class="nav-item" onclick="location.href='deposit.html'">Deposit</div>
+        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">Passbook</div>
+        <div class="nav-item" onclick="location.href='funds.html'">Funds</div>
+        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
     </div>
-    
+
+    <!-- Markets Section -->
+    <div class="markets-header">ACTIVE MARKETS</div>
     <div id="marketsList">
-        <div class="loader">
-            <div class="spinner"></div>
-        </div>
+        <div class="loader"><div class="spinner"></div></div>
     </div>
-    
+
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="location.reload()"><span>Home</span></div>
-        <div class="nav-item" onclick="window.location.href='mybids.html'"><span>Passbook</span></div>
-        <div class="nav-item" onclick="window.location.href='mybids.html'"><span>My Bids</span></div>
-        <div class="nav-item" onclick="window.location.href='funds.html'"><span>Fund</span></div>
-        <div class="nav-item" onclick="location.href='chat.html'"><span>Support</span></div>
+        <div class="bottom-item active" onclick="location.reload()">Home</div>
+        <div class="bottom-item" onclick="location.href='mybids.html'">Passbook</div>
+        <div class="bottom-item" onclick="location.href='mybids.html'">My Bids</div>
+        <div class="bottom-item" onclick="location.href='funds.html'">Fund</div>
+        <div class="bottom-item" onclick="location.href='chat.html'">Support</div>
     </div>
 </div>
 
-<!-- Profile Modal -->
+<!-- Modals -->
 <div id="profileModal" class="modal">
     <div class="modal-content">
         <h3>My Profile</h3>
@@ -180,19 +543,9 @@
     </div>
 </div>
 
-<!-- Notice Modal -->
-<div id="noticeModal" class="modal">
-    <div class="modal-content">
-        <h3>Notice</h3>
-        <div id="noticeModalText" style="color:#6c757d; margin-bottom:15px; line-height:1.5;"></div>
-        <button class="modal-btn close-modal" onclick="closeNoticeModal()">Close</button>
-    </div>
-</div>
-
-<!-- Game Rates Modal -->
 <div id="gameRatesModal" class="modal">
     <div class="modal-content">
-        <h3>GAME RATES</h3>
+        <h3>Game Rates</h3>
         <div class="rate-row"><span class="rate-name">Single Digit</span><span class="rate-value">10x</span></div>
         <div class="rate-row"><span class="rate-name">Jodi</span><span class="rate-value">100x</span></div>
         <div class="rate-row"><span class="rate-name">Single Pana</span><span class="rate-value">160x</span></div>
@@ -205,34 +558,31 @@
     </div>
 </div>
 
-<!-- Change PIN Modal -->
 <div id="changePinModal" class="modal">
     <div class="modal-content">
         <h3>Change MPIN</h3>
         <input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4">
         <input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4">
-        <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm New MPIN" maxlength="4">
+        <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4">
         <button class="modal-btn" onclick="updatePin()">Update MPIN</button>
         <button class="modal-btn close-modal" onclick="closeChangePinModal()">Cancel</button>
         <div id="pinMsg" style="color:#dc3545; text-align:center; margin-top:10px;"></div>
     </div>
 </div>
 
-<!-- Bank Details Modal -->
 <div id="bankModal" class="modal">
     <div class="modal-content">
         <h3>Bank Details</h3>
-        <input type="text" id="bankAccountHolder" class="modal-input" placeholder="Account Holder Name">
+        <input type="text" id="bankAccountHolder" class="modal-input" placeholder="Account Holder">
         <input type="text" id="bankName" class="modal-input" placeholder="Bank Name">
         <input type="text" id="bankAccountNumber" class="modal-input" placeholder="Account Number">
         <input type="text" id="bankIfsc" class="modal-input" placeholder="IFSC Code">
-        <button class="modal-btn" onclick="saveBankDetails()">Save Bank Details</button>
+        <button class="modal-btn" onclick="saveBankDetails()">Save</button>
         <button class="modal-btn close-modal" onclick="closeBankModal()">Cancel</button>
         <div id="bankMsg" style="color:#28a745; text-align:center; margin-top:10px;"></div>
     </div>
 </div>
 
-<!-- Support Modal -->
 <div id="supportModal" class="modal">
     <div class="modal-content">
         <h3>Support</h3>
@@ -270,7 +620,6 @@
     let currentUserData = null;
     let serverTimeCache = null;
     let lastServerTimeFetch = 0;
-    let marketsListener = null;
     let clockInterval = null;
     let statusUpdateInterval = null;
     
@@ -288,19 +637,17 @@
             lastServerTimeFetch = now;
             return serverTimeCache;
         } catch (error) {
-            console.error("Error getting server time:", error);
             return serverTimeCache || new Date();
         }
     }
     
     function formatTimeTo12Hour(timeStr) {
-        if (!timeStr || timeStr === '--:--') return '--:--';
+        if (!timeStr) return '--:--';
         const parts = timeStr.split(':');
         let hours = parseInt(parts[0]);
         const minutes = parts[1];
         const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        hours = hours % 12 || 12;
         return `${hours}:${minutes} ${ampm}`;
     }
     
@@ -309,8 +656,7 @@
         const minutes = date.getMinutes().toString().padStart(2, '0');
         const seconds = date.getSeconds().toString().padStart(2, '0');
         const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+        hours = hours % 12 || 12;
         return `${hours}:${minutes}:${seconds} ${ampm}`;
     }
     
@@ -334,15 +680,12 @@
     async function updateLiveClock() {
         try {
             const serverTime = await getServerTime();
-            const timeString = formatCurrentTimeTo12Hour(serverTime);
+            document.getElementById('liveClockTime').innerHTML = formatCurrentTimeTo12Hour(serverTime);
             const day = serverTime.getDate().toString().padStart(2, '0');
             const month = (serverTime.getMonth() + 1).toString().padStart(2, '0');
             const year = serverTime.getFullYear();
-            document.getElementById('liveClockTime').innerHTML = timeString;
             document.getElementById('liveClockDate').innerHTML = `${day}/${month}/${year}`;
-        } catch (error) {
-            console.error("Clock update error:", error);
-        }
+        } catch (error) {}
     }
     
     async function updateAllMarketStatuses() {
@@ -360,31 +703,20 @@
     }
     
     function listenToMarkets() {
-        if (marketsListener) marketsListener();
-        marketsListener = db.collection('markets').onSnapshot(async (snapshot) => {
+        db.collection('markets').orderBy('serialNo', 'asc').onSnapshot(async (snapshot) => {
             const newMarketsData = [];
             for (const doc of snapshot.docs) {
                 const data = doc.data();
                 const calculatedStatus = await calculateMarketStatus(data.openBidEnd, data.closeBidEnd, data.status);
-                newMarketsData.push({ 
-                    id: doc.id, 
-                    name: data.name,
-                    numbers: data.numbers,
-                    openBidEnd: data.openBidEnd,
-                    closeBidEnd: data.closeBidEnd,
-                    closedTime: data.closedTime,
-                    status: calculatedStatus,
-                    originalStatus: data.status,
-                    openPana: data.openPana || '***',
-                    openDigit: data.openDigit || '*',
-                    closePana: data.closePana || '***',
-                    closeDigit: data.closeDigit || '*',
-                    jodi: data.jodi || '**',
-                    serialNo: data.serialNo || 999,
-                    closeDeclared: data.closeDeclared || false
+                newMarketsData.push({
+                    id: doc.id, name: data.name, numbers: data.numbers,
+                    openBidEnd: data.openBidEnd, closeBidEnd: data.closeBidEnd,
+                    status: calculatedStatus, originalStatus: data.status,
+                    openPana: data.openPana || '***', closePana: data.closePana || '***',
+                    jodi: data.jodi || '**', serialNo: data.serialNo || 999
                 });
             }
-            newMarketsData.sort((a, b) => (a.serialNo || 999) - (b.serialNo || 999));
+            newMarketsData.sort((a, b) => a.serialNo - b.serialNo);
             marketsData = newMarketsData;
             renderMarkets();
         });
@@ -394,15 +726,14 @@
         db.collection('settings').doc('notice').onSnapshot((doc) => {
             const text = doc.exists ? doc.data().text : 'Welcome to SAVI777!';
             document.getElementById('noticeText').innerHTML = text;
-            document.getElementById('noticeModalText').innerHTML = text;
         });
     }
     
     function getStatusText(status) {
-        if (status === 'open') return 'OPEN Bidding';
-        if (status === 'close') return 'CLOSE Bidding';
-        if (status === 'holiday') return 'HOLIDAY - Market Closed';
-        return 'Market Closed';
+        if (status === 'open') return 'OPEN';
+        if (status === 'close') return 'CLOSE';
+        if (status === 'holiday') return 'HOLIDAY';
+        return 'CLOSED';
     }
     
     function getStatusClass(status) {
@@ -413,79 +744,42 @@
     }
     
     function openBetting(market) {
-        window.location.href = `betting.html?market=${encodeURIComponent(market.name)}&status=${market.originalStatus === 'holiday' ? 'closed' : market.status}&marketId=${market.id}`;
+        window.location.href = `betting.html?market=${encodeURIComponent(market.name)}&status=${market.status}&marketId=${market.id}`;
     }
     
     function renderMarkets() {
         const container = document.getElementById('marketsList');
         if (marketsData.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#6c757d; padding:40px;">No markets available. Admin will add soon.</div>';
+            container.innerHTML = '<div style="text-align:center; color:#6c757d; padding:40px;">No markets available.</div>';
             return;
         }
-        
         let html = '';
-        
         marketsData.forEach(market => {
-            const isPlayable = (market.status === 'open' || market.status === 'close') && market.originalStatus !== 'holiday';
-            
-            let resultDisplay = '';
-            if (market.closePana && market.closePana !== '***') {
-                resultDisplay = `${market.openPana} - ${market.jodi} - ${market.closePana}`;
-            } 
-            else if (market.openPana && market.openPana !== '***') {
-                resultDisplay = `${market.openPana} - ${market.openDigit}* - ***`;
-            } 
-            else {
-                resultDisplay = `*** - ** - ***`;
-            }
-            
-            let numbersDisplay = market.numbers || '***-***-***';
-            numbersDisplay = numbersDisplay.replace('Open Pana', '').replace('JODI', '').replace('Close Pana', '').trim();
-            
+            const isPlayable = market.status === 'open' || market.status === 'close';
+            const resultDisplay = `${market.openPana} - ${market.jodi} - ${market.closePana}`;
             const openBidEnd12 = formatTimeTo12Hour(market.openBidEnd);
             const closeBidEnd12 = formatTimeTo12Hour(market.closeBidEnd);
-            
             html += `
                 <div class="market-card">
-                    <div class="market-header">
-                        <span class="market-name">${market.name}</span>
-                        <span class="market-numbers">${numbersDisplay}</span>
-                    </div>
+                    <div class="market-name">${market.name}</div>
                     <div class="result-box">
                         <div class="result-numbers">${resultDisplay}</div>
                     </div>
                     <div class="market-timings">
-                        <div class="timing-item">
-                            <div class="green-dot"></div>
-                            <span class="timing-label">Open</span>
-                            <span class="timing-value">${openBidEnd12}</span>
-                        </div>
-                        <div class="timing-item">
-                            <div class="orange-dot"></div>
-                            <span class="timing-label">Close</span>
-                            <span class="timing-value">${closeBidEnd12}</span>
-                        </div>
+                        <div class="timing-item"><div class="green-dot"></div><span class="timing-label">Open</span><span class="timing-value">${openBidEnd12}</span></div>
+                        <div class="timing-item"><div class="orange-dot"></div><span class="timing-label">Close</span><span class="timing-value">${closeBidEnd12}</span></div>
                     </div>
-                    <div>
-                        <span class="market-status ${getStatusClass(market.status)}">${getStatusText(market.status)}</span>
-                    </div>
-                    <button class="play-btn" onclick='openBetting(${JSON.stringify(market)})' ${!isPlayable ? 'disabled' : ''}>
-                        ${isPlayable ? 'PLAY NOW' : 'CLOSED'}
-                    </button>
+                    <div class="status-wrapper"><span class="market-status ${getStatusClass(market.status)}">${getStatusText(market.status)}</span></div>
+                    <button class="play-btn" onclick='openBetting(${JSON.stringify(market)})' ${!isPlayable ? 'disabled' : ''}>${isPlayable ? 'PLAY NOW' : 'CLOSED'}</button>
                 </div>
             `;
         });
-        
         container.innerHTML = html;
     }
     
     async function loadUserData() {
         const user = auth.currentUser;
-        if (!user) { 
-            window.location.href = 'index.html'; 
-            return; 
-        }
-        
+        if (!user) { window.location.href = 'index.html'; return; }
         try {
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
@@ -494,101 +788,53 @@
                 document.getElementById('profileName').innerHTML = currentUserData.name || 'User';
                 document.getElementById('profilePhone').innerHTML = currentUserData.phone || '';
             }
-        } catch (error) {
-            console.error("Error loading user:", error);
-        }
+        } catch (error) {}
     }
     
-    function showBalance() {
-        alert(`Current Balance: ₹${currentUserData?.balance || 0}`);
-    }
+    function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
     
     function showProfileModal() {
         if (currentUserData) {
-            document.getElementById('profileInfo').innerHTML = `
-                <div style="text-align:center; margin-bottom:15px;">
-                    <div style="font-size:20px; margin-bottom:5px; color:#1a1a2e;">${currentUserData.name || 'User'}</div>
-                    <div style="color:#6c757d; font-size:12px;">${currentUserData.phone || ''}</div>
-                    <div style="color:#1a1a2e; font-size:18px; margin-top:10px;">₹${currentUserData.balance || 0}</div>
-                </div>
-            `;
+            document.getElementById('profileInfo').innerHTML = `<div style="text-align:center;"><div style="font-size:18px;">${currentUserData.name}</div><div style="color:#666;">${currentUserData.phone}</div><div style="font-size:20px; margin-top:10px;">₹${currentUserData.balance}</div></div>`;
             document.getElementById('profileModal').style.display = 'flex';
         }
     }
-    
     function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
     function showGameRatesModal() { closeProfileModal(); document.getElementById('gameRatesModal').style.display = 'flex'; }
     function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
     
     function logout() {
-        auth.signOut().then(() => {
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        });
+        auth.signOut().then(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
     }
     
-    function showChangePinModal() {
-        closeProfileModal();
-        document.getElementById('changePinModal').style.display = 'flex';
-    }
-    
-    function closeChangePinModal() { 
-        document.getElementById('changePinModal').style.display = 'none';
-        document.getElementById('pinMsg').innerHTML = '';
-        document.getElementById('oldPin').value = '';
-        document.getElementById('newPin').value = '';
-        document.getElementById('confirmPin').value = '';
-    }
+    function showChangePinModal() { closeProfileModal(); document.getElementById('changePinModal').style.display = 'flex'; }
+    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; document.getElementById('pinMsg').innerHTML = ''; }
     
     async function updatePin() {
         const oldPin = document.getElementById('oldPin').value;
         const newPin = document.getElementById('newPin').value;
         const confirmPin = document.getElementById('confirmPin').value;
-        
-        if (!oldPin || !newPin || !confirmPin) {
-            document.getElementById('pinMsg').innerHTML = 'Please fill all fields';
-            return;
-        }
-        if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
-            document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits';
-            return;
-        }
-        if (newPin !== confirmPin) {
-            document.getElementById('pinMsg').innerHTML = 'New MPINs do not match';
-            return;
-        }
-        if (oldPin !== currentUserData.pin) {
-            document.getElementById('pinMsg').innerHTML = 'Current MPIN is incorrect';
-            return;
-        }
-        
-        const user = auth.currentUser;
-        await db.collection('users').doc(user.uid).update({ pin: newPin });
+        if (!oldPin || !newPin || !confirmPin) { document.getElementById('pinMsg').innerHTML = 'Fill all fields'; return; }
+        if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits'; return; }
+        if (newPin !== confirmPin) { document.getElementById('pinMsg').innerHTML = 'MPINs do not match'; return; }
+        if (oldPin !== currentUserData.pin) { document.getElementById('pinMsg').innerHTML = 'Current MPIN incorrect'; return; }
+        await db.collection('users').doc(auth.currentUser.uid).update({ pin: newPin });
         currentUserData.pin = newPin;
-        document.getElementById('pinMsg').innerHTML = 'MPIN changed successfully!';
+        document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
         document.getElementById('pinMsg').style.color = '#28a745';
         setTimeout(() => closeChangePinModal(), 1500);
     }
     
-    function showBankModal() {
-        closeProfileModal();
-        if (currentUserData.bankDetails) {
+    function showBankModal() { closeProfileModal(); document.getElementById('bankModal').style.display = 'flex'; loadBankDetails(); }
+    function closeBankModal() { document.getElementById('bankModal').style.display = 'none'; document.getElementById('bankMsg').innerHTML = ''; }
+    
+    function loadBankDetails() {
+        if (currentUserData?.bankDetails) {
             document.getElementById('bankAccountHolder').value = currentUserData.bankDetails.accountHolder || '';
             document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
             document.getElementById('bankAccountNumber').value = currentUserData.bankDetails.accountNumber || '';
             document.getElementById('bankIfsc').value = currentUserData.bankDetails.ifscCode || '';
-        } else {
-            document.getElementById('bankAccountHolder').value = '';
-            document.getElementById('bankName').value = '';
-            document.getElementById('bankAccountNumber').value = '';
-            document.getElementById('bankIfsc').value = '';
         }
-        document.getElementById('bankModal').style.display = 'flex';
-    }
-    
-    function closeBankModal() { 
-        document.getElementById('bankModal').style.display = 'none';
-        document.getElementById('bankMsg').innerHTML = '';
     }
     
     async function saveBankDetails() {
@@ -596,18 +842,14 @@
         const bankName = document.getElementById('bankName').value.trim();
         const accountNumber = document.getElementById('bankAccountNumber').value.trim();
         const ifscCode = document.getElementById('bankIfsc').value.trim();
-        
         if (!accountHolder || !bankName || !accountNumber || !ifscCode) {
-            document.getElementById('bankMsg').innerHTML = 'Please fill all fields';
+            document.getElementById('bankMsg').innerHTML = 'Fill all fields';
             document.getElementById('bankMsg').style.color = '#dc3545';
             return;
         }
-        
-        const bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
-        const user = auth.currentUser;
-        await db.collection('users').doc(user.uid).update({ bankDetails: bankDetails });
-        currentUserData.bankDetails = bankDetails;
-        document.getElementById('bankMsg').innerHTML = 'Bank details saved successfully!';
+        await db.collection('users').doc(auth.currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
+        currentUserData.bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
+        document.getElementById('bankMsg').innerHTML = 'Bank details saved!';
         document.getElementById('bankMsg').style.color = '#28a745';
         setTimeout(() => closeBankModal(), 1500);
     }
@@ -615,25 +857,16 @@
     function showSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
     function closeSupportModal() { document.getElementById('supportModal').style.display = 'none'; }
     function sendEmail() { window.location.href = 'mailto:savi777@support.com'; }
-    function sendWhatsApp() { 
-        window.open('https://wa.me/919113224019', '_blank'); 
-    }
-    function showNoticeModal() { document.getElementById('noticeModal').style.display = 'flex'; }
-    function closeNoticeModal() { document.getElementById('noticeModal').style.display = 'none'; }
-    function closeNotice() { document.getElementById('noticeBoard').style.display = 'none'; }
+    function sendWhatsApp() { window.open('https://wa.me/919113224019', '_blank'); }
+    function showNoticeModal() { alert(document.getElementById('noticeText').innerText); }
+    function closeNotice() { document.getElementById('noticeBar').style.display = 'none'; }
     function showGames() { alert('Games coming soon!'); }
     
     async function init() {
         listenToMarkets();
         listenToNotice();
-        if (clockInterval) clearInterval(clockInterval);
-        clockInterval = setInterval(async () => {
-            await updateLiveClock();
-        }, 1000);
-        if (statusUpdateInterval) clearInterval(statusUpdateInterval);
-        statusUpdateInterval = setInterval(async () => {
-            await updateAllMarketStatuses();
-        }, 1000);
+        clockInterval = setInterval(async () => await updateLiveClock(), 1000);
+        statusUpdateInterval = setInterval(async () => await updateAllMarketStatuses(), 1000);
     }
     
     setInterval(() => {
@@ -647,12 +880,9 @@
         }
     }, 30000);
     
-    auth.onAuthStateChanged(user => { 
-        if (!user) window.location.href = 'index.html'; 
-        else { 
-            loadUserData(); 
-            init();
-        } 
+    auth.onAuthStateChanged(user => {
+        if (!user) window.location.href = 'index.html';
+        else { loadUserData(); init(); }
     });
     
     window.showBalance = showBalance;
@@ -670,8 +900,6 @@
     window.closeSupportModal = closeSupportModal;
     window.sendEmail = sendEmail;
     window.sendWhatsApp = sendWhatsApp;
-    window.showNoticeModal = showNoticeModal;
-    window.closeNoticeModal = closeNoticeModal;
     window.closeNotice = closeNotice;
     window.showGames = showGames;
     window.logout = logout;
