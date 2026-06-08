@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAVI777 - Login</title>
+    <title>DURGA - Login</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -12,11 +12,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: #0a0a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -31,17 +32,23 @@
 
         .login-card {
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 40px 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
         }
 
         .app-title {
             font-size: 32px;
-            font-weight: 700;
-            color: #1a1a2e;
+            font-weight: 800;
+            color: #00aa55;
             margin-bottom: 8px;
+            animation: blockPulse 2s infinite;
+        }
+        @keyframes blockPulse {
+            0% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+            50% { opacity: 1; text-shadow: 0 0 8px rgba(0,170,85,0.5); }
+            100% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
         }
 
         .app-subtitle {
@@ -58,7 +65,7 @@
         .input-group label {
             display: block;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             color: #333;
             margin-bottom: 6px;
         }
@@ -68,7 +75,7 @@
             padding: 14px 16px;
             background: #f5f5f5;
             border: 1px solid #e0e0e0;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 16px;
             color: #1a1a2e;
             outline: none;
@@ -76,8 +83,8 @@
         }
 
         .input-field:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.1);
         }
 
         .input-field::placeholder {
@@ -93,29 +100,30 @@
         .btn {
             width: 100%;
             padding: 14px;
-            background: #007bff;
+            background: #ff9800;
             border: none;
-            border-radius: 12px;
-            color: #fff;
-            font-weight: 600;
+            border-radius: 50px;
+            color: #ffffff;
+            font-weight: 700;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .btn:hover {
-            background: #0056b3;
+            background: #f57c00;
             transform: translateY(-1px);
         }
 
         .link {
             text-align: center;
             margin-top: 16px;
-            color: #007bff;
+            color: #ff9800;
             font-size: 13px;
             cursor: pointer;
             background: none;
             border: none;
+            font-weight: 500;
         }
 
         .link:hover {
@@ -129,14 +137,14 @@
         }
 
         .error-text {
-            color: #dc3545;
+            color: #f44336;
             font-size: 12px;
             text-align: center;
             margin-top: 12px;
         }
 
         .success-text {
-            color: #28a745;
+            color: #10b981;
             font-size: 12px;
             text-align: center;
             margin-top: 12px;
@@ -145,8 +153,8 @@
         .timer {
             text-align: center;
             font-size: 14px;
-            color: #007bff;
-            font-weight: 500;
+            color: #ff9800;
+            font-weight: 600;
             margin: 15px 0;
         }
 
@@ -166,50 +174,50 @@
     <div class="login-container">
         <!-- Phone Login Screen -->
         <div id="phoneScreen" class="login-card">
-            <div class="app-title">SAVI777</div>
+            <div class="app-title">DURGA</div>
             <div class="app-subtitle">Login to your account</div>
             <div class="input-group">
                 <label>Mobile Number</label>
                 <input type="tel" id="phoneNumber" class="input-field" placeholder="Enter 10-digit mobile number">
             </div>
-            <button class="btn" id="sendOtpBtn">Send OTP</button>
-            <button class="link" id="showPinBtn">Login with MPIN</button>
-            <button class="link" id="forgotPinLink">Forgot MPIN?</button>
+            <button class="btn" id="sendOtpBtn">SEND OTP</button>
+            <button class="link" id="showPinBtn">LOGIN WITH MPIN</button>
+            <button class="link" id="forgotPinLink">FORGOT MPIN?</button>
             <div id="phoneError" class="error-text"></div>
             <div class="footer">Secure & Trusted Platform</div>
         </div>
 
         <!-- OTP Verification Screen -->
         <div id="otpScreen" class="login-card hidden">
-            <div class="app-title">Verify OTP</div>
+            <div class="app-title">DURGA</div>
             <div class="app-subtitle">Enter verification code</div>
             <div class="timer" id="timer">60 seconds remaining</div>
             <div class="input-group">
                 <label>OTP Code</label>
                 <input type="text" id="otpCode" class="input-field" placeholder="Enter 6-digit OTP" maxlength="6">
             </div>
-            <button class="btn" id="verifyOtpBtn">Verify & Login</button>
-            <button class="link" id="resendOtpBtn">Resend OTP</button>
+            <button class="btn" id="verifyOtpBtn">VERIFY & LOGIN</button>
+            <button class="link" id="resendOtpBtn">RESEND OTP</button>
             <div id="otpError" class="error-text"></div>
         </div>
 
         <!-- MPIN Login Screen -->
         <div id="pinScreen" class="login-card hidden">
-            <div class="app-title">Enter MPIN</div>
-            <div class="app-subtitle">4-digit security PIN</div>
+            <div class="app-title">DURGA</div>
+            <div class="app-subtitle">Enter 4-digit MPIN</div>
             <div class="input-group">
                 <label>MPIN</label>
                 <input type="password" id="pinInput" class="input-field pin-input" placeholder="●●●●" maxlength="4" inputmode="numeric">
             </div>
-            <button class="btn" id="verifyPinBtn">Login</button>
-            <button class="link" id="forgotPinFromPinBtn">Forgot MPIN?</button>
+            <button class="btn" id="verifyPinBtn">LOGIN</button>
+            <button class="link" id="forgotPinFromPinBtn">FORGOT MPIN?</button>
             <div id="pinError" class="error-text"></div>
         </div>
 
         <!-- Registration Screen -->
         <div id="registerScreen" class="login-card hidden">
-            <div class="app-title">Complete Profile</div>
-            <div class="app-subtitle">Set up your account</div>
+            <div class="app-title">DURGA</div>
+            <div class="app-subtitle">Complete your profile</div>
             <div class="input-group">
                 <label>Full Name</label>
                 <input type="text" id="regName" class="input-field" placeholder="Enter your full name">
@@ -222,27 +230,27 @@
                 <label>Confirm MPIN</label>
                 <input type="password" id="regConfirmPin" class="input-field pin-input" placeholder="●●●●" maxlength="4">
             </div>
-            <button class="btn" id="registerBtn">Register</button>
+            <button class="btn" id="registerBtn">REGISTER</button>
             <div id="regError" class="error-text"></div>
         </div>
 
         <!-- Reset MPIN - Phone Screen -->
         <div id="resetPinScreen" class="login-card hidden">
-            <div class="app-title">Reset MPIN</div>
-            <div class="app-subtitle">Enter registered mobile number</div>
+            <div class="app-title">DURGA</div>
+            <div class="app-subtitle">Reset your MPIN</div>
             <div class="input-group">
                 <label>Mobile Number</label>
                 <input type="tel" id="resetPhone" class="input-field" placeholder="Enter 10-digit mobile number">
             </div>
-            <button class="btn" id="sendResetOtpBtn">Send OTP</button>
-            <button class="link" id="backToLogin">Back to Login</button>
+            <button class="btn" id="sendResetOtpBtn">SEND OTP</button>
+            <button class="link" id="backToLogin">BACK TO LOGIN</button>
             <div id="resetError" class="error-text"></div>
         </div>
 
         <!-- Reset MPIN - OTP Screen -->
         <div id="resetOtpScreen" class="login-card hidden">
-            <div class="app-title">Reset MPIN</div>
-            <div class="app-subtitle">Verify and set new MPIN</div>
+            <div class="app-title">DURGA</div>
+            <div class="app-subtitle">Set new MPIN</div>
             <div class="timer" id="resetTimer">60 seconds remaining</div>
             <div class="input-group">
                 <label>OTP Code</label>
@@ -256,8 +264,8 @@
                 <label>Confirm MPIN</label>
                 <input type="password" id="confirmPinReset" class="input-field pin-input" placeholder="●●●●" maxlength="4">
             </div>
-            <button class="btn" id="resetPinBtn">Reset MPIN</button>
-            <button class="link" id="backToLoginFromReset">Back to Login</button>
+            <button class="btn" id="resetPinBtn">RESET MPIN</button>
+            <button class="link" id="backToLoginFromReset">BACK TO LOGIN</button>
             <div id="resetOtpError" class="error-text"></div>
         </div>
     </div>
@@ -323,7 +331,6 @@
             }, 1000);
         }
         
-        // Send OTP
         document.getElementById('sendOtpBtn').onclick = function() {
             const phone = document.getElementById('phoneNumber').value.replace(/\D/g, '');
             if (!phone || phone.length < 10) {
@@ -333,22 +340,21 @@
             currentPhone = '+91' + phone;
             const btn = this;
             btn.disabled = true;
-            btn.innerText = 'Sending...';
+            btn.innerText = 'SENDING...';
             const verifier = initRecaptcha();
             auth.signInWithPhoneNumber(currentPhone, verifier).then(confirmation => {
                 confirmationResult = confirmation;
                 showScreen(document.getElementById('otpScreen'));
                 startTimer(60, 'timer');
                 btn.disabled = false;
-                btn.innerText = 'Send OTP';
+                btn.innerText = 'SEND OTP';
             }).catch(error => {
                 showError('phoneError', error.message);
                 btn.disabled = false;
-                btn.innerText = 'Send OTP';
+                btn.innerText = 'SEND OTP';
             });
         };
         
-        // Verify OTP
         document.getElementById('verifyOtpBtn').onclick = function() {
             const code = document.getElementById('otpCode').value;
             if (!code || code.length !== 6) {
@@ -357,7 +363,7 @@
             }
             const btn = this;
             btn.disabled = true;
-            btn.innerText = 'Verifying...';
+            btn.innerText = 'VERIFYING...';
             confirmationResult.confirm(code).then(result => {
                 const user = result.user;
                 db.collection('users').doc(user.uid).get().then(doc => {
@@ -367,20 +373,19 @@
                         showScreen(document.getElementById('registerScreen'));
                     }
                     btn.disabled = false;
-                    btn.innerText = 'Verify & Login';
+                    btn.innerText = 'VERIFY & LOGIN';
                 }).catch(() => {
                     showScreen(document.getElementById('registerScreen'));
                     btn.disabled = false;
-                    btn.innerText = 'Verify & Login';
+                    btn.innerText = 'VERIFY & LOGIN';
                 });
             }).catch(error => {
                 showError('otpError', 'Invalid OTP');
                 btn.disabled = false;
-                btn.innerText = 'Verify & Login';
+                btn.innerText = 'VERIFY & LOGIN';
             });
         };
         
-        // Resend OTP
         document.getElementById('resendOtpBtn').onclick = function() {
             if (!currentPhone) return;
             const verifier = initRecaptcha();
@@ -391,7 +396,6 @@
             }).catch(error => showError('otpError', error.message));
         };
         
-        // Forgot MPIN links
         document.getElementById('forgotPinLink').onclick = function() {
             showScreen(document.getElementById('resetPinScreen'));
         };
@@ -399,7 +403,6 @@
             showScreen(document.getElementById('resetPinScreen'));
         };
         
-        // Send Reset OTP
         document.getElementById('sendResetOtpBtn').onclick = function() {
             const phone = document.getElementById('resetPhone').value.replace(/\D/g, '');
             if (!phone || phone.length < 10) {
@@ -415,25 +418,24 @@
                 }
                 const btn = this;
                 btn.disabled = true;
-                btn.innerText = 'Sending...';
+                btn.innerText = 'SENDING...';
                 const verifier = initRecaptcha();
                 auth.signInWithPhoneNumber(resetPhoneNumber, verifier).then(confirmation => {
                     resetConfirmationResult = confirmation;
                     showScreen(document.getElementById('resetOtpScreen'));
                     startTimer(60, 'resetTimer');
                     btn.disabled = false;
-                    btn.innerText = 'Send OTP';
+                    btn.innerText = 'SEND OTP';
                 }).catch(error => {
                     showError('resetError', error.message);
                     btn.disabled = false;
-                    btn.innerText = 'Send OTP';
+                    btn.innerText = 'SEND OTP';
                 });
             }).catch(() => {
                 showError('resetError', 'Error checking user');
             });
         };
         
-        // Reset MPIN
         document.getElementById('resetPinBtn').onclick = function() {
             const otp = document.getElementById('resetOtpCode').value;
             const newPin = document.getElementById('newPinReset').value;
@@ -454,7 +456,7 @@
             
             const btn = this;
             btn.disabled = true;
-            btn.innerText = 'Verifying...';
+            btn.innerText = 'VERIFYING...';
             
             resetConfirmationResult.confirm(otp).then((result) => {
                 const user = result.user;
@@ -466,20 +468,19 @@
                     document.getElementById('newPinReset').value = '';
                     document.getElementById('confirmPinReset').value = '';
                     btn.disabled = false;
-                    btn.innerText = 'Reset MPIN';
+                    btn.innerText = 'RESET MPIN';
                 }).catch((err) => {
                     showError('resetOtpError', 'Error updating PIN');
                     btn.disabled = false;
-                    btn.innerText = 'Reset MPIN';
+                    btn.innerText = 'RESET MPIN';
                 });
             }).catch((error) => {
                 showError('resetOtpError', 'Invalid OTP');
                 btn.disabled = false;
-                btn.innerText = 'Reset MPIN';
+                btn.innerText = 'RESET MPIN';
             });
         };
         
-        // Back to login buttons
         document.getElementById('backToLogin').onclick = function() {
             showScreen(document.getElementById('phoneScreen'));
             document.getElementById('resetPhone').value = '';
@@ -488,7 +489,6 @@
             showScreen(document.getElementById('phoneScreen'));
         };
         
-        // Register
         document.getElementById('registerBtn').onclick = function() {
             const name = document.getElementById('regName').value.trim();
             const pin = document.getElementById('regPin').value;
@@ -515,7 +515,7 @@
             
             const btn = this;
             btn.disabled = true;
-            btn.innerText = 'Creating...';
+            btn.innerText = 'CREATING...';
             
             db.collection('users').doc(user.uid).set({
                 uid: user.uid,
@@ -530,11 +530,10 @@
             }).catch(error => {
                 showError('regError', error.message);
                 btn.disabled = false;
-                btn.innerText = 'Register';
+                btn.innerText = 'REGISTER';
             });
         };
         
-        // Verify MPIN
         document.getElementById('verifyPinBtn').onclick = function() {
             const pin = document.getElementById('pinInput').value;
             if (!pin || pin.length !== 4) {
@@ -548,7 +547,7 @@
             }
             const btn = this;
             btn.disabled = true;
-            btn.innerText = 'Verifying...';
+            btn.innerText = 'VERIFYING...';
             db.collection('users').doc(user.uid).get().then(doc => {
                 if (doc.exists && doc.data().pin === pin) {
                     window.location.href = 'dashboard.html';
@@ -556,15 +555,14 @@
                     showError('pinError', 'Invalid MPIN');
                 }
                 btn.disabled = false;
-                btn.innerText = 'Login';
+                btn.innerText = 'LOGIN';
             }).catch(error => {
                 showError('pinError', 'Error verifying PIN');
                 btn.disabled = false;
-                btn.innerText = 'Login';
+                btn.innerText = 'LOGIN';
             });
         };
         
-        // Show MPIN login
         document.getElementById('showPinBtn').onclick = function() {
             const user = auth.currentUser;
             if (!user) {
@@ -580,7 +578,6 @@
             }).catch(() => showScreen(document.getElementById('phoneScreen')));
         };
         
-        // Auth state listener
         auth.onAuthStateChanged(user => {
             if (user) {
                 db.collection('users').doc(user.uid).get().then(doc => {
