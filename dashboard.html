@@ -54,7 +54,7 @@
             width: 60px;
             height: 60px;
             border: 4px solid #333;
-            border-top: 4px solid #ff9800;
+            border-top: 4px solid #00ff88;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -74,7 +74,7 @@
         .loader-dots span {
             width: 8px;
             height: 8px;
-            background: #ff9800;
+            background: #00ff88;
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
@@ -108,10 +108,18 @@
             cursor: pointer;
             color: #333;
         }
+        /* Animated App Name - Green Blocking Color */
         .app-name {
             font-size: 22px;
             font-weight: 800;
-            color: #1a1a2e;
+            color: #00aa55;
+            animation: blockPulse 2s infinite;
+            text-shadow: 0 0 5px rgba(0,170,85,0.3);
+        }
+        @keyframes blockPulse {
+            0% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+            50% { opacity: 1; text-shadow: 0 0 8px rgba(0,170,85,0.5); }
+            100% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
         }
         .balance {
             background: #ff9800;
@@ -123,33 +131,10 @@
             cursor: pointer;
         }
 
-        /* Time Display */
-        .time-display {
-            background: #ffffff;
-            margin: 12px 16px;
-            padding: 10px 16px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #e0e0e0;
-        }
-        .time-label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 500;
-        }
-        .time-value {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1a1a2e;
-            font-family: monospace;
-        }
-
         /* Offer Banner */
         .offer-banner {
             background: linear-gradient(135deg, #ff9800, #ff5722);
-            margin: 0 16px 16px 16px;
+            margin: 12px 16px;
             padding: 12px 16px;
             border-radius: 12px;
             text-align: center;
@@ -163,7 +148,7 @@
             font-size: 16px;
         }
 
-        /* Action Buttons - Deposit & Withdraw Only */
+        /* Action Buttons - Highlighted Colors */
         .action-row {
             display: flex;
             gap: 16px;
@@ -177,14 +162,20 @@
             font-weight: 700;
             font-size: 16px;
             cursor: pointer;
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             transition: all 0.2s;
         }
         .action-btn:active {
             transform: scale(0.97);
+        }
+        .action-btn.deposit {
+            background: #10b981;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        }
+        .action-btn.withdraw {
+            background: #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
         }
 
         /* Section Header */
@@ -206,7 +197,7 @@
             cursor: pointer;
         }
 
-        /* Category Row - Removed Cricket Bazaar, Starline, Jackpot */
+        /* Category Row */
         .category-row {
             display: flex;
             gap: 24px;
@@ -247,20 +238,18 @@
             align-items: center;
             margin-bottom: 12px;
         }
-        /* Animated Market Name with Red Color */
         .market-name {
             font-size: 18px;
             font-weight: 800;
             color: #dc2626;
             transition: all 0.3s ease;
-            animation: pulse 2s infinite;
+            animation: marketPulse 2s infinite;
         }
-        @keyframes pulse {
+        @keyframes marketPulse {
             0% { opacity: 0.7; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.02); }
             100% { opacity: 0.7; transform: scale(1); }
         }
-        /* Big Play Button */
         .play-btn {
             background: #ff9800;
             color: #ffffff;
@@ -333,7 +322,7 @@
             color: #f44336;
         }
 
-        /* Bottom Navigation - Big Size, Home Centered */
+        /* Bottom Navigation - Home Blue, Others Orange */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -357,26 +346,23 @@
             flex: 1;
             font-size: 13px;
             font-weight: 600;
-            color: #888;
+            color: #ff9800;
             transition: all 0.2s;
             letter-spacing: 0.5px;
         }
         .bottom-item:active {
             transform: scale(0.95);
         }
-        .bottom-item.active {
-            color: #ff9800;
-        }
-        /* Home button special styling - centered and separated */
+        /* Home button - Blue color, centered */
         .bottom-home {
-            background: #ff9800;
+            background: #3b82f6;
             color: #ffffff !important;
             padding: 10px 0;
             border-radius: 50px;
             margin: 0 12px;
             flex: 1.2;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.3);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
         }
         .bottom-home:active {
             transform: scale(0.97);
@@ -547,21 +533,15 @@
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
 
-    <!-- Time Display -->
-    <div class="time-display">
-        <span class="time-label">SERVER TIME</span>
-        <span class="time-value" id="serverTime">--:--:-- --</span>
-    </div>
-
     <!-- Offer Banner -->
     <div class="offer-banner">
         <span class="offer-text">✨ <strong>um deposit of just ₹300!</strong></span>
     </div>
 
-    <!-- Action Buttons - Only Deposit & Withdraw -->
+    <!-- Action Buttons - Deposit & Withdraw Highlighted -->
     <div class="action-row">
-        <div class="action-btn" onclick="location.href='deposit.html'">DEPOSIT</div>
-        <div class="action-btn" onclick="location.href='withdraw.html'">WITHDRAW</div>
+        <div class="action-btn deposit" onclick="location.href='deposit.html'">DEPOSIT</div>
+        <div class="action-btn withdraw" onclick="location.href='withdraw.html'">WITHDRAW</div>
     </div>
 
     <!-- Main Markets Section -->
@@ -570,7 +550,7 @@
         <span class="section-link" onclick="showAllMarkets()">View All ›</span>
     </div>
 
-    <!-- Category Row - Only All, Open, Close, Closed -->
+    <!-- Category Row -->
     <div class="category-row">
         <div class="category-item active" data-cat="all" onclick="filterMarkets('all')">All</div>
         <div class="category-item" data-cat="open" onclick="filterMarkets('open')">Open</div>
@@ -583,7 +563,7 @@
         <div class="loader-text-center">Loading markets...</div>
     </div>
 
-    <!-- Bottom Navigation - Home Centered and Big -->
+    <!-- Bottom Navigation - Home Blue, Others Orange -->
     <div class="bottom-nav">
         <div class="bottom-item" onclick="location.href='history.html'">HISTORY</div>
         <div class="bottom-item" onclick="location.href='mybids.html'">PASSBOOK</div>
@@ -668,52 +648,12 @@
     let marketsData = [];
     let currentUserData = null;
     let currentFilter = "all";
-    let serverTimeInterval = null;
-    let cachedServerTime = null;
-    let lastServerTimeFetch = 0;
     let marketsLoaded = false;
     
-    // Hide loading overlay
-    function hideLoading() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
-            overlay.classList.add('hide');
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 500);
-        }
-    }
-    
-    // Get Server Time
-    async function getServerTime() {
-        const now = Date.now();
-        if (cachedServerTime && (now - lastServerTimeFetch) < 2000) {
-            const elapsed = (now - lastServerTimeFetch) / 1000;
-            return new Date(cachedServerTime.getTime() + (elapsed * 1000));
-        }
-        try {
-            const docRef = db.collection('settings').doc('servertime');
-            await docRef.set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            const doc = await docRef.get();
-            cachedServerTime = doc.data().timestamp.toDate();
-            lastServerTimeFetch = now;
-            return cachedServerTime;
-        } catch (error) {
-            return cachedServerTime || new Date();
-        }
-    }
-    
-    async function updateServerTimeDisplay() {
-        try {
-            const serverTime = await getServerTime();
-            let hours = serverTime.getHours();
-            const minutes = serverTime.getMinutes().toString().padStart(2, '0');
-            const seconds = serverTime.getSeconds().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-            document.getElementById('serverTime').innerHTML = timeString;
-        } catch (error) {}
+    // Get current time for market status
+    function getCurrentTimeMinutes() {
+        const now = new Date();
+        return now.getHours() * 60 + now.getMinutes();
     }
     
     function formatTimeTo12Hour(timeStr) {
@@ -724,6 +664,25 @@
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12 || 12;
         return `${hours}:${minutes} ${ampm}`;
+    }
+    
+    function timeToMinutes(timeStr) {
+        if (!timeStr) return null;
+        const parts = timeStr.split(':');
+        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+    
+    // Calculate market status based on current time
+    function calculateMarketStatus(openBidEnd, closeBidEnd, dbStatus) {
+        const currentMinutes = getCurrentTimeMinutes();
+        const openEnd = timeToMinutes(openBidEnd);
+        const closeEnd = timeToMinutes(closeBidEnd);
+        
+        if (dbStatus === 'holiday') return 'holiday';
+        
+        if (openEnd && currentMinutes < openEnd) return 'open';
+        else if (openEnd && closeEnd && currentMinutes >= openEnd && currentMinutes < closeEnd) return 'close';
+        else return 'closed';
     }
     
     function getStatusInfo(status) {
@@ -738,6 +697,7 @@
             marketsData = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
+                const calculatedStatus = calculateMarketStatus(data.openBidEnd, data.closeBidEnd, data.status);
                 marketsData.push({
                     id: doc.id,
                     name: data.name,
@@ -746,7 +706,8 @@
                     jodi: data.jodi || '**',
                     openBidEnd: data.openBidEnd,
                     closeBidEnd: data.closeBidEnd,
-                    status: data.status || 'closed',
+                    status: calculatedStatus,
+                    originalStatus: data.status,
                     serialNo: data.serialNo || 999
                 });
             });
@@ -757,6 +718,16 @@
                 hideLoading();
             }
         });
+    }
+    
+    function hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        }
     }
     
     function filterMarkets(category) {
@@ -844,7 +815,6 @@
     
     function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
     
-    // Sidebar Functions
     function openSidebar() {
         document.getElementById('sidebar').classList.add('open');
         document.getElementById('sidebarOverlay').classList.add('open');
@@ -906,20 +876,20 @@
         auth.signOut().then(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
     }
     
-    function startServerTimeClock() {
-        updateServerTimeDisplay();
-        if (serverTimeInterval) clearInterval(serverTimeInterval);
-        serverTimeInterval = setInterval(updateServerTimeDisplay, 1000);
-    }
+    // Update market status every minute
+    setInterval(() => {
+        if (marketsData.length > 0) {
+            listenToMarkets();
+        }
+    }, 60000);
     
-    // Fallback hide loading after 5 seconds
     setTimeout(() => {
         if (!marketsLoaded) hideLoading();
     }, 5000);
     
     auth.onAuthStateChanged(user => {
         if (!user) window.location.href = 'index.html';
-        else { loadUserData(); listenToMarkets(); startServerTimeClock(); }
+        else { loadUserData(); listenToMarkets(); }
     });
     
     window.filterMarkets = filterMarkets;
