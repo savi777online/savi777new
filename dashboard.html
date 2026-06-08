@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PAPA777 - Dashboard</title>
+    <title>DURGA - Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -12,19 +12,19 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: #f5f7fb;
-            padding-bottom: 70px;
+            background: #f0f2f5;
+            padding-bottom: 75px;
         }
 
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background: #f5f7fb;
+            background: #f0f2f5;
             min-height: 100vh;
             position: relative;
         }
@@ -36,27 +36,44 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e8ecf0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .app-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            color: #1e293b;
-            letter-spacing: -0.5px;
+            color: #1a1a2e;
         }
         .balance {
-            background: #10b981;
-            padding: 6px 14px;
+            background: #ff9800;
+            padding: 6px 16px;
             border-radius: 30px;
             color: #ffffff;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
         }
-        .user-greeting {
+
+        /* Server Time */
+        .server-time {
+            background: #ffffff;
+            margin: 12px 16px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+        }
+        .time-label {
             font-size: 12px;
-            color: #64748b;
-            margin-top: 2px;
+            color: #666;
+            font-weight: 500;
+        }
+        .time-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            font-family: monospace;
         }
 
         /* Profile Row */
@@ -65,23 +82,23 @@
             justify-content: space-between;
             align-items: center;
             background: #ffffff;
-            margin: 16px;
+            margin: 12px 16px;
             padding: 12px 16px;
-            border-radius: 20px;
-            border: 1px solid #e8ecf0;
+            border-radius: 16px;
+            border: 1px solid #e0e0e0;
         }
         .profile-info h3 {
             font-size: 16px;
             font-weight: 700;
-            color: #1e293b;
+            color: #1a1a2e;
         }
         .profile-info p {
             font-size: 11px;
-            color: #64748b;
+            color: #888;
             margin-top: 2px;
         }
         .view-profile {
-            color: #3b82f6;
+            color: #ff9800;
             font-size: 12px;
             font-weight: 600;
         }
@@ -89,74 +106,41 @@
         /* Action Buttons Row */
         .action-row {
             display: flex;
-            gap: 12px;
-            margin: 0 16px 20px 16px;
+            gap: 16px;
+            margin: 16px;
         }
         .action-btn {
             flex: 1;
             text-align: center;
             padding: 14px 0;
-            border-radius: 60px;
+            border-radius: 50px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .action-btn:active {
             transform: scale(0.97);
         }
         .action-btn.deposit {
-            background: #10b981;
+            background: #ff9800;
             color: #ffffff;
         }
         .action-btn.withdraw {
-            background: #f59e0b;
+            background: #ff5722;
             color: #ffffff;
-        }
-
-        /* Support Buttons Row */
-        .support-row {
-            display: flex;
-            gap: 12px;
-            margin: 0 16px 20px 16px;
-        }
-        .support-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 0;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid #e8ecf0;
-            background: #ffffff;
-        }
-        .support-btn:active {
-            transform: scale(0.97);
-        }
-        .support-btn.whatsapp {
-            color: #25D366;
-            border-color: #25D36620;
-            background: #25D36608;
-        }
-        .support-btn.call {
-            color: #3b82f6;
-            border-color: #3b82f620;
-            background: #3b82f608;
         }
 
         /* NEW Badge */
         .new-badge {
-            background: #ef4444;
+            background: #ff4444;
             color: #ffffff;
             font-size: 9px;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 20px;
-            margin-left: 6px;
+            margin-left: 8px;
+            display: inline-block;
         }
 
         /* Section Header */
@@ -169,30 +153,31 @@
         .section-title {
             font-size: 16px;
             font-weight: 700;
-            color: #1e293b;
+            color: #1a1a2e;
         }
         .section-link {
-            font-size: 11px;
-            color: #3b82f6;
+            font-size: 12px;
+            color: #ff9800;
             font-weight: 600;
+            cursor: pointer;
         }
 
-        /* Category Chips */
+        /* Category Row */
         .category-row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin: 0 16px 16px 16px;
             overflow-x: auto;
             padding-bottom: 4px;
         }
         .category-chip {
-            padding: 8px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             background: #ffffff;
-            border: 1px solid #e8ecf0;
+            border: 1px solid #e0e0e0;
             font-size: 13px;
             font-weight: 600;
-            color: #64748b;
+            color: #666;
             white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s;
@@ -201,9 +186,9 @@
             transform: scale(0.96);
         }
         .category-chip.active {
-            background: #1e293b;
+            background: #ff9800;
             color: #ffffff;
-            border-color: #1e293b;
+            border-color: #ff9800;
         }
 
         /* Market Cards */
@@ -212,8 +197,9 @@
             margin: 12px 16px;
             border-radius: 20px;
             padding: 16px;
-            border: 1px solid #e8ecf0;
+            border: 1px solid #e0e0e0;
             transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
         .market-card:active {
             transform: scale(0.99);
@@ -228,25 +214,32 @@
         .market-name {
             font-size: 18px;
             font-weight: 800;
-            color: #1e293b;
+            color: #1a1a2e;
         }
         .play-link {
-            color: #3b82f6;
+            color: #ff9800;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
+            background: #fff3e0;
+            padding: 6px 16px;
+            border-radius: 30px;
         }
         .play-link:active {
             opacity: 0.7;
         }
 
         .result-numbers {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             font-family: monospace;
             letter-spacing: 2px;
-            color: #1e293b;
-            margin-bottom: 10px;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
         }
 
         .timing-row {
@@ -259,40 +252,36 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 11px;
+            font-size: 12px;
         }
         .timing-label {
-            color: #64748b;
+            color: #888;
             font-weight: 500;
         }
         .timing-value {
-            color: #1e293b;
+            color: #1a1a2e;
             font-weight: 600;
         }
         .status-badge {
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
         }
         .status-open {
-            background: #d1fae5;
-            color: #10b981;
+            background: #e8f5e9;
+            color: #4caf50;
         }
         .status-close {
-            background: #fef3c7;
-            color: #f59e0b;
+            background: #fff3e0;
+            color: #ff9800;
         }
         .status-closed {
-            background: #fee2e2;
-            color: #ef4444;
-        }
-        .status-running {
-            background: #dbeafe;
-            color: #3b82f6;
+            background: #ffebee;
+            color: #f44336;
         }
 
-        /* Bottom Navigation */
+        /* Bottom Navigation - Big Size */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -304,27 +293,47 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 10px 16px;
-            border-top: 1px solid #e8ecf0;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            padding: 12px 16px;
+            border-top: 1px solid #e0e0e0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
         }
         .bottom-item {
             text-align: center;
             cursor: pointer;
-            padding: 6px 0;
+            padding: 8px 0;
             border-radius: 8px;
             flex: 1;
             transition: all 0.2s;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
-            color: #64748b;
+            color: #888;
         }
         .bottom-item:active {
             transform: scale(0.95);
         }
         .bottom-item.active {
-            color: #3b82f6;
+            color: #ff9800;
+        }
+
+        /* Loading */
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e0e0e0;
+            border-top: 3px solid #ff9800;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Modals */
@@ -349,14 +358,14 @@
             max-width: 350px;
         }
         .modal-content h3 {
-            color: #1e293b;
+            color: #1a1a2e;
             margin-bottom: 16px;
             text-align: center;
         }
         .modal-btn {
             width: 100%;
             padding: 12px;
-            background: #3b82f6;
+            background: #ff9800;
             border: none;
             border-radius: 12px;
             color: #ffffff;
@@ -365,30 +374,21 @@
             margin-top: 10px;
         }
         .close-modal {
-            background: #e2e8f0;
-            color: #1e293b;
+            background: #e0e0e0;
+            color: #1a1a2e;
         }
         .modal-input {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e0e0e0;
             border-radius: 12px;
         }
         .rate-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .loader {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            border-bottom: 1px solid #e0e0e0;
         }
     </style>
 </head>
@@ -396,11 +396,14 @@
 <div class="app-container">
     <!-- Header -->
     <div class="header">
-        <div>
-            <div class="app-name">PAPA777</div>
-            <div class="user-greeting" id="userGreeting">Dear User, start your journey</div>
-        </div>
+        <span class="app-name">DURGA</span>
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
+    </div>
+
+    <!-- Server Time -->
+    <div class="server-time">
+        <span class="time-label">📡 SERVER TIME</span>
+        <span class="time-value" id="serverTime">--:--:-- --</span>
     </div>
 
     <!-- Profile Row -->
@@ -418,19 +421,9 @@
         <div class="action-btn withdraw" onclick="location.href='withdraw.html'">Withdraw</div>
     </div>
 
-    <!-- Support Buttons -->
-    <div class="support-row">
-        <div class="support-btn whatsapp" onclick="sendWhatsApp()">
-            WhatsApp
-        </div>
-        <div class="support-btn call" onclick="makeCall()">
-            Call Us
-        </div>
-    </div>
-
     <!-- Main Markets Section -->
     <div class="section-header">
-        <span class="section-title">Main Markets</span>
+        <span class="section-title">Main Markets <span class="new-badge">NEW</span></span>
         <span class="section-link" onclick="showAllMarkets()">View All →</span>
     </div>
 
@@ -444,12 +437,12 @@
 
     <!-- Markets List -->
     <div id="marketsList">
-        <div class="loader">Loading markets...</div>
+        <div class="loader"><div class="spinner"></div>Loading markets...</div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - Big Size -->
     <div class="bottom-nav">
-        <div class="bottom-item" onclick="location.reload()">History</div>
+        <div class="bottom-item" onclick="location.href='history.html'">History</div>
         <div class="bottom-item" onclick="location.href='mybids.html'">Passbook</div>
         <div class="bottom-item active" onclick="location.reload()">Home</div>
         <div class="bottom-item" onclick="location.href='funds.html'">Funds</div>
@@ -490,11 +483,11 @@
     <div class="modal-content">
         <h3>Change MPIN</h3>
         <input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4">
-        <input type="password" id="newPin" class="modal-input" placeholder="New MPIN" maxlength="4">
+        <input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4">
         <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4">
         <button class="modal-btn" onclick="updatePin()">Update</button>
         <button class="modal-btn close-modal" onclick="closeChangePinModal()">Cancel</button>
-        <div id="pinMsg" style="color:#ef4444; text-align:center; margin-top:10px;"></div>
+        <div id="pinMsg" style="color:#f44336; text-align:center; margin-top:10px;"></div>
     </div>
 </div>
 
@@ -508,7 +501,7 @@
         <input type="text" id="bankIfsc" class="modal-input" placeholder="IFSC Code">
         <button class="modal-btn" onclick="saveBankDetails()">Save</button>
         <button class="modal-btn close-modal" onclick="closeBankModal()">Cancel</button>
-        <div id="bankMsg" style="color:#10b981; text-align:center; margin-top:10px;"></div>
+        <div id="bankMsg" style="color:#4caf50; text-align:center; margin-top:10px;"></div>
     </div>
 </div>
 
@@ -529,6 +522,44 @@
     let marketsData = [];
     let currentUserData = null;
     let currentFilter = "all";
+    let serverTimeInterval = null;
+    let cachedServerTime = null;
+    let lastServerTimeFetch = 0;
+    
+    // Get Server Time
+    async function getServerTime() {
+        const now = Date.now();
+        if (cachedServerTime && (now - lastServerTimeFetch) < 2000) {
+            const elapsed = (now - lastServerTimeFetch) / 1000;
+            return new Date(cachedServerTime.getTime() + (elapsed * 1000));
+        }
+        try {
+            const docRef = db.collection('settings').doc('servertime');
+            await docRef.set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            const doc = await docRef.get();
+            cachedServerTime = doc.data().timestamp.toDate();
+            lastServerTimeFetch = now;
+            return cachedServerTime;
+        } catch (error) {
+            return cachedServerTime || new Date();
+        }
+    }
+    
+    // Update Server Time Display
+    async function updateServerTimeDisplay() {
+        try {
+            const serverTime = await getServerTime();
+            let hours = serverTime.getHours();
+            const minutes = serverTime.getMinutes().toString().padStart(2, '0');
+            const seconds = serverTime.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+            document.getElementById('serverTime').innerHTML = timeString;
+        } catch (error) {
+            console.error("Server time error:", error);
+        }
+    }
     
     function formatTimeTo12Hour(timeStr) {
         if (!timeStr) return '--:--';
@@ -541,10 +572,10 @@
     }
     
     function getStatusDisplay(status) {
-        if (status === 'open') return { text: 'Open for Bids', class: 'status-open' };
-        if (status === 'close') return { text: 'Close Running', class: 'status-running' };
-        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed' };
-        return { text: 'Closed for Today', class: 'status-closed' };
+        if (status === 'open') return { text: '🟢 Open for Bids', class: 'status-open' };
+        if (status === 'close') return { text: '🟡 Close Running', class: 'status-close' };
+        if (status === 'holiday') return { text: '🔴 Holiday', class: 'status-closed' };
+        return { text: '🔴 Closed for Today', class: 'status-closed' };
     }
     
     function listenToMarkets() {
@@ -597,13 +628,12 @@
             const resultDisplay = `${market.openPana}-${market.jodi}-${market.closePana}`;
             const openTime = formatTimeTo12Hour(market.openBidEnd);
             const closeTime = formatTimeTo12Hour(market.closeBidEnd);
-            const isPlayable = market.status === 'open' || market.status === 'close';
             
             html += `
                 <div class="market-card">
                     <div class="market-header">
                         <span class="market-name">${market.name.toUpperCase()}</span>
-                        <span class="play-link" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')">Play →</span>
+                        <span class="play-link" onclick="event.stopPropagation(); openBetting('${market.id}', '${market.name}', '${market.status}')">Play →</span>
                     </div>
                     <div class="result-numbers">${resultDisplay}</div>
                     <div class="timing-row">
@@ -647,14 +677,11 @@
                 document.getElementById('userBalance').innerText = currentUserData.balance || 0;
                 document.getElementById('profileName').innerHTML = currentUserData.name || 'User';
                 document.getElementById('profilePhone').innerHTML = currentUserData.phone || '+91 XXXXXXXXXX';
-                document.getElementById('userGreeting').innerHTML = `Dear ${currentUserData.name?.split(' ')[0] || 'User'}, start your journey`;
             }
         } catch (error) {}
     }
     
     function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
-    function sendWhatsApp() { window.open('https://wa.me/919113224019', '_blank'); }
-    function makeCall() { window.location.href = 'tel:+919113224019'; }
     
     // Profile Functions
     function showProfileModal() {
@@ -680,7 +707,7 @@
         await db.collection('users').doc(auth.currentUser.uid).update({ pin: newPin });
         currentUserData.pin = newPin;
         document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
-        document.getElementById('pinMsg').style.color = '#10b981';
+        document.getElementById('pinMsg').style.color = '#4caf50';
         setTimeout(() => closeChangePinModal(), 1500);
     }
     
@@ -703,27 +730,32 @@
         const ifscCode = document.getElementById('bankIfsc').value.trim();
         if (!accountHolder || !bankName || !accountNumber || !ifscCode) {
             document.getElementById('bankMsg').innerHTML = 'Fill all fields';
-            document.getElementById('bankMsg').style.color = '#ef4444';
+            document.getElementById('bankMsg').style.color = '#f44336';
             return;
         }
         await db.collection('users').doc(auth.currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
         currentUserData.bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
         document.getElementById('bankMsg').innerHTML = 'Bank details saved!';
-        document.getElementById('bankMsg').style.color = '#10b981';
+        document.getElementById('bankMsg').style.color = '#4caf50';
         setTimeout(() => closeBankModal(), 1500);
+    }
+    
+    // Start server time clock
+    function startServerTimeClock() {
+        updateServerTimeDisplay();
+        if (serverTimeInterval) clearInterval(serverTimeInterval);
+        serverTimeInterval = setInterval(updateServerTimeDisplay, 1000);
     }
     
     auth.onAuthStateChanged(user => {
         if (!user) window.location.href = 'index.html';
-        else { loadUserData(); listenToMarkets(); }
+        else { loadUserData(); listenToMarkets(); startServerTimeClock(); }
     });
     
     window.filterMarkets = filterMarkets;
     window.openBetting = openBetting;
     window.showAllMarkets = showAllMarkets;
     window.showBalance = showBalance;
-    window.sendWhatsApp = sendWhatsApp;
-    window.makeCall = makeCall;
     window.showProfileModal = showProfileModal;
     window.closeProfileModal = closeProfileModal;
     window.showGameRatesModal = showGameRatesModal;
