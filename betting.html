@@ -499,7 +499,9 @@
             background: #fff3cd;
             color: #856404;
         }
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         .rate-info {
             text-align: center;
@@ -1194,7 +1196,7 @@
                     </div>` : showOpenClose && currentStatus === 'close' ? '<div class="toggle-section"><span>Close Only Bidding</span></div>' : ''}
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="number-grid">${digitsHtml}</div>
@@ -1215,7 +1217,7 @@
                     <div class="toggle-section"><span>CLOSE BIDDING ONLY</span></div>
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="jodi-grid">${jodiHtml}</div>
@@ -1235,13 +1237,13 @@
                     </div>` : showOpenClose && currentStatus === 'close' ? '<div class="toggle-section"><span>Close Only Bidding</span></div>' : ''}
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="manual-entry">
                         <div class="manual-row">
                             <span class="manual-label">Enter Number:</span>
-                            <input type="text" id="manualValue" placeholder="Enter 3-digit ${currentGameType}" maxlength="3">
+                            <input type="text" id="manualValue" placeholder="Enter 3-digit ${currentGameType}" maxlength="3" inputmode="numeric" pattern="\\d*">
                         </div>
                     </div>
                     <button class="add-btn" onclick="addManualNumber()">Add to Bids</button>
@@ -1256,12 +1258,12 @@
                     <div class="toggle-section"><span>CLOSE BIDDING ONLY</span></div>
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="manual-entry">
-                        <div class="manual-row"><span class="manual-label">Open Pana:</span><input type="text" id="halfSangamAOpen" placeholder="3-digit Open Pana" maxlength="3"></div>
-                        <div class="manual-row"><span class="manual-label">Close Digit:</span><input type="text" id="halfSangamAClose" placeholder="Close Digit (0-9)" maxlength="1"></div>
+                        <div class="manual-row"><span class="manual-label">Open Pana:</span><input type="text" id="halfSangamAOpen" placeholder="3-digit Open Pana" maxlength="3" inputmode="numeric" pattern="\\d*"></div>
+                        <div class="manual-row"><span class="manual-label">Close Digit:</span><input type="text" id="halfSangamAClose" placeholder="Close Digit (0-9)" maxlength="1" inputmode="numeric" pattern="\\d*"></div>
                     </div>
                     <button class="add-btn" onclick="addHalfSangamA()">Add to Bids</button>
                     ${renderBidItems()}
@@ -1275,12 +1277,12 @@
                     <div class="toggle-section"><span>CLOSE BIDDING ONLY</span></div>
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="manual-entry">
-                        <div class="manual-row"><span class="manual-label">Open Digit:</span><input type="text" id="halfSangamBOpen" placeholder="Open Digit (0-9)" maxlength="1"></div>
-                        <div class="manual-row"><span class="manual-label">Close Pana:</span><input type="text" id="halfSangamBClose" placeholder="3-digit Close Pana" maxlength="3"></div>
+                        <div class="manual-row"><span class="manual-label">Open Digit:</span><input type="text" id="halfSangamBOpen" placeholder="Open Digit (0-9)" maxlength="1" inputmode="numeric" pattern="\\d*"></div>
+                        <div class="manual-row"><span class="manual-label">Close Pana:</span><input type="text" id="halfSangamBClose" placeholder="3-digit Close Pana" maxlength="3" inputmode="numeric" pattern="\\d*"></div>
                     </div>
                     <button class="add-btn" onclick="addHalfSangamB()">Add to Bids</button>
                     ${renderBidItems()}
@@ -1294,12 +1296,12 @@
                     <div class="toggle-section"><span>CLOSE BIDDING ONLY</span></div>
                     <div class="points-section">
                         <label class="points-label">Bid Amount (₹)</label>
-                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" onchange="updatePoints()" oninput="updatePoints()">
+                        <input type="number" id="pointsInput" class="points-input" placeholder="Enter amount (Min ₹5)" step="1" inputmode="numeric" pattern="\\d*">
                         <div class="points-hint">Enter any amount (Minimum ₹5 per bid)</div>
                     </div>
                     <div class="manual-entry">
-                        <div class="manual-row"><span class="manual-label">Open Pana:</span><input type="text" id="fullSangamOpen" placeholder="3-digit Open Pana" maxlength="3"></div>
-                        <div class="manual-row"><span class="manual-label">Close Pana:</span><input type="text" id="fullSangamClose" placeholder="3-digit Close Pana" maxlength="3"></div>
+                        <div class="manual-row"><span class="manual-label">Open Pana:</span><input type="text" id="fullSangamOpen" placeholder="3-digit Open Pana" maxlength="3" inputmode="numeric" pattern="\\d*"></div>
+                        <div class="manual-row"><span class="manual-label">Close Pana:</span><input type="text" id="fullSangamClose" placeholder="3-digit Close Pana" maxlength="3" inputmode="numeric" pattern="\\d*"></div>
                     </div>
                     <button class="add-btn" onclick="addFullSangam()">Add to Bids</button>
                     ${renderBidItems()}
