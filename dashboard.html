@@ -8,70 +8,115 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f0f2f5; padding-bottom: 70px; }
-        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f5f7fa; padding-bottom: 70px; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #f5f7fa; min-height: 100vh; }
         
-        .header { background: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9ecef; }
         .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
-        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .balance { background: linear-gradient(135deg, #007bff, #0056b3); padding: 5px 15px; border-radius: 30px; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; }
         
-        .profile-card { background: #fff; margin: 16px; padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; border: 1px solid #e0e0e0; }
-        .profile-avatar { width: 50px; height: 50px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; }
+        .profile-row { display: flex; align-items: center; gap: 12px; background: #fff; margin: 10px; padding: 12px 15px; border-radius: 20px; border: 1px solid #e9ecef; cursor: pointer; }
+        .profile-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, #007bff, #0056b3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; }
         .profile-info { flex: 1; }
         .profile-name { color: #1a1a2e; font-size: 16px; font-weight: bold; }
-        .profile-phone { color: #666; font-size: 12px; }
-        .profile-arrow { color: #007bff; font-size: 14px; }
+        .profile-phone { color: #6c757d; font-size: 12px; }
+        .view-profile { color: #007bff; font-size: 12px; }
         
-        .notice-bar { background: #e3f2fd; margin: 16px; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid #90caf9; }
-        .notice-text { flex: 1; color: #0d47a1; font-size: 13px; font-weight: 500; }
-        .notice-close { color: #0d47a1; font-size: 18px; cursor: pointer; background: none; border: none; }
+        .notice-board { background: linear-gradient(135deg, #007bff, #0056b3); margin: 10px; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .notice-text { flex: 1; color: #fff; font-weight: bold; font-size: 13px; }
+        .close-notice { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
         
-        .live-clock { background: #fff; margin: 16px; padding: 12px 20px; border-radius: 30px; display: flex; justify-content: center; gap: 20px; border: 1px solid #e0e0e0; }
-        .clock-time { font-size: 16px; font-weight: 600; color: #1a1a2e; }
-        .clock-date { font-size: 14px; color: #666; }
+        .live-clock {
+            background: #fff;
+            margin: 10px 10px 15px 10px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+        }
+        .clock-time {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            font-family: monospace;
+            letter-spacing: 1px;
+            background: #f8f9fa;
+            padding: 4px 14px;
+            border-radius: 25px;
+        }
+        .clock-date {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 4px 12px;
+            border-radius: 25px;
+        }
         
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px; }
-        .menu-item { background: #fff; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; border: 1px solid #e0e0e0; transition: all 0.3s; }
-        .menu-item:hover { border-color: #007bff; transform: translateY(-2px); }
-        .menu-icon { font-size: 28px; margin-bottom: 6px; }
-        .menu-label { font-size: 11px; color: #333; font-weight: 500; }
+        .games-row { display: flex; justify-content: space-around; background: #fff; margin: 10px; padding: 12px; border-radius: 20px; border: 1px solid #e9ecef; }
+        .game-icon { text-align: center; color: #6c757d; font-size: 11px; cursor: pointer; transition: all 0.3s; }
+        .game-icon:hover { transform: translateY(-5px); color: #007bff; }
+        .game-icon span { display: block; margin-top: 4px; }
         
-        .market-card { background: #fff; margin: 16px; border-radius: 16px; padding: 16px; border: 1px solid #e0e0e0; transition: all 0.3s; }
-        .market-card:hover { border-color: #007bff; }
-        .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-        .market-name { font-size: 18px; font-weight: bold; color: #1a1a2e; }
-        .market-status { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
-        .status-open { background: #d4edda; color: #155724; }
-        .status-close { background: #fff3cd; color: #856404; }
-        .status-closed { background: #f8d7da; color: #721c24; }
-        .status-holiday { background: #e2e3e5; color: #383d41; }
+        .market-card { background: #fff; margin: 12px; border-radius: 20px; padding: 16px; border: 1px solid #e9ecef; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .market-card:hover { transform: translateY(-2px); border-color: #007bff; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+        .market-name { color: #1a1a2e; font-size: 18px; font-weight: bold; }
+        .market-numbers { color: #6c757d; font-size: 12px; font-family: monospace; background: #f8f9fa; padding: 4px 8px; border-radius: 8px; }
         
-        .result-box { background: #f8f9fa; border-radius: 12px; padding: 12px; text-align: center; margin: 12px 0; }
-        .result-numbers { font-size: 20px; font-weight: bold; color: #1a1a2e; font-family: monospace; }
+        .result-box { background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 10px 0; text-align: center; }
+        .result-numbers { color: #1a1a2e; font-size: 22px; font-weight: bold; letter-spacing: 2px; font-family: monospace; }
         
-        .market-timings { display: flex; justify-content: center; gap: 24px; margin: 12px 0; font-size: 12px; color: #666; }
-        .play-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-        .play-btn:hover { background: #0056b3; }
-        .play-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .market-timings { display: flex; justify-content: center; gap: 25px; margin: 10px 0 5px 0; padding: 8px; background: #f8f9fa; border-radius: 30px; }
+        .timing-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .green-dot { width: 10px; height: 10px; background: #28a745; border-radius: 50%; }
+        .orange-dot { width: 10px; height: 10px; background: #ffc107; border-radius: 50%; }
+        .timing-label { color: #6c757d; font-weight: 500; }
+        .timing-value { color: #1a1a2e; font-weight: bold; }
         
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
-        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
+        .market-status { font-size: 11px; padding: 4px 12px; border-radius: 20px; display: inline-block; font-weight: 600; }
+        .status-closed { background: #fee2e2; color: #dc3545; }
+        .status-close { background: #fff3cd; color: #ffc107; }
+        .status-open { background: #d4edda; color: #28a745; }
+        .status-holiday { background: #e2e3e5; color: #6c757d; }
+        
+        .play-btn { width: 100%; margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
+        .play-btn:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(0,123,255,0.4); }
+        .play-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #ced4da; transform: none; box-shadow: none; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 10px; border-top: 1px solid #e9ecef; }
+        .nav-item { text-align: center; color: #6c757d; cursor: pointer; font-size: 10px; transition: all 0.3s; flex: 1; }
+        .nav-item:hover { color: #007bff; transform: translateY(-3px); }
+        .nav-item span { font-size: 10px; display: block; margin-top: 2px; }
         .nav-item.active { color: #007bff; }
         
-        .loader { display: flex; justify-content: center; padding: 40px; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top: 3px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: #fff; border-radius: 24px; padding: 24px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
-        .modal-content h3 { color: #1a1a2e; margin-bottom: 16px; text-align: center; }
-        .modal-btn { width: 100%; padding: 12px; background: #007bff; border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        .modal-btn.logout { background: #dc3545; }
-        .modal-btn.close { background: #6c757d; }
-        .modal-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 8px; }
-        .rate-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0; }
         .hidden { display: none; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; border-radius: 24px; padding: 25px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto; border: none; }
+        .modal-content h3 { color: #1a1a2e; margin-bottom: 15px; text-align: center; }
+        .modal-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .close-modal { background: #e9ecef; color: #1a1a2e; }
+        .logout-btn { background: #dc3545; color: #fff; }
+        .modal-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e9ecef; background: #f8f9fa; border-radius: 12px; color: #1a1a2e; }
+        
+        .rate-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+        .rate-name { color: #6c757d; }
+        .rate-value { color: #1a1a2e; font-weight: bold; }
+        
+        .support-option { display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; border: 1px solid #e9ecef; }
+        .support-option:hover { background: #fff; border-color: #007bff; transform: translateX(5px); }
+        .support-text { flex: 1; }
+        .support-title { font-weight: bold; color: #1a1a2e; }
+        .support-desc { font-size: 12px; color: #6c757d; }
+        
+        .loader { display: flex; justify-content: center; align-items: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e9ecef; border-top: 3px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -81,52 +126,131 @@
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
     
-    <div class="profile-card" onclick="showProfileModal()">
+    <div class="profile-row" onclick="showProfileModal()">
         <div class="profile-avatar">SA</div>
         <div class="profile-info">
             <div class="profile-name" id="profileName">Loading...</div>
             <div class="profile-phone" id="profilePhone">Loading...</div>
         </div>
-        <div class="profile-arrow">→</div>
+        <div class="view-profile">View →</div>
     </div>
     
-    <div id="noticeBar" class="notice-bar" onclick="showNoticeModal()">
-        <span class="notice-text" id="noticeText">Welcome to SAVI777! Play and Win.</span>
-        <button class="notice-close" onclick="event.stopPropagation(); closeNotice()">✕</button>
+    <div id="noticeBoard" class="notice-board" onclick="showNoticeModal()">
+        <div class="notice-text" id="noticeText">Welcome to SAVI777! Play big · Win big</div>
+        <button class="close-notice" onclick="event.stopPropagation(); closeNotice()">✕</button>
     </div>
     
-    <div class="live-clock">
+    <div class="live-clock" id="liveClock">
         <span class="clock-time" id="liveClockTime">--:--:--</span>
         <span class="clock-date" id="liveClockDate">--/--/----</span>
     </div>
     
-    <div class="menu-grid">
-        <div class="menu-item" onclick="location.href='deposit.html'"><div class="menu-icon">💰</div><div class="menu-label">Deposit</div></div>
-        <div class="menu-item" onclick="location.href='withdraw.html'"><div class="menu-icon">💸</div><div class="menu-label">Withdraw</div></div>
-        <div class="menu-item" onclick="location.href='mybids.html'"><div class="menu-icon">📋</div><div class="menu-label">My Bids</div></div>
-        <div class="menu-item" onclick="location.href='funds.html'"><div class="menu-icon">🏦</div><div class="menu-label">Funds</div></div>
+    <div class="games-row">
+        <div class="game-icon" onclick="showGames()"><span>Games</span></div>
+        <div class="game-icon" onclick="window.location.href='deposit.html'"><span>Deposit</span></div>
+        <div class="game-icon" onclick="window.location.href='withdraw.html'"><span>Withdraw</span></div>
+        <div class="game-icon" onclick="window.location.href='mybids.html'"><span>My Bids</span></div>
     </div>
     
     <div id="marketsList">
-        <div class="loader"><div class="spinner"></div></div>
+        <div class="loader">
+            <div class="spinner"></div>
+        </div>
     </div>
     
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="location.reload()">🏠 Home</div>
-        <div class="nav-item" onclick="location.href='mybids.html'">📋 Bids</div>
-        <div class="nav-item" onclick="location.href='funds.html'">🏦 Funds</div>
-        <div class="nav-item" onclick="location.href='chat.html'">💬 Support</div>
+        <div class="nav-item active" onclick="location.reload()"><span>Home</span></div>
+        <div class="nav-item" onclick="window.location.href='mybids.html'"><span>Passbook</span></div>
+        <div class="nav-item" onclick="window.location.href='mybids.html'"><span>My Bids</span></div>
+        <div class="nav-item" onclick="window.location.href='funds.html'"><span>Fund</span></div>
+        <div class="nav-item" onclick="location.href='chat.html'"><span>Support</span></div>
     </div>
 </div>
 
 <!-- Profile Modal -->
-<div id="profileModal" class="modal"><div class="modal-content"><h3>My Profile</h3><div id="profileInfo"></div><button class="modal-btn" onclick="showGameRatesModal()">Game Rates</button><button class="modal-btn" onclick="showChangePinModal()">Change MPIN</button><button class="modal-btn" onclick="showBankModal()">Bank Details</button><button class="modal-btn logout" onclick="logout()">Logout</button><button class="modal-btn close" onclick="closeProfileModal()">Close</button></div></div>
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3>My Profile</h3>
+        <div id="profileInfo"></div>
+        <button class="modal-btn" onclick="showGameRatesModal()">Game Rates</button>
+        <button class="modal-btn" onclick="showChangePinModal()">Change MPIN</button>
+        <button class="modal-btn" onclick="showBankModal()">Bank Details</button>
+        <button class="modal-btn logout-btn" onclick="logout()">Logout</button>
+        <button class="modal-btn close-modal" onclick="closeProfileModal()">Close</button>
+    </div>
+</div>
 
-<div id="gameRatesModal" class="modal"><div class="modal-content"><h3>Game Rates</h3><div class="rate-row"><span>Single Digit</span><span>10x</span></div><div class="rate-row"><span>Jodi</span><span>100x</span></div><div class="rate-row"><span>Single Pana</span><span>160x</span></div><div class="rate-row"><span>Double Pana</span><span>320x</span></div><div class="rate-row"><span>Triple Pana</span><span>1000x</span></div><div class="rate-row"><span>Half Sangam A</span><span>1000x</span></div><div class="rate-row"><span>Half Sangam B</span><span>1000x</span></div><div class="rate-row"><span>Full Sangam</span><span>10000x</span></div><button class="modal-btn close" onclick="closeGameRatesModal()">Close</button></div></div>
+<!-- Notice Modal -->
+<div id="noticeModal" class="modal">
+    <div class="modal-content">
+        <h3>Notice</h3>
+        <div id="noticeModalText" style="color:#6c757d; margin-bottom:15px; line-height:1.5;"></div>
+        <button class="modal-btn close-modal" onclick="closeNoticeModal()">Close</button>
+    </div>
+</div>
 
-<div id="changePinModal" class="modal"><div class="modal-content"><h3>Change MPIN</h3><input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4"><input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4"><input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4"><button class="modal-btn" onclick="updatePin()">Update</button><button class="modal-btn close" onclick="closeChangePinModal()">Cancel</button><div id="pinMsg" style="color:#dc3545; text-align:center; margin-top:8px;"></div></div></div>
+<!-- Game Rates Modal -->
+<div id="gameRatesModal" class="modal">
+    <div class="modal-content">
+        <h3>GAME RATES</h3>
+        <div class="rate-row"><span class="rate-name">Single Digit</span><span class="rate-value">10x</span></div>
+        <div class="rate-row"><span class="rate-name">Jodi</span><span class="rate-value">100x</span></div>
+        <div class="rate-row"><span class="rate-name">Single Pana</span><span class="rate-value">160x</span></div>
+        <div class="rate-row"><span class="rate-name">Double Pana</span><span class="rate-value">320x</span></div>
+        <div class="rate-row"><span class="rate-name">Triple Pana</span><span class="rate-value">1000x</span></div>
+        <div class="rate-row"><span class="rate-name">Half Sangam A</span><span class="rate-value">1000x</span></div>
+        <div class="rate-row"><span class="rate-name">Half Sangam B</span><span class="rate-value">1000x</span></div>
+        <div class="rate-row"><span class="rate-name">Full Sangam</span><span class="rate-value">10000x</span></div>
+        <button class="modal-btn close-modal" onclick="closeGameRatesModal()">Close</button>
+    </div>
+</div>
 
-<div id="bankModal" class="modal"><div class="modal-content"><h3>Bank Details</h3><input type="text" id="bankAccountHolder" class="modal-input" placeholder="Account Holder"><input type="text" id="bankName" class="modal-input" placeholder="Bank Name"><input type="text" id="bankAccountNumber" class="modal-input" placeholder="Account Number"><input type="text" id="bankIfsc" class="modal-input" placeholder="IFSC Code"><button class="modal-btn" onclick="saveBankDetails()">Save</button><button class="modal-btn close" onclick="closeBankModal()">Cancel</button><div id="bankMsg" style="color:#28a745; text-align:center; margin-top:8px;"></div></div></div>
+<!-- Change PIN Modal -->
+<div id="changePinModal" class="modal">
+    <div class="modal-content">
+        <h3>Change MPIN</h3>
+        <input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4">
+        <input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4">
+        <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm New MPIN" maxlength="4">
+        <button class="modal-btn" onclick="updatePin()">Update MPIN</button>
+        <button class="modal-btn close-modal" onclick="closeChangePinModal()">Cancel</button>
+        <div id="pinMsg" style="color:#dc3545; text-align:center; margin-top:10px;"></div>
+    </div>
+</div>
+
+<!-- Bank Details Modal -->
+<div id="bankModal" class="modal">
+    <div class="modal-content">
+        <h3>Bank Details</h3>
+        <input type="text" id="bankAccountHolder" class="modal-input" placeholder="Account Holder Name">
+        <input type="text" id="bankName" class="modal-input" placeholder="Bank Name">
+        <input type="text" id="bankAccountNumber" class="modal-input" placeholder="Account Number">
+        <input type="text" id="bankIfsc" class="modal-input" placeholder="IFSC Code">
+        <button class="modal-btn" onclick="saveBankDetails()">Save Bank Details</button>
+        <button class="modal-btn close-modal" onclick="closeBankModal()">Cancel</button>
+        <div id="bankMsg" style="color:#28a745; text-align:center; margin-top:10px;"></div>
+    </div>
+</div>
+
+<!-- Support Modal -->
+<div id="supportModal" class="modal">
+    <div class="modal-content">
+        <h3>Support</h3>
+        <div class="support-option" onclick="sendEmail()">
+            <div class="support-text">
+                <div class="support-title">Email Us</div>
+                <div class="support-desc">savi777@support.com</div>
+            </div>
+        </div>
+        <div class="support-option" onclick="sendWhatsApp()">
+            <div class="support-text">
+                <div class="support-title">WhatsApp</div>
+                <div class="support-desc">+91 9113224019</div>
+            </div>
+        </div>
+        <button class="modal-btn close-modal" onclick="closeSupportModal()">Close</button>
+    </div>
+</div>
 
 <script>
     const firebaseConfig = {
@@ -135,8 +259,7 @@
         projectId: "savi777-5b8af",
         storageBucket: "savi777-5b8af.firebasestorage.app",
         messagingSenderId: "396388183217",
-        appId: "1:396388183217:web:48d946a4198963cefa0690",
-        measurementId: "G-42PDZRC747"
+        appId: "1:396388183217:web:48d946a4198963cefa0690"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -147,6 +270,7 @@
     let currentUserData = null;
     let serverTimeCache = null;
     let lastServerTimeFetch = 0;
+    let marketsListener = null;
     let clockInterval = null;
     let statusUpdateInterval = null;
     
@@ -164,26 +288,29 @@
             lastServerTimeFetch = now;
             return serverTimeCache;
         } catch (error) {
+            console.error("Error getting server time:", error);
             return serverTimeCache || new Date();
         }
     }
     
     function formatTimeTo12Hour(timeStr) {
-        if (!timeStr) return '--:--';
+        if (!timeStr || timeStr === '--:--') return '--:--';
         const parts = timeStr.split(':');
         let hours = parseInt(parts[0]);
         const minutes = parts[1];
         const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
+        hours = hours % 12;
+        hours = hours ? hours : 12;
         return `${hours}:${minutes} ${ampm}`;
     }
     
-    function formatCurrentTime(date) {
+    function formatCurrentTimeTo12Hour(date) {
         let hours = date.getHours();
         const minutes = date.getMinutes().toString().padStart(2, '0');
         const seconds = date.getSeconds().toString().padStart(2, '0');
         const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
+        hours = hours % 12;
+        hours = hours ? hours : 12;
         return `${hours}:${minutes}:${seconds} ${ampm}`;
     }
     
@@ -207,12 +334,15 @@
     async function updateLiveClock() {
         try {
             const serverTime = await getServerTime();
-            document.getElementById('liveClockTime').innerHTML = formatCurrentTime(serverTime);
+            const timeString = formatCurrentTimeTo12Hour(serverTime);
             const day = serverTime.getDate().toString().padStart(2, '0');
             const month = (serverTime.getMonth() + 1).toString().padStart(2, '0');
             const year = serverTime.getFullYear();
+            document.getElementById('liveClockTime').innerHTML = timeString;
             document.getElementById('liveClockDate').innerHTML = `${day}/${month}/${year}`;
-        } catch (error) { console.error("Clock error:", error); }
+        } catch (error) {
+            console.error("Clock update error:", error);
+        }
     }
     
     async function updateAllMarketStatuses() {
@@ -230,20 +360,31 @@
     }
     
     function listenToMarkets() {
-        db.collection('markets').onSnapshot(async (snapshot) => {
+        if (marketsListener) marketsListener();
+        marketsListener = db.collection('markets').onSnapshot(async (snapshot) => {
             const newMarketsData = [];
             for (const doc of snapshot.docs) {
                 const data = doc.data();
                 const calculatedStatus = await calculateMarketStatus(data.openBidEnd, data.closeBidEnd, data.status);
-                newMarketsData.push({
-                    id: doc.id, name: data.name, numbers: data.numbers,
-                    openBidEnd: data.openBidEnd, closeBidEnd: data.closeBidEnd,
-                    status: calculatedStatus, originalStatus: data.status,
-                    openPana: data.openPana || '***', closePana: data.closePana || '***',
-                    jodi: data.jodi || '**', serialNo: data.serialNo || 999
+                newMarketsData.push({ 
+                    id: doc.id, 
+                    name: data.name,
+                    numbers: data.numbers,
+                    openBidEnd: data.openBidEnd,
+                    closeBidEnd: data.closeBidEnd,
+                    closedTime: data.closedTime,
+                    status: calculatedStatus,
+                    originalStatus: data.status,
+                    openPana: data.openPana || '***',
+                    openDigit: data.openDigit || '*',
+                    closePana: data.closePana || '***',
+                    closeDigit: data.closeDigit || '*',
+                    jodi: data.jodi || '**',
+                    serialNo: data.serialNo || 999,
+                    closeDeclared: data.closeDeclared || false
                 });
             }
-            newMarketsData.sort((a, b) => a.serialNo - b.serialNo);
+            newMarketsData.sort((a, b) => (a.serialNo || 999) - (b.serialNo || 999));
             marketsData = newMarketsData;
             renderMarkets();
         });
@@ -253,13 +394,14 @@
         db.collection('settings').doc('notice').onSnapshot((doc) => {
             const text = doc.exists ? doc.data().text : 'Welcome to SAVI777!';
             document.getElementById('noticeText').innerHTML = text;
+            document.getElementById('noticeModalText').innerHTML = text;
         });
     }
     
     function getStatusText(status) {
         if (status === 'open') return 'OPEN Bidding';
         if (status === 'close') return 'CLOSE Bidding';
-        if (status === 'holiday') return 'HOLIDAY - Closed';
+        if (status === 'holiday') return 'HOLIDAY - Market Closed';
         return 'Market Closed';
     }
     
@@ -271,33 +413,61 @@
     }
     
     function openBetting(market) {
-        window.location.href = `betting.html?market=${encodeURIComponent(market.name)}&status=${market.status}&marketId=${market.id}`;
+        window.location.href = `betting.html?market=${encodeURIComponent(market.name)}&status=${market.originalStatus === 'holiday' ? 'closed' : market.status}&marketId=${market.id}`;
     }
     
     function renderMarkets() {
         const container = document.getElementById('marketsList');
         if (marketsData.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#666; padding:40px;">No markets available.</div>';
+            container.innerHTML = '<div style="text-align:center; color:#6c757d; padding:40px;">No markets available. Admin will add soon.</div>';
             return;
         }
+        
         let html = '';
+        
         marketsData.forEach(market => {
-            const isPlayable = market.status === 'open' || market.status === 'close';
-            const resultDisplay = `${market.openPana} - ${market.jodi} - ${market.closePana}`;
+            const isPlayable = (market.status === 'open' || market.status === 'close') && market.originalStatus !== 'holiday';
+            
+            let resultDisplay = '';
+            if (market.closePana && market.closePana !== '***') {
+                resultDisplay = `${market.openPana} - ${market.jodi} - ${market.closePana}`;
+            } 
+            else if (market.openPana && market.openPana !== '***') {
+                resultDisplay = `${market.openPana} - ${market.openDigit}* - ***`;
+            } 
+            else {
+                resultDisplay = `*** - ** - ***`;
+            }
+            
+            let numbersDisplay = market.numbers || '***-***-***';
+            numbersDisplay = numbersDisplay.replace('Open Pana', '').replace('JODI', '').replace('Close Pana', '').trim();
+            
             const openBidEnd12 = formatTimeTo12Hour(market.openBidEnd);
             const closeBidEnd12 = formatTimeTo12Hour(market.closeBidEnd);
+            
             html += `
                 <div class="market-card">
                     <div class="market-header">
                         <span class="market-name">${market.name}</span>
-                        <span class="market-status ${getStatusClass(market.status)}">${getStatusText(market.status)}</span>
+                        <span class="market-numbers">${numbersDisplay}</span>
                     </div>
                     <div class="result-box">
                         <div class="result-numbers">${resultDisplay}</div>
                     </div>
                     <div class="market-timings">
-                        <span>Open: ${openBidEnd12}</span>
-                        <span>Close: ${closeBidEnd12}</span>
+                        <div class="timing-item">
+                            <div class="green-dot"></div>
+                            <span class="timing-label">Open</span>
+                            <span class="timing-value">${openBidEnd12}</span>
+                        </div>
+                        <div class="timing-item">
+                            <div class="orange-dot"></div>
+                            <span class="timing-label">Close</span>
+                            <span class="timing-value">${closeBidEnd12}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="market-status ${getStatusClass(market.status)}">${getStatusText(market.status)}</span>
                     </div>
                     <button class="play-btn" onclick='openBetting(${JSON.stringify(market)})' ${!isPlayable ? 'disabled' : ''}>
                         ${isPlayable ? 'PLAY NOW' : 'CLOSED'}
@@ -305,12 +475,17 @@
                 </div>
             `;
         });
+        
         container.innerHTML = html;
     }
     
     async function loadUserData() {
         const user = auth.currentUser;
-        if (!user) { window.location.href = 'index.html'; return; }
+        if (!user) { 
+            window.location.href = 'index.html'; 
+            return; 
+        }
+        
         try {
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
@@ -319,17 +494,28 @@
                 document.getElementById('profileName').innerHTML = currentUserData.name || 'User';
                 document.getElementById('profilePhone').innerHTML = currentUserData.phone || '';
             }
-        } catch (error) { console.error("Error loading user:", error); }
+        } catch (error) {
+            console.error("Error loading user:", error);
+        }
     }
     
-    function showBalance() { alert(`Balance: ₹${currentUserData?.balance || 0}`); }
+    function showBalance() {
+        alert(`Current Balance: ₹${currentUserData?.balance || 0}`);
+    }
     
     function showProfileModal() {
         if (currentUserData) {
-            document.getElementById('profileInfo').innerHTML = `<div style="text-align:center;"><div style="font-size:18px;">${currentUserData.name}</div><div style="color:#666;">${currentUserData.phone}</div><div style="font-size:20px; margin-top:10px;">₹${currentUserData.balance}</div></div>`;
+            document.getElementById('profileInfo').innerHTML = `
+                <div style="text-align:center; margin-bottom:15px;">
+                    <div style="font-size:20px; margin-bottom:5px; color:#1a1a2e;">${currentUserData.name || 'User'}</div>
+                    <div style="color:#6c757d; font-size:12px;">${currentUserData.phone || ''}</div>
+                    <div style="color:#1a1a2e; font-size:18px; margin-top:10px;">₹${currentUserData.balance || 0}</div>
+                </div>
+            `;
             document.getElementById('profileModal').style.display = 'flex';
         }
     }
+    
     function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
     function showGameRatesModal() { closeProfileModal(); document.getElementById('gameRatesModal').style.display = 'flex'; }
     function closeGameRatesModal() { document.getElementById('gameRatesModal').style.display = 'none'; }
@@ -341,34 +527,68 @@
         });
     }
     
-    function showChangePinModal() { closeProfileModal(); document.getElementById('changePinModal').style.display = 'flex'; }
-    function closeChangePinModal() { document.getElementById('changePinModal').style.display = 'none'; document.getElementById('pinMsg').innerHTML = ''; }
+    function showChangePinModal() {
+        closeProfileModal();
+        document.getElementById('changePinModal').style.display = 'flex';
+    }
+    
+    function closeChangePinModal() { 
+        document.getElementById('changePinModal').style.display = 'none';
+        document.getElementById('pinMsg').innerHTML = '';
+        document.getElementById('oldPin').value = '';
+        document.getElementById('newPin').value = '';
+        document.getElementById('confirmPin').value = '';
+    }
     
     async function updatePin() {
         const oldPin = document.getElementById('oldPin').value;
         const newPin = document.getElementById('newPin').value;
         const confirmPin = document.getElementById('confirmPin').value;
-        if (!oldPin || !newPin || !confirmPin) { document.getElementById('pinMsg').innerHTML = 'Fill all fields'; return; }
-        if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits'; return; }
-        if (newPin !== confirmPin) { document.getElementById('pinMsg').innerHTML = 'MPINs do not match'; return; }
-        if (oldPin !== currentUserData.pin) { document.getElementById('pinMsg').innerHTML = 'Current MPIN incorrect'; return; }
-        await db.collection('users').doc(auth.currentUser.uid).update({ pin: newPin });
+        
+        if (!oldPin || !newPin || !confirmPin) {
+            document.getElementById('pinMsg').innerHTML = 'Please fill all fields';
+            return;
+        }
+        if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+            document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits';
+            return;
+        }
+        if (newPin !== confirmPin) {
+            document.getElementById('pinMsg').innerHTML = 'New MPINs do not match';
+            return;
+        }
+        if (oldPin !== currentUserData.pin) {
+            document.getElementById('pinMsg').innerHTML = 'Current MPIN is incorrect';
+            return;
+        }
+        
+        const user = auth.currentUser;
+        await db.collection('users').doc(user.uid).update({ pin: newPin });
         currentUserData.pin = newPin;
-        document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
+        document.getElementById('pinMsg').innerHTML = 'MPIN changed successfully!';
         document.getElementById('pinMsg').style.color = '#28a745';
         setTimeout(() => closeChangePinModal(), 1500);
     }
     
-    function showBankModal() { closeProfileModal(); document.getElementById('bankModal').style.display = 'flex'; loadBankDetails(); }
-    function closeBankModal() { document.getElementById('bankModal').style.display = 'none'; document.getElementById('bankMsg').innerHTML = ''; }
-    
-    function loadBankDetails() {
-        if (currentUserData?.bankDetails) {
+    function showBankModal() {
+        closeProfileModal();
+        if (currentUserData.bankDetails) {
             document.getElementById('bankAccountHolder').value = currentUserData.bankDetails.accountHolder || '';
             document.getElementById('bankName').value = currentUserData.bankDetails.bankName || '';
             document.getElementById('bankAccountNumber').value = currentUserData.bankDetails.accountNumber || '';
             document.getElementById('bankIfsc').value = currentUserData.bankDetails.ifscCode || '';
+        } else {
+            document.getElementById('bankAccountHolder').value = '';
+            document.getElementById('bankName').value = '';
+            document.getElementById('bankAccountNumber').value = '';
+            document.getElementById('bankIfsc').value = '';
         }
+        document.getElementById('bankModal').style.display = 'flex';
+    }
+    
+    function closeBankModal() { 
+        document.getElementById('bankModal').style.display = 'none';
+        document.getElementById('bankMsg').innerHTML = '';
     }
     
     async function saveBankDetails() {
@@ -376,26 +596,44 @@
         const bankName = document.getElementById('bankName').value.trim();
         const accountNumber = document.getElementById('bankAccountNumber').value.trim();
         const ifscCode = document.getElementById('bankIfsc').value.trim();
+        
         if (!accountHolder || !bankName || !accountNumber || !ifscCode) {
-            document.getElementById('bankMsg').innerHTML = 'Fill all fields';
+            document.getElementById('bankMsg').innerHTML = 'Please fill all fields';
             document.getElementById('bankMsg').style.color = '#dc3545';
             return;
         }
-        await db.collection('users').doc(auth.currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
-        currentUserData.bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
-        document.getElementById('bankMsg').innerHTML = 'Bank details saved!';
+        
+        const bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
+        const user = auth.currentUser;
+        await db.collection('users').doc(user.uid).update({ bankDetails: bankDetails });
+        currentUserData.bankDetails = bankDetails;
+        document.getElementById('bankMsg').innerHTML = 'Bank details saved successfully!';
         document.getElementById('bankMsg').style.color = '#28a745';
         setTimeout(() => closeBankModal(), 1500);
     }
     
-    function showNoticeModal() { alert(document.getElementById('noticeText').innerText); }
-    function closeNotice() { document.getElementById('noticeBar').style.display = 'none'; }
+    function showSupportModal() { document.getElementById('supportModal').style.display = 'flex'; }
+    function closeSupportModal() { document.getElementById('supportModal').style.display = 'none'; }
+    function sendEmail() { window.location.href = 'mailto:savi777@support.com'; }
+    function sendWhatsApp() { 
+        window.open('https://wa.me/919113224019', '_blank'); 
+    }
+    function showNoticeModal() { document.getElementById('noticeModal').style.display = 'flex'; }
+    function closeNoticeModal() { document.getElementById('noticeModal').style.display = 'none'; }
+    function closeNotice() { document.getElementById('noticeBoard').style.display = 'none'; }
+    function showGames() { alert('Games coming soon!'); }
     
     async function init() {
         listenToMarkets();
         listenToNotice();
-        clockInterval = setInterval(async () => await updateLiveClock(), 1000);
-        statusUpdateInterval = setInterval(async () => await updateAllMarketStatuses(), 1000);
+        if (clockInterval) clearInterval(clockInterval);
+        clockInterval = setInterval(async () => {
+            await updateLiveClock();
+        }, 1000);
+        if (statusUpdateInterval) clearInterval(statusUpdateInterval);
+        statusUpdateInterval = setInterval(async () => {
+            await updateAllMarketStatuses();
+        }, 1000);
     }
     
     setInterval(() => {
@@ -409,9 +647,12 @@
         }
     }, 30000);
     
-    auth.onAuthStateChanged(user => {
-        if (!user) window.location.href = 'index.html';
-        else { loadUserData(); init(); }
+    auth.onAuthStateChanged(user => { 
+        if (!user) window.location.href = 'index.html'; 
+        else { 
+            loadUserData(); 
+            init();
+        } 
     });
     
     window.showBalance = showBalance;
@@ -425,7 +666,14 @@
     window.showBankModal = showBankModal;
     window.closeBankModal = closeBankModal;
     window.saveBankDetails = saveBankDetails;
+    window.showSupportModal = showSupportModal;
+    window.closeSupportModal = closeSupportModal;
+    window.sendEmail = sendEmail;
+    window.sendWhatsApp = sendWhatsApp;
+    window.showNoticeModal = showNoticeModal;
+    window.closeNoticeModal = closeNoticeModal;
     window.closeNotice = closeNotice;
+    window.showGames = showGames;
     window.logout = logout;
 </script>
 </body>
