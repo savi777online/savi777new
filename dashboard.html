@@ -69,38 +69,10 @@
             cursor: pointer;
         }
 
-        /* Action Buttons */
-        .action-row {
-            display: flex;
-            gap: 16px;
-            margin: 0 16px 20px 16px;
-        }
-        .action-btn {
-            flex: 1;
-            text-align: center;
-            padding: 14px 0;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .action-btn:active {
-            transform: scale(0.97);
-        }
-        .action-btn.deposit {
-            background: #10b981;
-            color: #ffffff;
-        }
-        .action-btn.withdraw {
-            background: #f59e0b;
-            color: #ffffff;
-        }
-
         /* Notice Board */
         .notice-board {
             background: #ffffff;
-            margin: 0 16px 20px 16px;
+            margin: 12px 16px;
             padding: 14px 16px;
             border-radius: 16px;
             display: flex;
@@ -128,6 +100,34 @@
         }
         .notice-close:active {
             transform: scale(0.95);
+        }
+
+        /* Action Buttons */
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin: 0 16px 20px 16px;
+        }
+        .action-btn {
+            flex: 1;
+            text-align: center;
+            padding: 14px 0;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+        .action-btn.deposit {
+            background: #10b981;
+            color: #ffffff;
+        }
+        .action-btn.withdraw {
+            background: #f59e0b;
+            color: #ffffff;
         }
 
         /* Section Header */
@@ -256,6 +256,13 @@
             font-weight: 600;
             padding: 4px 14px;
             border-radius: 20px;
+            margin-top: 8px;
+            text-align: center;
+            display: inline-block;
+            width: auto;
+        }
+        .status-wrapper {
+            text-align: center;
         }
         .status-open {
             background: #d1fae5;
@@ -470,17 +477,17 @@
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="action-row">
-        <div class="action-btn deposit" onclick="location.href='deposit.html'">DEPOSIT</div>
-        <div class="action-btn withdraw" onclick="location.href='withdraw.html'">WITHDRAW</div>
-    </div>
-
-    <!-- Notice Board (Moved Here) -->
+    <!-- Notice Board -->
     <div id="noticeBoard" class="notice-board" onclick="showNoticeModal()">
         <span class="notice-icon">📢</span>
         <span class="notice-text" id="noticeText">Welcome to DURGA! Play and win big.</span>
         <button class="notice-close" onclick="event.stopPropagation(); closeNotice()">✕</button>
+    </div>
+
+    <!-- Action Buttons (Below Notice Board) -->
+    <div class="action-row">
+        <div class="action-btn deposit" onclick="location.href='deposit.html'">DEPOSIT</div>
+        <div class="action-btn withdraw" onclick="location.href='withdraw.html'">WITHDRAW</div>
     </div>
 
     <!-- Main Markets Section -->
@@ -622,10 +629,10 @@
     }
     
     function getStatusInfo(status) {
-        if (status === 'open') return { text: 'Open for Bids', class: 'status-open', btnText: 'PLAY' };
-        if (status === 'close') return { text: 'Running for Close', class: 'status-close', btnText: 'PLAY' };
-        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed', btnText: 'CLOSED' };
-        return { text: 'Closed for Today', class: 'status-closed', btnText: 'CLOSED' };
+        if (status === 'open') return { text: 'Open for Bids', class: 'status-open' };
+        if (status === 'close') return { text: 'Running for Close', class: 'status-close' };
+        if (status === 'holiday') return { text: 'Holiday', class: 'status-closed' };
+        return { text: 'Closed for Today', class: 'status-closed' };
     }
     
     function listenToMarkets() {
@@ -696,7 +703,7 @@
                 <div class="market-card">
                     <div class="market-row">
                         <span class="market-name">${market.name.toUpperCase()}</span>
-                        <button class="play-btn ${!isPlayable ? 'disabled' : ''}" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')" ${!isPlayable ? 'disabled' : ''}>${statusInfo.btnText}</button>
+                        <button class="play-btn ${!isPlayable ? 'disabled' : ''}" onclick="openBetting('${market.id}', '${market.name}', '${market.status}')" ${!isPlayable ? 'disabled' : ''}>PLAY</button>
                     </div>
                     <div class="result-numbers">${resultDisplay}</div>
                     <div class="timings-row">
@@ -708,6 +715,9 @@
                             <span class="timing-label">Close Bids:</span>
                             <span class="timing-value">${closeTime}</span>
                         </div>
+                    </div>
+                    <div class="status-wrapper">
+                        <span class="status-text ${statusInfo.class}">${statusInfo.text}</span>
                     </div>
                 </div>
             `;
