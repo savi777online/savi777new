@@ -3,56 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SAVI777 - Deposit</title>
+    <title>DURGA - Deposit</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; padding-bottom: 70px; }
-        .app-container { max-width: 500px; margin: 0 auto; background: #f0f2f5; min-height: 100vh; }
-        
-        .header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
-        .app-name { font-size: 20px; font-weight: bold; color: #1a1a2e; }
-        .balance { background: #007bff; padding: 6px 16px; border-radius: 30px; color: #fff; font-weight: bold; cursor: pointer; }
-        
-        .deposit-card { background: #fff; margin: 16px; border-radius: 20px; padding: 20px; }
-        .deposit-title { font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px; color: #1a1a2e; }
-        
-        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-        .amount-btn { background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px; padding: 14px; text-align: center; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .amount-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
-        
-        .custom-amount input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; }
-        
-        .upi-info { background: #f5f5f5; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px; }
-        .upi-id { font-size: 18px; font-weight: bold; color: #007bff; margin: 8px 0; }
-        .copy-btn { background: #007bff; border: none; padding: 8px 20px; border-radius: 20px; color: #fff; cursor: pointer; }
-        
-        .utr-section { margin-bottom: 16px; }
-        .utr-section input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
-        
-        .submit-btn { width: 100%; padding: 16px; background: #28a745; border: none; border-radius: 30px; color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        
-        .message { padding: 12px; border-radius: 12px; text-align: center; margin-top: 16px; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        .hidden { display: none; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 8px 12px; border-top: 1px solid #e0e0e0; }
-        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 10px; flex: 1; padding: 6px 0; }
-        .nav-item.active { color: #007bff; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding-bottom: 80px;
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .app-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #00aa55;
+            animation: blockPulse 2s infinite;
+        }
+        @keyframes blockPulse {
+            0% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+            50% { opacity: 1; text-shadow: 0 0 5px rgba(0,170,85,0.3); }
+            100% { opacity: 0.7; text-shadow: 0 0 0px rgba(0,170,85,0); }
+        }
+        .balance {
+            background: #ff9800;
+            padding: 6px 16px;
+            border-radius: 25px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Deposit Card */
+        .deposit-card {
+            background: #ffffff;
+            margin: 16px;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .deposit-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+
+        /* Amount Grid */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .amount-btn {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 14px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .amount-btn.active {
+            background: #ff9800;
+            color: #ffffff;
+            border-color: #ff9800;
+        }
+        .amount-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Custom Amount */
+        .custom-amount input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .custom-amount input:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        /* UPI Info */
+        .upi-info {
+            background: #f5f5f5;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .upi-id {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff9800;
+            margin: 8px 0;
+        }
+        .copy-btn {
+            background: #ff9800;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* UTR Section */
+        .utr-section input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #10b981;
+            border: none;
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        .success {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #f44336;
+        }
+        .hidden {
+            display: none;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            z-index: 100;
+        }
+        .bottom-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 6px 0;
+            flex: 1;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff9800;
+        }
+        .bottom-item:active {
+            transform: scale(0.95);
+        }
+        .bottom-home {
+            background: #3b82f6;
+            color: #ffffff !important;
+            padding: 8px 0;
+            border-radius: 40px;
+            margin: 0 8px;
+            flex: 1.2;
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
+    <!-- Header -->
     <div class="header">
-        <span class="app-name">SAVI777</span>
+        <span class="app-name">DURGA</span>
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
-    
+
+    <!-- Deposit Card -->
     <div class="deposit-card">
-        <div class="deposit-title">Add Funds</div>
+        <div class="deposit-title">ADD FUNDS</div>
         
         <div class="amount-grid">
             <div class="amount-btn" onclick="selectAmount(200)">₹200</div>
@@ -70,24 +252,25 @@
         <div class="upi-info">
             <div>Send payment to this UPI ID:</div>
             <div class="upi-id" id="upiIdDisplay">Loading...</div>
-            <button class="copy-btn" onclick="copyUpiId()">Copy UPI ID</button>
+            <button class="copy-btn" onclick="copyUpiId()">COPY UPI ID</button>
         </div>
         
         <div class="utr-section">
             <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID">
         </div>
         
-        <button class="submit-btn" id="submitBtn">Submit Deposit Request</button>
+        <button class="submit-btn" id="submitBtn">SUBMIT DEPOSIT</button>
         
         <div id="message" class="message hidden"></div>
     </div>
-    
+
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item" onclick="location.href='dashboard.html'">Home</div>
-        <div class="nav-item active" onclick="location.href='deposit.html'">Deposit</div>
-        <div class="nav-item" onclick="location.href='withdraw.html'">Withdraw</div>
-        <div class="nav-item" onclick="location.href='mybids.html'">Bids</div>
-        <div class="nav-item" onclick="location.href='chat.html'">Support</div>
+        <div class="bottom-item" onclick="location.href='history.html'">HISTORY</div>
+        <div class="bottom-item" onclick="location.href='mybids.html'">PASSBOOK</div>
+        <div class="bottom-item bottom-home" onclick="location.href='dashboard.html'">HOME</div>
+        <div class="bottom-item" onclick="location.href='funds.html'">FUNDS</div>
+        <div class="bottom-item" onclick="location.href='chat.html'">SUPPORT</div>
     </div>
 </div>
 
@@ -98,8 +281,7 @@
         projectId: "savi777-5b8af",
         storageBucket: "savi777-5b8af.firebasestorage.app",
         messagingSenderId: "396388183217",
-        appId: "1:396388183217:web:48d946a4198963cefa0690",
-        measurementId: "G-42PDZRC747"
+        appId: "1:396388183217:web:48d946a4198963cefa0690"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -108,7 +290,7 @@
     
     let currentUser = null;
     let selectedAmount = 200;
-    let upiId = "savi777@okhdfcbank";
+    let upiId = "durga@okhdfcbank";
     
     auth.onAuthStateChanged(async (user) => {
         if (!user) { window.location.href = 'index.html'; return; }
@@ -164,7 +346,7 @@
         
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerText = 'Submitting...';
+        btn.innerText = 'SUBMITTING...';
         
         await db.collection('transactions').add({
             userId: currentUser.uid, type: 'credit', amount: amount,
@@ -175,7 +357,7 @@
         showMessage(`Deposit request submitted! Amount: ₹${amount}`, 'success');
         document.getElementById('utrNumber').value = '';
         btn.disabled = false;
-        btn.innerText = 'Submit Deposit Request';
+        btn.innerText = 'SUBMIT DEPOSIT';
     };
     
     function showBalance() {
