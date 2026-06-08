@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAVI777 - Place Bets</title>
+    <title>DURGA - Place Bets</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -13,11 +13,12 @@
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background: #f0f2f5;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
         }
 
         .app-container {
@@ -51,7 +52,9 @@
             justify-content: center;
             border-radius: 12px;
         }
-        .back-btn:hover { background: #f0f2f5; }
+        .back-btn:active {
+            transform: scale(0.95);
+        }
         .market-title {
             font-size: 18px;
             font-weight: 700;
@@ -60,7 +63,7 @@
             flex: 1;
         }
         .bid-badge {
-            background: #007bff;
+            background: #ff9800;
             color: #fff;
             padding: 5px 12px;
             border-radius: 20px;
@@ -84,7 +87,7 @@
             font-weight: 500;
         }
         .balance-amount {
-            color: #fff;
+            color: #ff9800;
             font-size: 24px;
             font-weight: 700;
         }
@@ -118,9 +121,12 @@
             border: 1px solid #e0e0e0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
+        .game-type-card:active {
+            transform: scale(0.97);
+        }
         .game-type-card:hover {
             transform: translateY(-3px);
-            border-color: #007bff;
+            border-color: #ff9800;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
         .game-icon {
@@ -135,7 +141,7 @@
         }
         .game-card-rate {
             font-size: 13px;
-            color: #007bff;
+            color: #ff9800;
             font-weight: 600;
         }
         .game-card-desc {
@@ -145,8 +151,8 @@
         }
         .game-card-badge {
             display: inline-block;
-            background: #e3f2fd;
-            color: #007bff;
+            background: #fff3e0;
+            color: #ff9800;
             font-size: 10px;
             padding: 2px 8px;
             border-radius: 20px;
@@ -176,6 +182,9 @@
             border-radius: 10px;
             background: #f0f2f5;
         }
+        .back-to-games:active {
+            transform: scale(0.95);
+        }
         .selected-game-title {
             font-size: 18px;
             font-weight: 700;
@@ -183,20 +192,20 @@
             flex: 1;
         }
         .selected-game-rate {
-            background: #e3f2fd;
+            background: #fff3e0;
             padding: 6px 14px;
             border-radius: 30px;
             font-size: 13px;
             font-weight: 600;
-            color: #007bff;
+            color: #ff9800;
         }
         .selected-game-bidtype {
-            background: #e3f2fd;
+            background: #fff3e0;
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 10px;
             font-weight: 600;
-            color: #007bff;
+            color: #ff9800;
         }
 
         .game-panel-content {
@@ -233,8 +242,8 @@
             outline: none;
         }
         .points-input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.1);
         }
         .points-hint {
             font-size: 11px;
@@ -267,7 +276,7 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #007bff;
+            accent-color: #ff9800;
         }
 
         .number-grid {
@@ -289,13 +298,12 @@
             transition: all 0.2s;
         }
         .number-btn.selected {
-            background: #007bff;
-            border-color: #007bff;
+            background: #ff9800;
+            border-color: #ff9800;
             color: #fff;
         }
-        .number-btn:hover {
-            transform: scale(1.02);
-            border-color: #007bff;
+        .number-btn:active {
+            transform: scale(0.96);
         }
 
         .jodi-grid {
@@ -318,9 +326,12 @@
             cursor: pointer;
         }
         .jodi-btn.selected {
-            background: #007bff;
-            border-color: #007bff;
+            background: #ff9800;
+            border-color: #ff9800;
             color: #fff;
+        }
+        .jodi-btn:active {
+            transform: scale(0.96);
         }
 
         .manual-entry {
@@ -352,13 +363,13 @@
             outline: none;
         }
         .manual-row input:focus {
-            border-color: #007bff;
+            border-color: #ff9800;
         }
 
         .add-btn {
             width: 100%;
             padding: 14px;
-            background: #007bff;
+            background: #ff9800;
             border: none;
             border-radius: 14px;
             color: #fff;
@@ -367,8 +378,8 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .add-btn:hover {
-            background: #0056b3;
+        .add-btn:active {
+            transform: scale(0.98);
         }
 
         .bids-section {
@@ -400,7 +411,7 @@
         .bid-value {
             font-size: 15px;
             font-weight: 600;
-            color: #007bff;
+            color: #ff9800;
             margin-top: 2px;
         }
         .bid-points {
@@ -415,13 +426,12 @@
             height: 32px;
             border-radius: 10px;
             background: #fee2e2;
-            color: #dc3545;
+            color: #f44336;
             cursor: pointer;
             font-size: 18px;
         }
-        .remove-bid:hover {
-            background: #dc3545;
-            color: #fff;
+        .remove-bid:active {
+            transform: scale(0.95);
         }
 
         .summary-bar {
@@ -453,7 +463,7 @@
             width: calc(100% - 32px);
             margin: 16px;
             padding: 16px;
-            background: linear-gradient(135deg, #28a745, #1e7e34);
+            background: #10b981;
             border: none;
             border-radius: 40px;
             color: #fff;
@@ -461,6 +471,9 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
         }
         .submit-btn:disabled {
             opacity: 0.6;
@@ -476,11 +489,11 @@
         }
         .error {
             background: #fee2e2;
-            color: #dc3545;
+            color: #f44336;
         }
         .success {
-            background: #d4edda;
-            color: #28a745;
+            background: #d1fae5;
+            color: #10b981;
         }
         .warning {
             background: #fff3cd;
@@ -529,23 +542,33 @@
             right: 0;
             max-width: 500px;
             margin: 0 auto;
-            background: #fff;
+            background: #ffffff;
             display: flex;
             justify-content: space-around;
-            padding: 8px 10px;
+            align-items: center;
+            padding: 12px 20px;
             border-top: 1px solid #e0e0e0;
+            z-index: 100;
         }
-        .nav-item {
+        .bottom-item {
             text-align: center;
-            color: #6c757d;
             cursor: pointer;
-            font-size: 10px;
-            flex: 1;
             padding: 6px 0;
+            flex: 1;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff9800;
         }
-        .nav-item span {
-            font-size: 10px;
-            display: block;
+        .bottom-item:active {
+            transform: scale(0.95);
+        }
+        .bottom-home {
+            background: #3b82f6;
+            color: #ffffff !important;
+            padding: 8px 0;
+            border-radius: 40px;
+            margin: 0 8px;
+            flex: 1.2;
         }
     </style>
 </head>
@@ -593,10 +616,11 @@
 </div>
 
 <div class="bottom-nav">
-    <div class="nav-item" onclick="location.href='dashboard.html'">🏠 Home</div>
-    <div class="nav-item" onclick="location.href='mybids.html'">📋 Bids</div>
-    <div class="nav-item" onclick="location.href='funds.html'">💰 Funds</div>
-    <div class="nav-item" onclick="location.href='chat.html'">💬 Support</div>
+    <div class="bottom-item" onclick="location.href='history.html'">HISTORY</div>
+    <div class="bottom-item" onclick="location.href='mybids.html'">PASSBOOK</div>
+    <div class="bottom-item bottom-home" onclick="location.href='dashboard.html'">HOME</div>
+    <div class="bottom-item" onclick="location.href='funds.html'">FUNDS</div>
+    <div class="bottom-item" onclick="location.href='chat.html'">SUPPORT</div>
 </div>
 
 <script>
@@ -1155,18 +1179,6 @@
         const gameType = allGameTypes.find(g => g.name === currentGameType);
         const showOpenClose = gameType ? gameType.hasOpenClose : false;
         const isCloseOnlyGame = (currentGameType === 'Jodi' || currentGameType === 'Half Sangam A' || currentGameType === 'Half Sangam B' || currentGameType === 'Full Sangam');
-        
-        let validationMsg = '';
-        switch(currentGameType) {
-            case 'Single Digit': validationMsg = 'Click on digits to select multiple numbers'; break;
-            case 'Jodi': validationMsg = 'Click on Jodi numbers to select multiple'; break;
-            case 'Single Pana': validationMsg = 'Enter valid Single Pana (3 digits)'; break;
-            case 'Double Pana': validationMsg = 'Enter valid Double Pana (3 digits)'; break;
-            case 'Triple Pana': validationMsg = 'Valid: 000,111,222,333,444,555,666,777,888,999'; break;
-            case 'Half Sangam A': validationMsg = 'Format: Open Pana (3 digits) + Close Digit (0-9)'; break;
-            case 'Half Sangam B': validationMsg = 'Format: Open Digit (0-9) + Close Pana (3 digits)'; break;
-            case 'Full Sangam': validationMsg = 'Format: Open Pana (3 digits) + Close Pana (3 digits)'; break;
-        }
         
         if(currentGameType === 'Single Digit') {
             let digitsHtml = '';
