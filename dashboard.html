@@ -650,8 +650,11 @@
                     id: doc.id,
                     name: data.name,
                     openPana: data.openPana || '***',
+                    openDigit: data.openDigit || '*',
                     closePana: data.closePana || '***',
+                    closeDigit: data.closeDigit || '*',
                     jodi: data.jodi || '**',
+                    closeDeclared: data.closeDeclared || false,
                     openBidEnd: data.openBidEnd,
                     closeBidEnd: data.closeBidEnd,
                     status: calculatedStatus,
@@ -699,10 +702,31 @@
         let html = '';
         filtered.forEach(market => {
             const statusInfo = getStatusInfo(market.status);
-            const resultDisplay = `${market.openPana}-${market.jodi}-${market.closePana}`;
             const openTime = formatTimeTo12Hour(market.openBidEnd);
             const closeTime = formatTimeTo12Hour(market.closeBidEnd);
             const isPlayable = market.status === 'open' || market.status === 'close';
+            
+            // Determine result display based on declared status
+            let resultDisplay = '';
+            const openPana = market.openPana || '***';
+            const openDigit = market.openDigit || '*';
+            const closePana = market.closePana || '***';
+            const jodi = market.jodi || '**';
+            const isCloseDeclared = market.closeDeclared || false;
+            const isOpenDeclared = (openPana !== '***');
+            
+            if (isCloseDeclared) {
+                // FULL RESULT DECLARED - Show Open Pana, Jodi, Close Pana
+                resultDisplay = `${openPana} - ${jodi} - ${closePana}`;
+            } 
+            else if (isOpenDeclared) {
+                // ONLY OPEN RESULT DECLARED - Show Open Pana with * format
+                resultDisplay = `${openPana} - ${openDigit}* - ***`;
+            }
+            else {
+                // NO RESULT DECLARED - Show default
+                resultDisplay = `*** - ** - ***`;
+            }
             
             html += `
                 <div class="market-card">
@@ -752,7 +776,6 @@
                 document.getElementById('sidebarPhone').innerHTML = phone;
                 document.getElementById('sidebarAvatar').innerHTML = name.charAt(0).toUpperCase();
             } else {
-                // User not found in database
                 sessionStorage.clear();
                 window.location.href = 'index.html';
             }
