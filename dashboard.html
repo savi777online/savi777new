@@ -257,9 +257,7 @@
             padding: 4px 14px;
             border-radius: 20px;
             margin-top: 8px;
-            text-align: center;
             display: inline-block;
-            width: auto;
         }
         .status-wrapper {
             text-align: center;
@@ -484,7 +482,7 @@
         <button class="notice-close" onclick="event.stopPropagation(); closeNotice()">✕</button>
     </div>
 
-    <!-- Action Buttons (Below Notice Board) -->
+    <!-- Action Buttons -->
     <div class="action-row">
         <div class="action-btn deposit" onclick="location.href='deposit.html'">DEPOSIT</div>
         <div class="action-btn withdraw" onclick="location.href='withdraw.html'">WITHDRAW</div>
@@ -555,9 +553,9 @@
 <div id="changePinModal" class="modal">
     <div class="modal-content">
         <h3>Change MPIN</h3>
-        <input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4">
-        <input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4">
-        <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4">
+        <input type="password" id="oldPin" class="modal-input" placeholder="Current MPIN" maxlength="4" inputmode="numeric" pattern="\d*">
+        <input type="password" id="newPin" class="modal-input" placeholder="New MPIN (4 digits)" maxlength="4" inputmode="numeric" pattern="\d*">
+        <input type="password" id="confirmPin" class="modal-input" placeholder="Confirm MPIN" maxlength="4" inputmode="numeric" pattern="\d*">
         <button class="modal-btn" onclick="updatePin()">Update</button>
         <button class="modal-btn close-modal" onclick="closeChangePinModal()">Cancel</button>
         <div id="pinMsg" style="color:#f44336; text-align:center; margin-top:10px;"></div>
@@ -588,8 +586,15 @@
     };
     
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
+    
+    // Check if user is logged in
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'index.html';
+    }
+    
+    const currentUserId = sessionStorage.getItem('userId');
+    const currentUserPhone = sessionStorage.getItem('userPhone');
     
     let marketsData = [];
     let currentUserData = null;
@@ -732,10 +737,12 @@
     }
     
     async function loadUserData() {
-        const user = auth.currentUser;
-        if (!user) { window.location.href = 'index.html'; return; }
+        if (!currentUserId) {
+            window.location.href = 'index.html';
+            return;
+        }
         try {
-            const doc = await db.collection('users').doc(user.uid).get();
+            const doc = await db.collection('users').doc(currentUserId).get();
             if (doc.exists) {
                 currentUserData = doc.data();
                 document.getElementById('userBalance').innerText = currentUserData.balance || 0;
@@ -744,6 +751,10 @@
                 document.getElementById('sidebarName').innerHTML = name;
                 document.getElementById('sidebarPhone').innerHTML = phone;
                 document.getElementById('sidebarAvatar').innerHTML = name.charAt(0).toUpperCase();
+            } else {
+                // User not found in database
+                sessionStorage.clear();
+                window.location.href = 'index.html';
             }
         } catch (error) {}
     }
@@ -785,7 +796,7 @@
         if (newPin.length !== 4) { document.getElementById('pinMsg').innerHTML = 'MPIN must be 4 digits'; return; }
         if (newPin !== confirmPin) { document.getElementById('pinMsg').innerHTML = 'MPINs do not match'; return; }
         if (oldPin !== currentUserData.pin) { document.getElementById('pinMsg').innerHTML = 'Current MPIN incorrect'; return; }
-        await db.collection('users').doc(auth.currentUser.uid).update({ pin: newPin });
+        await db.collection('users').doc(currentUserId).update({ pin: newPin });
         currentUserData.pin = newPin;
         document.getElementById('pinMsg').innerHTML = 'MPIN changed!';
         document.getElementById('pinMsg').style.color = '#10b981';
@@ -802,7 +813,7 @@
             document.getElementById('bankMsg').style.color = '#f44336';
             return;
         }
-        await db.collection('users').doc(auth.currentUser.uid).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
+        await db.collection('users').doc(currentUserId).update({ bankDetails: { accountHolder, bankName, accountNumber, ifscCode } });
         currentUserData.bankDetails = { accountHolder, bankName, accountNumber, ifscCode };
         document.getElementById('bankMsg').innerHTML = 'Bank details saved!';
         document.getElementById('bankMsg').style.color = '#10b981';
@@ -810,19 +821,34 @@
     }
     
     function logout() {
-        auth.signOut().then(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
+        sessionStorage.clear();
+        window.location.href = 'index.html';
     }
     
+    // Update market status every minute
     setInterval(() => {
         if (marketsData.length > 0) {
             listenToMarkets();
         }
     }, 60000);
     
-    auth.onAuthStateChanged(user => {
-        if (!user) window.location.href = 'index.html';
-        else { loadUserData(); listenToMarkets(); listenToNotice(); }
-    });
+    // Update balance every 30 seconds
+    setInterval(async () => {
+        if (currentUserId) {
+            try {
+                const doc = await db.collection('users').doc(currentUserId).get();
+                if (doc.exists) {
+                    document.getElementById('userBalance').innerText = doc.data().balance || 0;
+                    currentUserData = doc.data();
+                }
+            } catch(e) {}
+        }
+    }, 30000);
+    
+    // Initialize
+    loadUserData();
+    listenToMarkets();
+    listenToNotice();
     
     window.filterMarkets = filterMarkets;
     window.openBetting = openBetting;
