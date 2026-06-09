@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DURGA - Deposit</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -36,6 +37,13 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #e0e0e0;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
         }
         .app-name {
             font-size: 22px;
@@ -110,9 +118,9 @@
             font-size: 16px;
             margin-bottom: 16px;
             text-align: center;
+            outline: none;
         }
         .custom-amount input:focus {
-            outline: none;
             border-color: #ff9800;
         }
 
@@ -129,6 +137,7 @@
             font-weight: 700;
             color: #ff9800;
             margin: 8px 0;
+            word-break: break-all;
         }
         .copy-btn {
             background: #ff9800;
@@ -139,19 +148,75 @@
             font-weight: 600;
             cursor: pointer;
         }
+        .copy-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            background: #ffffff;
+            border: 2px dashed #ff9800;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            display: none;
+        }
+        .qr-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .qr-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff9800;
+            margin-top: 8px;
+        }
 
         /* UTR Section */
+        .utr-section {
+            margin-bottom: 16px;
+            display: none;
+        }
         .utr-section input {
             width: 100%;
             padding: 14px;
             border: 1px solid #e0e0e0;
             border-radius: 16px;
             font-size: 16px;
-            margin-bottom: 16px;
+            text-align: center;
+            outline: none;
+        }
+        .utr-section input:focus {
+            border-color: #ff9800;
         }
 
-        /* Submit Button */
-        .submit-btn {
+        /* Generate QR Button */
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: #ff9800;
+            border: none;
+            border-radius: 50px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Verify Button */
+        .verify-btn {
             width: 100%;
             padding: 16px;
             background: #10b981;
@@ -161,9 +226,9 @@
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            margin-top: 8px;
         }
-        .submit-btn:active {
+        .verify-btn:active {
             transform: scale(0.98);
         }
 
@@ -186,6 +251,27 @@
             display: none;
         }
 
+        /* Timer */
+        .timer-box {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+        .timer-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d97706;
+            font-family: monospace;
+        }
+        .timer-label {
+            font-size: 11px;
+            color: #92400e;
+            margin-top: 4px;
+        }
+
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
@@ -198,18 +284,21 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-top: 1px solid #e0e0e0;
             z-index: 100;
+            gap: 8px;
         }
         .bottom-item {
             text-align: center;
             cursor: pointer;
-            padding: 6px 0;
+            padding: 8px 0;
             flex: 1;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             color: #ff9800;
+            border-radius: 30px;
+            transition: all 0.2s;
         }
         .bottom-item:active {
             transform: scale(0.95);
@@ -217,10 +306,10 @@
         .bottom-home {
             background: #3b82f6;
             color: #ffffff !important;
-            padding: 8px 0;
+            padding: 10px 0;
             border-radius: 40px;
-            margin: 0 8px;
-            flex: 1.2;
+            margin: 0 4px;
+            flex: 1.3;
         }
     </style>
 </head>
@@ -228,6 +317,7 @@
 <div class="app-container">
     <!-- Header -->
     <div class="header">
+        <button class="back-btn" onclick="goBack()">←</button>
         <span class="app-name">DURGA</span>
         <div class="balance" onclick="showBalance()">₹<span id="userBalance">0</span></div>
     </div>
@@ -246,20 +336,35 @@
         </div>
         
         <div class="custom-amount">
-            <input type="number" id="customAmount" placeholder="Enter custom amount (Min ₹200)">
+            <input type="number" id="customAmount" placeholder="Enter custom amount (Min ₹200)" inputmode="numeric" pattern="\d*">
         </div>
         
         <div class="upi-info">
-            <div>Send payment to this UPI ID:</div>
-            <div class="upi-id" id="upiIdDisplay">Loading...</div>
+            <div>📱 Send payment to this UPI ID</div>
+            <div class="upi-id" id="upiIdDisplay">win777app@axl</div>
             <button class="copy-btn" onclick="copyUpiId()">COPY UPI ID</button>
         </div>
         
-        <div class="utr-section">
-            <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID">
+        <button class="generate-btn" id="generateBtn">GENERATE QR CODE</button>
+        
+        <!-- QR Code Section -->
+        <div class="qr-section" id="qrSection">
+            <div class="qr-title">📸 SCAN QR CODE TO PAY</div>
+            <div id="qrcode"></div>
+            <div class="qr-amount" id="qrAmountDisplay">Amount: ₹0</div>
         </div>
         
-        <button class="submit-btn" id="submitBtn">SUBMIT DEPOSIT</button>
+        <!-- UTR Section -->
+        <div class="utr-section" id="utrSection">
+            <input type="text" id="utrNumber" placeholder="Enter UTR / Transaction ID" maxlength="30">
+            <button class="verify-btn" id="verifyBtn">✅ SUBMIT DEPOSIT REQUEST</button>
+        </div>
+        
+        <!-- Timer -->
+        <div class="timer-box" id="timerBox">
+            <div class="timer-text" id="timerText">05:00</div>
+            <div class="timer-label">⏳ Awaiting verification...</div>
+        </div>
         
         <div id="message" class="message hidden"></div>
     </div>
@@ -285,29 +390,33 @@
     };
     
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
     
-    let currentUser = null;
-    let selectedAmount = 200;
-    let upiId = "durga@okhdfcbank";
-    
-    auth.onAuthStateChanged(async (user) => {
-        if (!user) { window.location.href = 'index.html'; return; }
-        currentUser = user;
-        await loadUserData();
-        await loadUpiSettings();
-    });
-    
-    async function loadUserData() {
-        const doc = await db.collection('users').doc(currentUser.uid).get();
-        document.getElementById('userBalance').innerText = doc.data()?.balance || 0;
+    // Check login
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'index.html';
     }
     
-    async function loadUpiSettings() {
-        const doc = await db.collection('settings').doc('upi').get();
-        if (doc.exists && doc.data().upiId) upiId = doc.data().upiId;
-        document.getElementById('upiIdDisplay').innerHTML = upiId;
+    const currentUserId = sessionStorage.getItem('userId');
+    
+    let selectedAmount = 200;
+    let currentTransactionId = null;
+    let timerInterval = null;
+    let pendingAmount = 0;
+    
+    // UPI ID
+    const upiId = "win777app@axl";
+    const upiName = "WIN777 Services";
+    
+    document.getElementById('upiIdDisplay').innerHTML = upiId;
+    
+    async function loadUserData() {
+        try {
+            const doc = await db.collection('users').doc(currentUserId).get();
+            if (doc.exists) {
+                document.getElementById('userBalance').innerText = doc.data().balance || 0;
+            }
+        } catch (error) {}
     }
     
     function selectAmount(amount) {
@@ -315,6 +424,10 @@
         document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
         document.getElementById('customAmount').value = '';
+        // Hide QR and UTR sections when amount changes
+        document.getElementById('qrSection').style.display = 'none';
+        document.getElementById('utrSection').style.display = 'none';
+        document.getElementById('generateBtn').style.display = 'block';
     }
     
     function getAmount() {
@@ -324,11 +437,11 @@
     }
     
     function showMessage(msg, type) {
-        const div = document.getElementById('message');
-        div.innerText = msg;
-        div.className = `message ${type}`;
-        div.classList.remove('hidden');
-        setTimeout(() => div.classList.add('hidden'), 5000);
+        const msgDiv = document.getElementById('message');
+        msgDiv.innerText = msg;
+        msgDiv.className = `message ${type}`;
+        msgDiv.classList.remove('hidden');
+        setTimeout(() => msgDiv.classList.add('hidden'), 5000);
     }
     
     function copyUpiId() {
@@ -336,39 +449,183 @@
         showMessage('UPI ID copied!', 'success');
     }
     
-    document.getElementById('submitBtn').onclick = async () => {
+    function generateQR() {
         const amount = getAmount();
+        
+        if (amount < 200) {
+            showMessage('Minimum deposit is ₹200', 'error');
+            return;
+        }
+        if (amount > 50000) {
+            showMessage('Maximum deposit is ₹50,000', 'error');
+            return;
+        }
+        
+        pendingAmount = amount;
+        
+        // Create UPI payment URL
+        const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${amount}&cu=INR&tn=DURGA%20Deposit`;
+        
+        // Clear previous QR code
+        document.getElementById('qrcode').innerHTML = '';
+        
+        // Generate new QR code
+        new QRCode(document.getElementById("qrcode"), {
+            text: upiString,
+            width: 200,
+            height: 200,
+            colorDark: "#1a1a2e",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        document.getElementById('qrAmountDisplay').innerHTML = `Amount: ₹${amount}`;
+        document.getElementById('qrSection').style.display = 'block';
+        document.getElementById('utrSection').style.display = 'block';
+        document.getElementById('generateBtn').style.display = 'none';
+        
+        showMessage(`✅ QR Code generated for ₹${amount}. Pay to ${upiId}`, 'success');
+    }
+    
+    async function submitDeposit() {
+        const amount = pendingAmount || getAmount();
         const utr = document.getElementById('utrNumber').value.trim();
         
-        if (amount < 200) { showMessage('Minimum deposit is ₹200', 'error'); return; }
-        if (!utr) { showMessage('Please enter UTR number', 'error'); return; }
-        if (!confirm(`Submit deposit request of ₹${amount}?\nUTR: ${utr}`)) return;
+        if (amount < 200) {
+            showMessage('Minimum deposit is ₹200', 'error');
+            return;
+        }
+        if (!utr) {
+            showMessage('Please enter UTR / Transaction ID', 'error');
+            return;
+        }
         
-        const btn = document.getElementById('submitBtn');
+        if (!confirm(`✅ Confirm payment of ₹${amount}?\n\nUPI ID: ${upiId}\nUTR: ${utr}`)) {
+            return;
+        }
+        
+        const btn = document.getElementById('verifyBtn');
         btn.disabled = true;
         btn.innerText = 'SUBMITTING...';
         
-        await db.collection('transactions').add({
-            userId: currentUser.uid, type: 'credit', amount: amount,
-            userUTR: utr, status: 'Pending',
-            date: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        try {
+            // Create transaction record
+            const transactionRef = await db.collection('transactions').add({
+                userId: currentUserId,
+                type: 'credit',
+                amount: amount,
+                userUTR: utr,
+                upiId: upiId,
+                status: 'Pending',
+                date: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            currentTransactionId = transactionRef.id;
+            
+            showMessage(`✅ Deposit request submitted! Amount: ₹${amount}\nUTR: ${utr}\n\nYour balance will be updated after verification.`, 'success');
+            
+            // Clear UTR input
+            document.getElementById('utrNumber').value = '';
+            
+            // Start timer
+            startTimer();
+            
+            // Listen for transaction approval
+            listenForTransactionApproval();
+            
+        } catch (error) {
+            showMessage('Error: ' + error.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '✅ SUBMIT DEPOSIT REQUEST';
+        }
+    }
+    
+    function startTimer() {
+        const timerBox = document.getElementById('timerBox');
+        timerBox.style.display = 'block';
         
-        showMessage(`Deposit request submitted! Amount: ₹${amount}`, 'success');
-        document.getElementById('utrNumber').value = '';
-        btn.disabled = false;
-        btn.innerText = 'SUBMIT DEPOSIT';
-    };
+        let timeLeft = 300; // 5 minutes
+        const timerText = document.getElementById('timerText');
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerText.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerBox.style.display = 'none';
+                showMessage('Verification time expired! Please contact support.', 'error');
+            }
+        }, 1000);
+    }
+    
+    function listenForTransactionApproval() {
+        if (!currentTransactionId) return;
+        
+        const unsubscribe = db.collection('transactions').doc(currentTransactionId)
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.status === 'Completed') {
+                        // Transaction approved
+                        if (timerInterval) clearInterval(timerInterval);
+                        document.getElementById('timerBox').style.display = 'none';
+                        showMessage(`✅ ₹${data.amount} added to your balance!`, 'success');
+                        loadUserData(); // Refresh balance
+                        unsubscribe();
+                        
+                        // Reset form after 2 seconds
+                        setTimeout(() => {
+                            document.getElementById('qrSection').style.display = 'none';
+                            document.getElementById('utrSection').style.display = 'none';
+                            document.getElementById('generateBtn').style.display = 'block';
+                            document.getElementById('utrNumber').value = '';
+                            document.getElementById('customAmount').value = '';
+                            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+                            selectedAmount = 200;
+                        }, 2000);
+                    } else if (data.status === 'Rejected') {
+                        showMessage(`❌ Deposit request rejected. Contact support.`, 'error');
+                        unsubscribe();
+                    }
+                }
+            });
+    }
     
     function showBalance() {
-        db.collection('users').doc(currentUser.uid).get().then(doc => {
-            alert(`Balance: ₹${doc.data()?.balance || 0}`);
+        db.collection('users').doc(currentUserId).get().then(doc => {
+            alert(`💰 Balance: ₹${doc.data()?.balance || 0}`);
         });
     }
+    
+    function goBack() {
+        window.location.href = 'dashboard.html';
+    }
+    
+    // Event Listeners
+    document.getElementById('generateBtn').onclick = generateQR;
+    document.getElementById('verifyBtn').onclick = submitDeposit;
+    document.getElementById('customAmount').addEventListener('input', function() {
+        if (this.value) {
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('qrSection').style.display = 'none';
+            document.getElementById('utrSection').style.display = 'none';
+            document.getElementById('generateBtn').style.display = 'block';
+        }
+    });
+    
+    // Load user data
+    loadUserData();
     
     window.selectAmount = selectAmount;
     window.copyUpiId = copyUpiId;
     window.showBalance = showBalance;
+    window.goBack = goBack;
 </script>
 </body>
 </html>
